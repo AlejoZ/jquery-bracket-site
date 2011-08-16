@@ -1,0 +1,70 @@
+#bracket {
+  float: left;
+  background-color: #EEE;
+  height: 400px;
+}
+
+.round {
+  position: relative;
+  width: 100px;
+  background-color: #CCC;
+  margin-right: 40px;
+  float: left;
+}
+
+.round:nth-child(n+2) {
+ background-color: #F00; 
+ border-right: 2px solid #000;
+}
+
+.match {
+  position: relative;
+  background-color: #999;
+  float: left;
+  display: block;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.team {
+  float: left;
+  background-color: #FCC;
+  width: 100px;
+  border-radius: 5px;
+  margin: 1px 0px;
+}
+
+.team span {
+  float: right;
+}
+
+.team.win {
+  background-color: #0F0;
+}
+.team.lose {
+  background-color: #F00;
+}
+.team.tie {
+  background-color: #00F;
+}
+
+.teamContainer {
+  position: relative;
+  float: left;
+}
+
+.connectorFrom {
+  border: 2px solid #0F0;
+  border-left: none;
+  position: absolute;
+  display: block;
+  z-index: 100;
+}
+
+.teamContainer .connectorTo {
+  border-bottom: 2px solid #0F0;
+  height: 0px;
+  z-index: 100;
+  position: absolute;
+  display: block;
+}
