@@ -1,4 +1,4 @@
-function getTeam(round, name, score) {
+function createTeamElement(round, name, score) {
   var tEl = $('<div class="team"><b>'+name+'</b><span>'+score[0]+'</span></div>');
 
   if (score) {
@@ -20,7 +20,28 @@ function getTeam(round, name, score) {
 
   return tEl;
 }
+
+function getTeamNames(results, round, match)
+{
+  var getTeamName = function(results, round, match, n) {
+      var score = results[0][round-1][match*2+n];
+      var mod = ':first';
+
+      if (score[0] < score[1])
+        mod = ':last';
+
+      return $('#match-'+(round-1)+'-'+(match*2+n)+' .team'+mod+' b').text();
+    }
+
+  return [getTeamName(results, round, match, 0), getTeamName(results, round, match, 1)];
+}
+
 function render(data)
+{
+  renderWinners(data);
+  renderLosers(data);
+}
+function renderWinners(data)
 {
   var teams = data['teams'];
   var results = data['results'];
@@ -31,37 +52,22 @@ function render(data)
   for (var r = 0; r < rounds; r++) {
     var roundId = 'round-'+r;
     roundEl = $('<div class="round" id="'+roundId+'"></div>').appendTo('#bracket');
-    console.log(matches);
+
     for (var m = 0; m < matches; m++) {
       var matchId = "match-"+r+"-"+m;
       el = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
-      var score = results[r][m]
+      var score = results[0][r][m];
       var teamBlocks = '<div class="teamContainer">'+
                        '</div>';
 
       var team;
-      if (r == 0) {
+      if (r == 0)
         team = teams[m];
-      }
-      else {
-        var s = results[r-1][m*2];
-        var mod = ':first';
-
-        if (s[0] < s[1])
-          mod = ':last';
-
-        team[0] = $('#match-'+(r-1)+'-'+(m*2)+' .team'+mod+' b').text();
-
-        s = results[r-1][m*2+1];
-        mod = ':first';
-
-        if (s[0] < s[1])
-          mod = ':last';
-        team[1] = $('#match-'+(r-1)+'-'+(m*2+1)+' .team'+mod+' b').text();
-      }
+      else
+        team = getTeamNames(results, r, m);
     
-      teamBlocks = $(teamBlocks).append(getTeam(r, team[0], score));
-      teamBlocks = $(teamBlocks).append(getTeam(r, team[1], [score[1],score[0]]));
+      teamBlocks = $(teamBlocks).append(createTeamElement(r, team[0], score));
+      teamBlocks = $(teamBlocks).append(createTeamElement(r, team[1], [score[1],score[0]]));
 
       el.css('height', (graphHeight/matches)+'px');
       elC = $(teamBlocks).appendTo(el);
@@ -107,6 +113,56 @@ function render(data)
           elCon.css('top', shift+'px');
         else
           elCon.css('bottom', (-shift)+'px');
+      }
+    }
+    matches /= 2;
+  }
+}
+
+function renderLosers(data)
+{
+  var teams = data['teams'];
+  var results = data['results'];
+  var rounds = Math.log(teams.length*2) / Math.log(2)-1;
+  var matches = teams.length/2;
+  var graphHeight = $('#loserBracket').height();
+
+  for (var r = 0; r < rounds; r++) {
+    for (var n = 0; n < 2; n++) {
+      var roundId = 'lround-'+r+'-'+n;
+      console.log(n);
+      roundEl = $('<div class="round" id="'+roundId+'"></div>').appendTo('#loserBracket');
+
+      for (var m = 0; m < matches; m++) {
+        var matchId = "match-"+r+"-"+m;
+        var score = results[1][r][m];
+        el = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
+
+        var teamBlocks = '<div class="teamContainer">'+
+          '</div>';
+        var team;
+        //if (r == 0) {
+        var getLoser = function(results, r, m) {
+          var team;
+          if (results[0][r][m][0] < results[0][r][m][1])
+            team = teams[m][0];
+          else
+            team = teams[m][1];
+          return team;
+        };
+        team = [getLoser(results, 0, m*2), getLoser(results, 0, m*2+1)];
+        /*
+           }
+           else
+           team = getTeamNames(results, r, m);
+         */
+
+        teamBlocks = $(teamBlocks).append(createTeamElement(r, team[0], score));
+        teamBlocks = $(teamBlocks).append(createTeamElement(r, team[1], [score[1],score[0]]));
+
+        el.css('height', (graphHeight/matches)+'px');
+        elC = $(teamBlocks).appendTo(el);
+        elC.css('top', (el.height()/2-elC.height()/2)+'px');
       }
     }
     matches /= 2;

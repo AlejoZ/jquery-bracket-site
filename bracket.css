@@ -1,7 +1,16 @@
 #bracket {
   float: left;
   background-color: #EED;
-  height: 600px;
+  height: 400px;
+  clear: both;
+}
+
+#loserBracket {
+  float: left;
+  background-color: #EED;
+  height: 200px;
+  clear: both;
+  margin-bottom: 50px;
 }
 
 .round {
