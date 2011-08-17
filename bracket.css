@@ -1,7 +1,7 @@
 #bracket {
   float: left;
-  background-color: #EEE;
-  height: 400px;
+  background-color: #EED;
+  height: 600px;
 }
 
 .round {
@@ -13,13 +13,12 @@
 }
 
 .round:nth-child(n+2) {
- background-color: #F00; 
- border-right: 2px solid #000;
+  background-color: #F00; 
 }
 
 .match {
   position: relative;
-  background-color: #999;
+  background-color: #FFE;
   float: left;
   display: block;
   width: 100%;
@@ -28,7 +27,8 @@
 
 .team {
   float: left;
-  background-color: #FCC;
+  background-color: #666;
+  color: #FFF;
   width: 100px;
   border-radius: 5px;
   margin: 1px 0px;
@@ -38,23 +38,28 @@
   float: right;
 }
 
-.team.win {
-  background-color: #0F0;
+.team.win span {
+  color: #0F0;
+}
+.team.lose span {
+  color: #F00;
 }
 .team.lose {
-  background-color: #F00;
+  background-color: #CCC;
+  color: #666;
 }
-.team.tie {
-  background-color: #00F;
+.team.tie span {
+  color: #00F;
 }
 
 .teamContainer {
   position: relative;
   float: left;
+  display: block;
 }
 
 .connectorFrom {
-  border: 2px solid #0F0;
+  border: 2px solid #333;
   border-left: none;
   position: absolute;
   display: block;
@@ -62,9 +67,9 @@
 }
 
 .teamContainer .connectorTo {
-  border-bottom: 2px solid #0F0;
+  border-bottom: 2px solid #333;
   height: 0px;
   z-index: 100;
-  position: absolute;
+  position: relative;
   display: block;
 }
