@@ -21,6 +21,7 @@ function createTeamElement(round, name, score) {
   return tEl;
 }
 
+/* refactor with loser bracket */
 function getTeamNames(results, round, match)
 {
   var getTeamName = function(results, round, match, n) {
@@ -41,6 +42,7 @@ function render(data)
   renderWinners(data);
   renderLosers(data);
 }
+
 function renderWinners(data)
 {
   var teams = data['teams'];
@@ -119,6 +121,27 @@ function renderWinners(data)
   }
 }
 
+/* refactor with loser bracket */
+function getWinnerTeamNames(results, round, match, n)
+{
+  var getTeamName = function(results, round, match, n) {
+      var score = results[1][round][match];
+      var mod = ':first';
+
+      if (score[0] < score[1])
+        mod = ':last';
+
+      var str = '#loserBracket #match-'+(round)+'-'+(match)+'-1 .team'+mod+' b'
+      console.log(str);
+      var winner = $(str);
+      console.log(winner);
+      return winner.text();
+    }
+
+  return [getTeamName(results, round-1, match*2, n), 
+          getTeamName(results, round-1, match*2+1, n)];
+}
+
 function renderLosers(data)
 {
   var teams = data['teams'];
@@ -134,31 +157,73 @@ function renderLosers(data)
       roundEl = $('<div class="round" id="'+roundId+'"></div>').appendTo('#loserBracket');
 
       for (var m = 0; m < matches; m++) {
-        var matchId = "match-"+r+"-"+m;
+        var matchId = "match-"+r+"-"+m+"-"+n;
         var score = results[1][r][m];
         el = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
 
         var teamBlocks = '<div class="teamContainer">'+
           '</div>';
         var team;
-        //if (r == 0) {
-        var getLoser = function(results, r, m) {
-          var team;
-          if (results[0][r][m][0] < results[0][r][m][1])
-            team = teams[m][0];
-          else
-            team = teams[m][1];
-          return team;
-        };
-        team = [getLoser(results, 0, m*2), getLoser(results, 0, m*2+1)];
-        /*
-           }
-           else
-           team = getTeamNames(results, r, m);
-         */
+        /* match inside losers bracket */
+        if (n%2 == 0) {
+          /* first round comes from winner bracket */
+          console.log(n);
+          if (r == 0) {
+            var getLoser = function(results, r, m) {
+              var team;
+              if (results[0][r][m][0] < results[0][r][m][1])
+                team = teams[m][0];
+              else
+                team = teams[m][1];
+              return team;
+            };
+            team = [getLoser(results, 0, m*2), getLoser(results, 0, m*2+1)];
+          }
+          else {
+            var getLoser = function(results, r, m) {
+              var team;
+              if (results[1][r][m][0] > results[1][r][m][1])
+                team = teams[m][0];
+              else
+                team = teams[m][1];
+              return team;
+            };
+            //team = [getLoser(results, r, m*2), getLoser(results, r, m*2+1)];
+            team = getWinnerTeamNames(results, r, m, n);
+          }
+        }
+        else { /* match with dropped */
+          var getWinner = function(results, r, m) {
+            var getTeamName = function(results, round, match) {
+              var score = results[1][round][match];
+              var mod = ':first';
 
+              if (score[0] < score[1])
+                mod = ':last';
+
+              return $('#loserBracket #match-'+(round)+'-'+(match)+'-0 .team'+mod+' b').text();
+            }
+
+            return getTeamName(results, r, m);
+          };
+          var getLoser = function(results, r, m) {
+            var score = results[0][r][m];
+            var mod = ':first';
+
+            if (score[0] > score[1])
+              mod = ':last';
+            var loser = $('#bracket #match-'+(r)+'-'+(m)+' .team'+mod+' b');
+            return loser.text();
+          };
+          team = [getWinner(results, r, m), getLoser(results, r+1, m)];
+        }
+      
         teamBlocks = $(teamBlocks).append(createTeamElement(r, team[0], score));
-        teamBlocks = $(teamBlocks).append(createTeamElement(r, team[1], [score[1],score[0]]));
+        /* no toConnector every second time as this comes from winners */
+        if (n%2 == 1)
+          teamBlocks = $(teamBlocks).append(createTeamElement(0, team[1], [score[1],score[0]]));
+        else
+          teamBlocks = $(teamBlocks).append(createTeamElement(r, team[1], [score[1],score[0]]));
 
         el.css('height', (graphHeight/matches)+'px');
         elC = $(teamBlocks).appendTo(el);
