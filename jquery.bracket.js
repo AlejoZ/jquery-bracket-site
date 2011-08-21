@@ -1,3 +1,6 @@
+function roundGap() {
+  return 20;
+}
 function createTeamElement(round, name, score) {
   var tEl = $('<div class="team"><b>'+name+'</b><span>'+score[0]+'</span></div>');
 
@@ -13,12 +16,52 @@ function createTeamElement(round, name, score) {
   if (round == 0)
     return tEl;
 
+  /*
   var elCon = $('<div class="connectorTo"></div>').appendTo(tEl);
-  elCon.css('width', '20px');
-  elCon.css('left', '-20px');
+  elCon.css('width', roundGap()+'px');
+  elCon.css('left', -roundGap()+'px');
   elCon.css('top', '-10px');
+  */
 
   return tEl;
+}
+
+function connector(width, height, shift, teamContainer) {
+  var drop = true;
+  // drop:
+  //  ¨\
+  //    \_
+  // !drop:
+  //    /¨
+  //  _/
+  if (height < 0) {
+    drop = false;
+    height = -height;
+  }
+  var elCon = $('<div class="connectorFrom"></div>').appendTo(teamContainer);
+  elCon.css('height', height);
+  elCon.css('width', width+'px');
+  elCon.css('right', (-width-2)+'px');
+
+  if (shift >= 0)
+    elCon.css('top', shift+'px');
+  else
+    elCon.css('bottom', (-shift)+'px');
+  
+  if (drop)
+    elCon.css('border-bottom', 'none');
+  else
+    elCon.css('border-top', 'none');
+
+  elCon.css('border-color', 'red');
+
+  var elTo = $('<div class="connectorTo"></div>').appendTo(elCon);
+  elTo.css('width', width+'px');
+  elTo.css('right', -width+'px');
+  if (drop)
+    elTo.css('bottom', '0px');
+  else
+    elTo.css('top', '0px');
 }
 
 /* refactor with loser bracket */
@@ -107,7 +150,7 @@ function renderWinners(data)
         }
 
         elCon.css('height', height);
-        elCon.css('width', '20px');
+        elCon.css('width', roundGap()+'px');
         elCon.css('left', elC.width());
         if (shift >= 0)
           elCon.css('top', shift+'px');
@@ -223,24 +266,23 @@ function renderLosers(data)
         elC.css('top', (el.height()/2-elC.height()/2)+'px');
 
         if (r < rounds-1 || n < 1) {
-          var elCon = $('<div class="connectorFrom"></div>').appendTo(elC);
           var height = 0;
+          var width = roundGap();
           var shift = 0;
-          /* inside lower bracket */
+
+          // inside lower bracket 
           if (n%2 == 0) {
             if (score[0] > score[1]) {
               height = 0;
               shift = elC.height()/2 - 12;
             }
             else {
-              height = 24;
+              height = -24;
               shift = elC.height()/2 - 12;
-              elCon.css('border-top', 'none');
             }
           }
-          else { /* from winner bracket */
-            if (m%2 == 0) { /* dir == down */
-              elCon.css('border-bottom', 'none');
+          else { // from winner bracket 
+            if (m%2 == 0) { // dir == down 
               if (score[0] > score[1]) {
                 shift = elC.height()/2 - 13;
                 height = el.height()/2;
@@ -250,30 +292,18 @@ function renderLosers(data)
                 height = el.height()/2 - 25;
               }
             }
-            else { /* dir == up */
+            else { // dir == up
               if (score[0] > score[1]) {
                 shift = -elC.height()/2 + 10;
-                height = el.height()/2;
-                elCon.css('border-top', 'none');
+                height = -el.height()/2;
               }
               else {
                 shift = -elC.height()/2 + 13;
-                height = el.height()/2;
-                elCon.css('border-top', 'none');
+                height = -el.height()/2;
               }
             }
           }
-          if (height == 0) {
-            elCon.css('border-bottom', 'none');
-            elCon.css('border-right', 'none');
-          }
-          elCon.css('height', height);
-          elCon.css('width', '20px');
-          elCon.css('right', -20);
-          if (shift >= 0)
-            elCon.css('top', shift+'px');
-          else
-            elCon.css('bottom', (-shift)+'px');
+          elC.append(connector(width, height, shift, elC));
         }
       }
     }
