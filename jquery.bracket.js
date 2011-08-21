@@ -120,28 +120,29 @@ function renderWinners(container, data)
 
       if (r < (rounds-1)) {
         var width = roundGap();
-        var height = elClassMatch.height()/2;
-        var tShift = elClassTeamContainer.height()/2 - 13;
-        var shift;
+        var height, shift
+
+        var connectorOffset = elClassTeamContainer.height()/4
+        var matchupOffset = elClassMatch.height()/2
 
         if (m%2 == 0) { // dir == down
           if (score[0] > score[1]) {
-            height = elClassMatch.height()/2;
-            shift = elClassTeamContainer.height()/4 - 2;
+            height = matchupOffset
+            shift = connectorOffset
           }
           else {
-            height = elClassMatch.height()/2 - elClassTeamContainer.height()/2;
-            shift = elClassTeamContainer.height()/2 + tShift;
+            height = matchupOffset - connectorOffset*2
+            shift = connectorOffset*3
           }
         }
         else { // dir == up
           if (score[0] > score[1]) {
-            height = -elClassMatch.height()/2 + elClassTeamContainer.height()/2;
-            shift = -elClassTeamContainer.height()/2 - tShift;
+            height = -matchupOffset + connectorOffset*2
+            shift = -connectorOffset*3
           }
           else {
-            height = -elClassMatch.height()/2-1;
-            shift = -elClassTeamContainer.height()/4;
+            height = -matchupOffset
+            shift = -connectorOffset
           }
         }
 
@@ -252,6 +253,9 @@ function renderLosers(container, winnerBracket, data)
         elClassTeamContainer = $(elClassTeamContainer).appendTo(elClassMatch);
         elClassTeamContainer.css('top', (elClassMatch.height()/2-elClassTeamContainer.height()/2)+'px');
 
+        var connectorOffset = elClassTeamContainer.height()/4
+        var matchupOffset = elClassMatch.height()/2
+
         if (r < rounds-1 || n < 1) {
           var height = 0;
           var width = roundGap();
@@ -259,34 +263,32 @@ function renderLosers(container, winnerBracket, data)
 
           // inside lower bracket 
           if (n%2 == 0) {
-            if (score[0] > score[1]) {
+            if (score[0] > score[1])
               height = 0;
-              shift = elClassTeamContainer.height()/2 - 12;
-            }
-            else {
-              height = -24;
-              shift = elClassTeamContainer.height()/2 - 12;
-            }
+            else
+              height = -connectorOffset*2;
+
+            shift = connectorOffset
           }
           else { // from winner bracket 
             if (m%2 == 0) { // dir == down 
               if (score[0] > score[1]) {
-                shift = elClassTeamContainer.height()/2 - 13;
-                height = elClassMatch.height()/2;
+                shift = connectorOffset
+                height = matchupOffset
               }
               else {
-                shift = elClassTeamContainer.height()/2 + 12;
-                height = elClassMatch.height()/2 - 25;
+                shift = connectorOffset*3
+                height = matchupOffset - connectorOffset*2
               }
             }
             else { // dir == up
               if (score[0] > score[1]) {
-                shift = -elClassTeamContainer.height()/2 + 10;
-                height = -elClassMatch.height()/2;
+                shift = -connectorOffset*3
+                height = -matchupOffset + connectorOffset*2
               }
               else {
-                shift = -elClassTeamContainer.height()/2 + 13;
-                height = -elClassMatch.height()/2;
+                shift = -connectorOffset
+                height = -matchupOffset
               }
             }
           }
