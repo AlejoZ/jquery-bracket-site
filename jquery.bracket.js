@@ -82,21 +82,21 @@ function getTeamNames(results, round, match)
 
 function render(data)
 {
-  renderWinners(data);
-  renderLosers(data);
+  renderWinners('#bracket', data);
+  renderLosers($('#loserBracket'), $('#bracket'), data);
 }
 
-function renderWinners(data)
+function renderWinners(container, data)
 {
   var teams = data['teams'];
   var results = data['results'];
   var rounds = Math.log(teams.length*2) / Math.log(2);
   var matches = teams.length;
-  var graphHeight = $('#bracket').height();
+  var graphHeight = $(container).height();
 
   for (var r = 0; r < rounds; r++) {
     var roundId = 'round-'+r;
-    $('<div class="round" id="'+roundId+'"></div>').appendTo('#bracket');
+    $('<div class="round" id="'+roundId+'"></div>').appendTo(container);
 
     for (var m = 0; m < matches; m++) {
       var matchId = "match-"+r+"-"+m;
@@ -153,7 +153,7 @@ function renderWinners(data)
 }
 
 /* refactor with loser bracket */
-function getWinnerTeamNames(results, round, match, n)
+function getWinnerTeamNames(container, results, round, match, n)
 {
   var getTeamName = function(results, round, match, n) {
       var score = results[1][round][match];
@@ -162,35 +162,32 @@ function getWinnerTeamNames(results, round, match, n)
       if (score[0] < score[1])
         mod = ':last';
 
-      var str = '#loserBracket #match-'+(round)+'-'+(match)+'-1 .team'+mod+' b'
-      var winner = $(str);
-      return winner.text();
+      return container.find('#match-'+(round)+'-'+(match)+'-1 .team'+mod+' b').text();
     }
 
   return [getTeamName(results, round-1, match*2, n), 
           getTeamName(results, round-1, match*2+1, n)];
 }
 
-function renderLosers(data)
+function renderLosers(container, winnerBracket, data)
 {
   var teams = data['teams'];
   var results = data['results'];
   var rounds = Math.log(teams.length*2) / Math.log(2)-1;
   var matches = teams.length/2;
-  var graphHeight = $('#loserBracket').height();
+  var graphHeight = container.height();
 
   for (var r = 0; r < rounds; r++) {
     for (var n = 0; n < 2; n++) {
       var roundId = 'lround-'+r+'-'+n;
-      $('<div class="round" id="'+roundId+'"></div>').appendTo('#loserBracket');
+      var elClassRound = $('<div class="round" id="'+roundId+'"></div>').appendTo(container);
 
       for (var m = 0; m < matches; m++) {
-        var matchId = "match-"+r+"-"+m+"-"+n;
         var score = results[1][r*2+n][m];
-        elClassMatch = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
+        var elClassMatch = $('<div class="match"></div>').appendTo(elClassRound);
+        elClassMatch.attr('id', 'match-'+r+'-'+m+'-'+n)
 
-        var elClassTeamContainer = '<div class="teamContainer">'+
-          '</div>';
+        var elClassTeamContainer = '<div class="teamContainer"></div>';
         var team;
         /* match inside losers bracket */
         if (n%2 == 0) {
@@ -215,7 +212,7 @@ function renderLosers(data)
                 team = teams[m][1];
               return team;
             };
-            team = getWinnerTeamNames(results, r, m, n);
+            team = getWinnerTeamNames(container, results, r, m, n);
           }
         }
         else { /* match with dropped */
@@ -227,7 +224,7 @@ function renderLosers(data)
               if (score[0] < score[1])
                 mod = ':last';
 
-              return $('#loserBracket #match-'+(round)+'-'+(match)+'-0 .team'+mod+' b').text();
+              return container.find('#match-'+(round)+'-'+(match)+'-0 .team'+mod+' b').text();
             }
 
             return getTeamName(results, r, m);
@@ -238,8 +235,8 @@ function renderLosers(data)
 
             if (score[0] > score[1])
               mod = ':last';
-            var loser = $('#bracket #match-'+(r)+'-'+(m)+' .team'+mod+' b');
-            return loser.text();
+
+            return winnerBracket.find('#match-'+(r)+'-'+(m)+' .team'+mod+' b').text();
           };
           team = [getWinner(results, r, m), getLoser(results, r+1, m)];
         }
