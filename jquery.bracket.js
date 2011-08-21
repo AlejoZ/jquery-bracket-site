@@ -96,13 +96,13 @@ function renderWinners(data)
 
   for (var r = 0; r < rounds; r++) {
     var roundId = 'round-'+r;
-    roundEl = $('<div class="round" id="'+roundId+'"></div>').appendTo('#bracket');
+    $('<div class="round" id="'+roundId+'"></div>').appendTo('#bracket');
 
     for (var m = 0; m < matches; m++) {
       var matchId = "match-"+r+"-"+m;
-      el = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
+      elClassMatch = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
       var score = results[0][r][m];
-      var teamBlocks = '<div class="teamContainer">'+
+      var elClassTeamContainer = '<div class="teamContainer">'+
                        '</div>';
 
       var team;
@@ -111,41 +111,41 @@ function renderWinners(data)
       else
         team = getTeamNames(results, r, m);
     
-      teamBlocks = $(teamBlocks).append(createTeamElement(r, team[0], score));
-      teamBlocks = $(teamBlocks).append(createTeamElement(r, team[1], [score[1],score[0]]));
+      elClassTeamContainer = $(elClassTeamContainer).append(createTeamElement(r, team[0], score));
+      elClassTeamContainer = $(elClassTeamContainer).append(createTeamElement(r, team[1], [score[1],score[0]]));
 
-      el.css('height', (graphHeight/matches)+'px');
-      elC = $(teamBlocks).appendTo(el);
-      elC.css('top', (el.height()/2-elC.height()/2)+'px');
+      elClassMatch.css('height', (graphHeight/matches)+'px');
+      elClassTeamContainer = $(elClassTeamContainer).appendTo(elClassMatch);
+      elClassTeamContainer.css('top', (elClassMatch.height()/2-elClassTeamContainer.height()/2)+'px');
 
       if (r < (rounds-1)) {
         var width = roundGap();
-        var height = el.height()/2;
-        var tShift = elC.height()/2 - 13;
+        var height = elClassMatch.height()/2;
+        var tShift = elClassTeamContainer.height()/2 - 13;
         var shift;
 
         if (m%2 == 0) { // dir == down
           if (score[0] > score[1]) {
-            height = el.height()/2;
-            shift = elC.height()/4 - 2;
+            height = elClassMatch.height()/2;
+            shift = elClassTeamContainer.height()/4 - 2;
           }
           else {
-            height = el.height()/2 - elC.height()/2;
-            shift = elC.height()/2 + tShift;
+            height = elClassMatch.height()/2 - elClassTeamContainer.height()/2;
+            shift = elClassTeamContainer.height()/2 + tShift;
           }
         }
         else { // dir == up
           if (score[0] > score[1]) {
-            height = -el.height()/2 + elC.height()/2;
-            shift = -elC.height()/2 - tShift;
+            height = -elClassMatch.height()/2 + elClassTeamContainer.height()/2;
+            shift = -elClassTeamContainer.height()/2 - tShift;
           }
           else {
-            height = -el.height()/2-1;
-            shift = -elC.height()/4;
+            height = -elClassMatch.height()/2-1;
+            shift = -elClassTeamContainer.height()/4;
           }
         }
 
-        elC.append(connector(width, height, shift, elC));
+        elClassTeamContainer.append(connector(width, height, shift, elClassTeamContainer));
       }
     }
     matches /= 2;
@@ -182,14 +182,14 @@ function renderLosers(data)
   for (var r = 0; r < rounds; r++) {
     for (var n = 0; n < 2; n++) {
       var roundId = 'lround-'+r+'-'+n;
-      roundEl = $('<div class="round" id="'+roundId+'"></div>').appendTo('#loserBracket');
+      $('<div class="round" id="'+roundId+'"></div>').appendTo('#loserBracket');
 
       for (var m = 0; m < matches; m++) {
         var matchId = "match-"+r+"-"+m+"-"+n;
         var score = results[1][r*2+n][m];
-        el = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
+        elClassMatch = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
 
-        var teamBlocks = '<div class="teamContainer">'+
+        var elClassTeamContainer = '<div class="teamContainer">'+
           '</div>';
         var team;
         /* match inside losers bracket */
@@ -244,16 +244,16 @@ function renderLosers(data)
           team = [getWinner(results, r, m), getLoser(results, r+1, m)];
         }
       
-        teamBlocks = $(teamBlocks).append(createTeamElement(r*2+n, team[0], score));
+        elClassTeamContainer = $(elClassTeamContainer).append(createTeamElement(r*2+n, team[0], score));
         /* no toConnector every second time as this comes from winners */
         if (n%2 == 1)
-          teamBlocks = $(teamBlocks).append(createTeamElement(0, team[1], [score[1],score[0]]));
+          elClassTeamContainer = $(elClassTeamContainer).append(createTeamElement(0, team[1], [score[1],score[0]]));
         else
-          teamBlocks = $(teamBlocks).append(createTeamElement(r*2+n, team[1], [score[1],score[0]]));
+          elClassTeamContainer = $(elClassTeamContainer).append(createTeamElement(r*2+n, team[1], [score[1],score[0]]));
 
-        el.css('height', (graphHeight/matches)+'px');
-        elC = $(teamBlocks).appendTo(el);
-        elC.css('top', (el.height()/2-elC.height()/2)+'px');
+        elClassMatch.css('height', (graphHeight/matches)+'px');
+        elClassTeamContainer = $(elClassTeamContainer).appendTo(elClassMatch);
+        elClassTeamContainer.css('top', (elClassMatch.height()/2-elClassTeamContainer.height()/2)+'px');
 
         if (r < rounds-1 || n < 1) {
           var height = 0;
@@ -264,36 +264,36 @@ function renderLosers(data)
           if (n%2 == 0) {
             if (score[0] > score[1]) {
               height = 0;
-              shift = elC.height()/2 - 12;
+              shift = elClassTeamContainer.height()/2 - 12;
             }
             else {
               height = -24;
-              shift = elC.height()/2 - 12;
+              shift = elClassTeamContainer.height()/2 - 12;
             }
           }
           else { // from winner bracket 
             if (m%2 == 0) { // dir == down 
               if (score[0] > score[1]) {
-                shift = elC.height()/2 - 13;
-                height = el.height()/2;
+                shift = elClassTeamContainer.height()/2 - 13;
+                height = elClassMatch.height()/2;
               }
               else {
-                shift = elC.height()/2 + 12;
-                height = el.height()/2 - 25;
+                shift = elClassTeamContainer.height()/2 + 12;
+                height = elClassMatch.height()/2 - 25;
               }
             }
             else { // dir == up
               if (score[0] > score[1]) {
-                shift = -elC.height()/2 + 10;
-                height = -el.height()/2;
+                shift = -elClassTeamContainer.height()/2 + 10;
+                height = -elClassMatch.height()/2;
               }
               else {
-                shift = -elC.height()/2 + 13;
-                height = -el.height()/2;
+                shift = -elClassTeamContainer.height()/2 + 13;
+                height = -elClassMatch.height()/2;
               }
             }
           }
-          elC.append(connector(width, height, shift, elC));
+          elClassTeamContainer.append(connector(width, height, shift, elClassTeamContainer));
         }
       }
     }
