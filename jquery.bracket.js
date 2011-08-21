@@ -119,15 +119,12 @@ function renderWinners(data)
       elC.css('top', (el.height()/2-elC.height()/2)+'px');
 
       if (r < (rounds-1)) {
+        var width = roundGap();
         var height = el.height()/2;
         var tShift = elC.height()/2 - 13;
         var shift;
-        var shiftDir;
 
-        elCon = $('<div class="connectorFrom"></div>').appendTo(elC);
-
-        if (m%2 == 0) { /* dir == down */
-          elCon.css('border-bottom', 'none');
+        if (m%2 == 0) { // dir == down
           if (score[0] > score[1]) {
             height = el.height()/2;
             shift = elC.height()/4 - 2;
@@ -137,25 +134,18 @@ function renderWinners(data)
             shift = elC.height()/2 + tShift;
           }
         }
-        else { /* dir == up */
-          elCon.css('border-top', 'none');
+        else { // dir == up
           if (score[0] > score[1]) {
-            height = el.height()/2 - elC.height()/2;
+            height = -el.height()/2 + elC.height()/2;
             shift = -elC.height()/2 - tShift;
           }
           else {
-            height = el.height()/2-1;
+            height = -el.height()/2-1;
             shift = -elC.height()/4;
           }
         }
 
-        elCon.css('height', height);
-        elCon.css('width', roundGap()+'px');
-        elCon.css('left', elC.width());
-        if (shift >= 0)
-          elCon.css('top', shift+'px');
-        else
-          elCon.css('bottom', (-shift)+'px');
+        elC.append(connector(width, height, shift, elC));
       }
     }
     matches /= 2;
