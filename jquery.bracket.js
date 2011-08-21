@@ -85,10 +85,9 @@ function renderWinners(data)
 
         if (m%2 == 0) { /* dir == down */
           elCon.css('border-bottom', 'none');
-          //elCon.css('border-color', 'red');
           if (score[0] > score[1]) {
             height = el.height()/2;
-            shift = elC.height()/4;
+            shift = elC.height()/4 - 2;
           }
           else {
             height = el.height()/2 - elC.height()/2;
@@ -97,7 +96,6 @@ function renderWinners(data)
         }
         else { /* dir == up */
           elCon.css('border-top', 'none');
-          //elCon.css('border-color', 'green');
           if (score[0] > score[1]) {
             height = el.height()/2 - elC.height()/2;
             shift = -elC.height()/2 - tShift;
@@ -132,9 +130,7 @@ function getWinnerTeamNames(results, round, match, n)
         mod = ':last';
 
       var str = '#loserBracket #match-'+(round)+'-'+(match)+'-1 .team'+mod+' b'
-      console.log(str);
       var winner = $(str);
-      console.log(winner);
       return winner.text();
     }
 
@@ -153,12 +149,11 @@ function renderLosers(data)
   for (var r = 0; r < rounds; r++) {
     for (var n = 0; n < 2; n++) {
       var roundId = 'lround-'+r+'-'+n;
-      console.log(n);
       roundEl = $('<div class="round" id="'+roundId+'"></div>').appendTo('#loserBracket');
 
       for (var m = 0; m < matches; m++) {
         var matchId = "match-"+r+"-"+m+"-"+n;
-        var score = results[1][r][m];
+        var score = results[1][r*2+n][m];
         el = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
 
         var teamBlocks = '<div class="teamContainer">'+
@@ -167,7 +162,6 @@ function renderLosers(data)
         /* match inside losers bracket */
         if (n%2 == 0) {
           /* first round comes from winner bracket */
-          console.log(n);
           if (r == 0) {
             var getLoser = function(results, r, m) {
               var team;
@@ -188,14 +182,13 @@ function renderLosers(data)
                 team = teams[m][1];
               return team;
             };
-            //team = [getLoser(results, r, m*2), getLoser(results, r, m*2+1)];
             team = getWinnerTeamNames(results, r, m, n);
           }
         }
         else { /* match with dropped */
           var getWinner = function(results, r, m) {
             var getTeamName = function(results, round, match) {
-              var score = results[1][round][match];
+              var score = results[1][round*2][match];
               var mod = ':first';
 
               if (score[0] < score[1])
@@ -218,16 +211,70 @@ function renderLosers(data)
           team = [getWinner(results, r, m), getLoser(results, r+1, m)];
         }
       
-        teamBlocks = $(teamBlocks).append(createTeamElement(r, team[0], score));
+        teamBlocks = $(teamBlocks).append(createTeamElement(r*2+n, team[0], score));
         /* no toConnector every second time as this comes from winners */
         if (n%2 == 1)
           teamBlocks = $(teamBlocks).append(createTeamElement(0, team[1], [score[1],score[0]]));
         else
-          teamBlocks = $(teamBlocks).append(createTeamElement(r, team[1], [score[1],score[0]]));
+          teamBlocks = $(teamBlocks).append(createTeamElement(r*2+n, team[1], [score[1],score[0]]));
 
         el.css('height', (graphHeight/matches)+'px');
         elC = $(teamBlocks).appendTo(el);
         elC.css('top', (el.height()/2-elC.height()/2)+'px');
+
+        if (r < rounds-1 || n < 1) {
+          var elCon = $('<div class="connectorFrom"></div>').appendTo(elC);
+          var height = 0;
+          var shift = 0;
+          /* inside lower bracket */
+          if (n%2 == 0) {
+            if (score[0] > score[1]) {
+              height = 0;
+              shift = elC.height()/2 - 12;
+            }
+            else {
+              height = 24;
+              shift = elC.height()/2 - 12;
+              elCon.css('border-top', 'none');
+            }
+          }
+          else { /* from winner bracket */
+            if (m%2 == 0) { /* dir == down */
+              elCon.css('border-bottom', 'none');
+              if (score[0] > score[1]) {
+                shift = elC.height()/2 - 13;
+                height = el.height()/2;
+              }
+              else {
+                shift = elC.height()/2 + 12;
+                height = el.height()/2 - 25;
+              }
+            }
+            else { /* dir == up */
+              if (score[0] > score[1]) {
+                shift = -elC.height()/2 + 10;
+                height = el.height()/2;
+                elCon.css('border-top', 'none');
+              }
+              else {
+                shift = -elC.height()/2 + 13;
+                height = el.height()/2;
+                elCon.css('border-top', 'none');
+              }
+            }
+          }
+          if (height == 0) {
+            elCon.css('border-bottom', 'none');
+            elCon.css('border-right', 'none');
+          }
+          elCon.css('height', height);
+          elCon.css('width', '20px');
+          elCon.css('right', -20);
+          if (shift >= 0)
+            elCon.css('top', shift+'px');
+          else
+            elCon.css('bottom', (-shift)+'px');
+        }
       }
     }
     matches /= 2;

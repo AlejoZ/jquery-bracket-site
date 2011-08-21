@@ -1,14 +1,14 @@
 #bracket {
   float: left;
   background-color: #EED;
-  height: 400px;
+  height: 600px;
   clear: both;
 }
 
 #loserBracket {
   float: left;
   background-color: #EED;
-  height: 200px;
+  height: 300px;
   clear: both;
   margin-bottom: 50px;
 }
