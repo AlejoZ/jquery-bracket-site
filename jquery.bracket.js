@@ -1,5 +1,5 @@
 function roundGap() {
-  return 20;
+  return parseInt($('.round:first').css('margin-right'))/2
 }
 function createTeamElement(round, name, score) {
   var tEl = $('<div class="team"><b>'+name+'</b><span>'+score[0]+'</span></div>');
@@ -75,10 +75,40 @@ function getTeamNames(results, round, match)
   return [getTeamName(results, round, match, 0), getTeamName(results, round, match, 1)];
 }
 
+var games = function(data){
+  var d = data 
+  return {
+
+    getWinner: function(bracket, n) {
+      var winnerScore = function(array) {
+        return array[array.length-1][0]
+      }
+      var score = winnerScore(d.results[n])
+
+      var winnerTeam = function(bracket, score) {
+        var best = bracket.find('.round:last .team')
+
+        var filter = ':first'
+        var bigger = score[0]
+        if (score[0] < score[1]) {
+          filter = ':last'
+          bigger = score[1]
+        }
+        return {name: best.find('b').filter(filter).text(), score: bigger}
+      }
+
+      return winnerTeam(bracket, score)
+    }
+  }
+}
+
+var g
+
 function render(data)
 {
   var winners = $('#bracket')
   var losers = $('#loserBracket')
+  g = games(data)
 
   renderWinners(winners, data);
   renderLosers(winners, losers, data);
@@ -317,12 +347,11 @@ function renderFinals(winners, losers, data)
     return best.find('b').filter(filter).text()
   }
 
-  var finalists = [winnerTeam(winners, winnerScore(data.results[0])),
-                   winnerTeam(losers,  winnerScore(data.results[1]))]
+  var finalists = [g.getWinner(winners, 0), g.getWinner(losers, 1)]
 
   elClassMatch.css('height', (height)+'px');
-  elClassTeamContainer.append(createTeamElement(3, finalists[0], finalScore));
-  elClassTeamContainer.append(createTeamElement(3, finalists[1], [finalScore[1],finalScore[0]]));
+  elClassTeamContainer.append(createTeamElement(3, finalists[0].name, finalScore));
+  elClassTeamContainer.append(createTeamElement(3, finalists[1].name, [finalScore[1],finalScore[0]]));
   elClassTeamContainer.appendTo(elClassMatch);
 
   var shift = (winners.height()/2 + winners.height()+losers.height()/2)/2 - elClassTeamContainer.height()/2 
@@ -336,11 +365,11 @@ function renderFinals(winners, losers, data)
   if (score[0] > score[1]) {
     height = height+shift*2
   }
-  connector(width, height,  -shift*3,  elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -40);
+  connector(width, height,  -shift*3,  elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -roundGap()*2);
 
   var score = winnerScore(data.results[1])
   if (score[0] > score[1]) {
     height = height-shift*2
   }
-  connector(width, -height, shift*3, elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -40);
+  connector(width, -height, shift*3, elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -roundGap()*2);
 }
