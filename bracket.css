@@ -1,16 +1,28 @@
-#bracket {
+#system {
+  background-color: #CFF;
   float: left;
+  position: relative;
+  width: 1200px;
+}
+#finals {
+  float: right;
+  right: 0px;
+  clear: right;
+  position: relative;
+}
+#bracket {
+  float: right;
   background-color: #EED;
   height: 600px;
-  clear: both;
+  clear: left;
 }
 
 #loserBracket {
-  float: left;
+  float: right;
   background-color: #EED;
   height: 300px;
-  clear: both;
-  margin-bottom: 50px;
+  clear: left;
+  position: relative;
 }
 
 .round {
