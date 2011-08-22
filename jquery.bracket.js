@@ -125,12 +125,12 @@ function renderWinners(winners, data)
   var graphHeight = winners.height();
 
   for (var r = 0; r < rounds; r++) {
-    var roundId = 'round-'+r;
-    winners.append('<div class="round" id="'+roundId+'"></div>')
+    var elRound = $('<div class="round"></div>')
+    winners.append(elRound)
 
     for (var m = 0; m < matches; m++) {
       var matchId = "match-"+r+"-"+m;
-      elClassMatch = $('<div class="match" id="'+matchId+'"></div>').appendTo('#'+roundId);
+      elClassMatch = $('<div class="match" id="'+matchId+'"></div>').appendTo(elRound);
       var score = results[0][r][m];
       var elClassTeamContainer = $('<div class="teamContainer"></div>')
 
@@ -208,8 +208,7 @@ function renderLosers(winners, losers, data)
 
   for (var r = 0; r < rounds; r++) {
     for (var n = 0; n < 2; n++) {
-      var roundId = 'lround-'+r+'-'+n;
-      var elClassRound = $('<div class="round" id="'+roundId+'"></div>').appendTo(losers);
+      var elClassRound = $('<div class="round"></div>').appendTo(losers);
 
       for (var m = 0; m < matches; m++) {
         var score = results[1][r*2+n][m];
