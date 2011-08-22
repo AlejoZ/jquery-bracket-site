@@ -19,7 +19,8 @@ function createTeamElement(round, name, score) {
   return tEl;
 }
 
-function connector(width, height, shift, teamContainer) {
+function connector(height, shift, teamContainer) {
+  var width = roundGap()
   var drop = true;
   // drop:
   //  ¨\
@@ -31,32 +32,32 @@ function connector(width, height, shift, teamContainer) {
     drop = false;
     height = -height;
   }
-  var elCon = $('<div class="connectorFrom"></div>').appendTo(teamContainer);
-  elCon.css('height', height);
-  elCon.css('width', width+'px');
-  elCon.css('right', (-width-2)+'px');
+  var src = $('<div class="connectorFrom"></div>').appendTo(teamContainer);
+  src.css('height', height);
+  src.css('width', width+'px');
+  src.css('right', (-width-2)+'px');
 
   if (shift >= 0)
-    elCon.css('top', shift+'px');
+    src.css('top', shift+'px');
   else
-    elCon.css('bottom', (-shift)+'px');
+    src.css('bottom', (-shift)+'px');
   
   if (drop)
-    elCon.css('border-bottom', 'none');
+    src.css('border-bottom', 'none');
   else
-    elCon.css('border-top', 'none');
+    src.css('border-top', 'none');
 
-  elCon.css('border-color', 'red');
+  src.css('border-color', 'red');
 
-  var elTo = $('<div class="connectorTo"></div>').appendTo(elCon);
-  elTo.css('width', width+'px');
-  elTo.css('right', -width+'px');
+  var dst = $('<div class="connectorTo"></div>').appendTo(src);
+  dst.css('width', width+'px');
+  dst.css('right', -width+'px');
   if (drop)
-    elTo.css('bottom', '0px');
+    dst.css('bottom', '0px');
   else
-    elTo.css('top', '0px');
+    dst.css('top', '0px');
 
-  return elCon;
+  return src;
 }
 
 /* refactor with loser bracket */
@@ -147,7 +148,6 @@ function renderWinners(winners, data)
       elClassTeamContainer.css('top', (elClassMatch.height()/2-elClassTeamContainer.height()/2)+'px');
 
       if (r < (rounds-1)) {
-        var width = roundGap();
         var height, shift
 
         var connectorOffset = elClassTeamContainer.height()/4
@@ -174,7 +174,7 @@ function renderWinners(winners, data)
           }
         }
 
-        elClassTeamContainer.append(connector(width, height, shift, elClassTeamContainer));
+        elClassTeamContainer.append(connector(height, shift, elClassTeamContainer));
       }
     }
     matches /= 2;
@@ -283,7 +283,6 @@ function renderLosers(winners, losers, data)
 
         if (r < rounds-1 || n < 1) {
           var height = 0;
-          var width = roundGap();
           var shift = 0;
 
           // inside lower bracket 
@@ -317,7 +316,7 @@ function renderLosers(winners, losers, data)
               }
             }
           }
-          elClassTeamContainer.append(connector(width, height, shift, elClassTeamContainer));
+          elClassTeamContainer.append(connector(height, shift, elClassTeamContainer));
         }
       }
     }
@@ -359,17 +358,16 @@ function renderFinals(winners, losers, data)
 
   var height = shift-winners.height()/2
   var shift = elClassTeamContainer.height()/4 
-  var width = roundGap();
 
   var score = winnerScore(data.results[0])
   if (score[0] > score[1]) {
     height = height+shift*2
   }
-  connector(width, height,  -shift*3,  elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -roundGap()*2);
+  connector(height,  -shift*3,  elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -roundGap()*2);
 
   var score = winnerScore(data.results[1])
   if (score[0] > score[1]) {
     height = height-shift*2
   }
-  connector(width, -height, shift*3, elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -roundGap()*2);
+  connector(-height, shift*3, elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -roundGap()*2);
 }
