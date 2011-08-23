@@ -44,6 +44,7 @@
   width: 100px;
   border-radius: 5px;
   margin: 1px 0px;
+  cursor: default;
 }
 
 .team span {
