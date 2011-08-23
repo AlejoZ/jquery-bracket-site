@@ -47,8 +47,6 @@ function connector(height, shift, teamContainer) {
   else
     src.css('border-top', 'none');
 
-  src.css('border-color', 'red');
-
   var dst = $('<div class="connector"></div>').appendTo(src);
   dst.css('width', width+'px');
   dst.css('right', -width+'px');
@@ -111,7 +109,7 @@ function render(data)
   var losers = $('#loserBracket')
   g = games(data)
 
-  renderWinners(winners, data);
+  renderWinners(winners, losers, data);
   renderLosers(winners, losers, data);
   renderFinals(winners, losers, data);
 
@@ -124,7 +122,6 @@ function postProcess(container, data)
 
   for (var i = 0; i < data.teams.length; i++)
   {
-    console.log(data.teams[i][0])
     m[data.teams[i][0]] = i*2
     m[data.teams[i][1]] = i*2+1
   }
@@ -142,21 +139,20 @@ function postProcess(container, data)
       $('.team[index='+i+']').addClass('highlight')
       $('.team[index='+i+']').each(function() {
         if ($(this).hasClass('win')) {
-          console.log('y')
-          $(this).parent().find('.connector').css('border-color', '#0F0')
+          $(this).parent().find('.connector').addClass('highlight')
         }
       })
       $(this).mouseout(function() {
           $('.team[index='+i+']').each(function() {
               $(this).removeClass('highlight')
-              $(this).parent().find('.connector').css('border-color', '#000')
+              $(this).parent().find('.connector').removeClass('highlight')
             })
           $(this).unbind('mouseout')
         })
     })
 }
 
-function renderWinners(winners, data)
+function renderWinners(winners, losers, data)
 {
   var teams = data.teams;
   var results = data.results;
@@ -394,11 +390,11 @@ function renderFinals(winners, losers, data)
   if (score[0] > score[1]) {
     height = height+shift*2
   }
-  connector(height,  -shift*3,  elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -roundGap()*2);
+  connector(height,  shift,  elClassTeamContainer).appendTo(winners.find('.teamContainer:last'))
 
   var score = winnerScore(data.results[1])
   if (score[0] > score[1]) {
     height = height-shift*2
   }
-  connector(-height, shift*3, elClassTeamContainer).appendTo(elClassTeamContainer).css('left', -roundGap()*2);
+  connector(-height, -shift, elClassTeamContainer).appendTo(losers.find('.teamContainer:last'))
 }

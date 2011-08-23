@@ -80,7 +80,7 @@
 }
 
 .connector {
-  border: 2px solid #333;
+  border: 2px solid #666;
   border-left: none;
   position: absolute;
   display: block;
@@ -89,11 +89,16 @@
 
 .connector div.connector {
   border: none;
-  border-bottom: 2px solid #333;
+  border-bottom: 2px solid #666;
   height: 0px;
   z-index: 100;
   position: absolute;
   display: block;
+}
+
+.connector.highlight,
+.connector div.connector.highlight {
+  border-color: #0C0;
 }
 
 .team.highlight {
