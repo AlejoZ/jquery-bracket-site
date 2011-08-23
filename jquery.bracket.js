@@ -225,7 +225,7 @@ function renderWinners(winners, data)
 function getWinnerTeamNames(container, results, round, match, n)
 {
   var getTeamName = function(results, round, match, n) {
-      var score = results[1][round][match];
+      var score = results[1][round*2+1][match];
       var mod = ':first';
 
       if (score[0] < score[1])
@@ -272,14 +272,6 @@ function renderLosers(winners, losers, data)
             team = [getLoser(results, 0, m*2), getLoser(results, 0, m*2+1)];
           }
           else {
-            var getLoser = function(results, r, m) {
-              var team;
-              if (results[1][r][m][0] > results[1][r][m][1])
-                team = teams[m][0];
-              else
-                team = teams[m][1];
-              return team;
-            };
             team = getWinnerTeamNames(losers, results, r, m, n);
           }
         }
