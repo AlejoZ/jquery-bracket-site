@@ -79,7 +79,7 @@
   display: block;
 }
 
-.connectorFrom {
+.connector {
   border: 2px solid #333;
   border-left: none;
   position: absolute;
@@ -87,10 +87,16 @@
   z-index: 100;
 }
 
-.teamContainer .connectorTo {
+.connector div.connector {
+  border: none;
   border-bottom: 2px solid #333;
   height: 0px;
   z-index: 100;
   position: absolute;
   display: block;
+}
+
+.team.highlight {
+  background-color: #6F6;
+  color: #000;
 }

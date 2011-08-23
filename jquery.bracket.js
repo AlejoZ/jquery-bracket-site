@@ -32,7 +32,7 @@ function connector(height, shift, teamContainer) {
     drop = false;
     height = -height;
   }
-  var src = $('<div class="connectorFrom"></div>').appendTo(teamContainer);
+  var src = $('<div class="connector"></div>').appendTo(teamContainer);
   src.css('height', height);
   src.css('width', width+'px');
   src.css('right', (-width-2)+'px');
@@ -49,7 +49,7 @@ function connector(height, shift, teamContainer) {
 
   src.css('border-color', 'red');
 
-  var dst = $('<div class="connectorTo"></div>').appendTo(src);
+  var dst = $('<div class="connector"></div>').appendTo(src);
   dst.css('width', width+'px');
   dst.css('right', -width+'px');
   if (drop)
@@ -114,6 +114,46 @@ function render(data)
   renderWinners(winners, data);
   renderLosers(winners, losers, data);
   renderFinals(winners, losers, data);
+
+  postProcess($('#system'), data);
+}
+
+function postProcess(container, data)
+{
+  var m = {};
+
+  for (var i = 0; i < data.teams.length; i++)
+  {
+    console.log(data.teams[i][0])
+    m[data.teams[i][0]] = i*2
+    m[data.teams[i][1]] = i*2+1
+  }
+
+  container.find('div.team b').each(
+      function() {
+        var key = $(this).text()
+        //$(this).parent().addClass('team-'+m[key]); 
+        $(this).parent().attr('index', m[key]); 
+      } 
+    );
+
+  $('.team').mouseover(function() {
+      var i = $(this).attr('index') 
+      $('.team[index='+i+']').addClass('highlight')
+      $('.team[index='+i+']').each(function() {
+        if ($(this).hasClass('win')) {
+          console.log('y')
+          $(this).parent().find('.connector').css('border-color', '#0F0')
+        }
+      })
+      $(this).mouseout(function() {
+          $('.team[index='+i+']').each(function() {
+              $(this).removeClass('highlight')
+              $(this).parent().find('.connector').css('border-color', '#000')
+            })
+          $(this).unbind('mouseout')
+        })
+    })
 }
 
 function renderWinners(winners, data)
