@@ -1,8 +1,8 @@
 #system {
-  background-color: #CFF;
   float: left;
   position: relative;
-  width: 1200px;
+  width: 1000px;
+  background-color: #333;
 }
 #finals {
   float: right;
@@ -12,15 +12,13 @@
 }
 #bracket {
   float: right;
-  background-color: #EED;
-  height: 600px;
+  height: 400px;
   clear: left;
 }
 
 #loserBracket {
   float: right;
-  background-color: #EED;
-  height: 300px;
+  height: 200px;
   clear: left;
   position: relative;
 }
@@ -28,22 +26,15 @@
 .round {
   position: relative;
   width: 100px;
-  background-color: #CCC;
   margin-right: 40px;
   float: left;
 }
 
-.round:nth-child(n+2) {
-  background-color: #F00; 
-}
-
 .match {
   position: relative;
-  background-color: #FFE;
   float: left;
   display: block;
   width: 100%;
-  border-radius: 5px;
 }
 
 .team {
@@ -59,6 +50,10 @@
   float: right;
 }
 
+.team.win {
+  background-color: #888;
+  color: #EEE;
+}
 .team.win span {
   color: #0F0;
 }
@@ -66,8 +61,8 @@
   color: #F00;
 }
 .team.lose {
-  background-color: #CCC;
-  color: #666;
+  background-color: #666;
+  color: #333;
 }
 .team.tie span {
   color: #00F;
@@ -102,6 +97,6 @@
 }
 
 .team.highlight {
-  background-color: #6F6;
+  background-color: #3C0;
   color: #000;
 }
