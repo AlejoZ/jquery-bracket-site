@@ -118,23 +118,28 @@ function render(data)
 
 function postProcess(container, data)
 {
-  var Track = function(teamIndex) {
+  var Track = function(teamIndex, class) {
       var index = teamIndex;
       var elements = $('.team[index='+index+']')
+      if (!class)
+        var addedClass = 'highlight'
+      else
+        var addedClass = class
 
       return {
-          highlight: function highlightTrack() {
-            elements.each(function() {
-              $(this).addClass('highlight')
-              if ($(this).hasClass('win'))
-                $(this).parent().find('.connector').addClass('highlight')
-            })
+          highlight: function() {
+              elements.each(function() {
+                  $(this).addClass(addedClass)
+
+                  if ($(this).hasClass('win'))
+                    $(this).parent().find('.connector').addClass(addedClass)
+                })
         },
 
-        deHighlight: function deHighlightTrack() {
+        deHighlight: function() {
             elements.each(function() {
-              $(this).removeClass('highlight')
-              $(this).parent().find('.connector').removeClass('highlight')
+              $(this).removeClass(addedClass)
+              $(this).parent().find('.connector').removeClass(addedClass)
             })
         }
       }
@@ -155,12 +160,21 @@ function postProcess(container, data)
       } 
     );
 
+  var winTrack = new Track(6, 'highlightWinner');
+  var loseTrack = new Track(15, 'highlightLoser');
+  winTrack.highlight()
+  loseTrack.highlight()
+
   $('.team').mouseover(function() {
       var i = $(this).attr('index') 
-      var track = Track(i);
+      winTrack.deHighlight()
+      loseTrack.deHighlight()
+      track = new Track(i);
       track.highlight()
       $(this).mouseout(function() {
           track.deHighlight()
+          winTrack.highlight()
+          loseTrack.highlight()
           $(this).unbind('mouseout')
         })
     })

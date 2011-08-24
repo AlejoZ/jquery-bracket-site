@@ -101,3 +101,23 @@
   background-color: #3C0;
   color: #000;
 }
+
+.connector.highlightWinner,
+.connector div.connector.highlightWinner {
+  border-color: #C90;
+}
+
+.team.highlightWinner {
+  background-color: #C90;
+  color: #000;
+}
+
+.connector.highlightLoser,
+.connector div.connector.highlightLoser {
+  border-color: #09C;
+}
+
+.team.highlightLoser {
+  background-color: #09C;
+  color: #000;
+}
