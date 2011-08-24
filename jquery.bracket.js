@@ -118,6 +118,24 @@ function render(data)
 
 function postProcess(container, data)
 {
+  function highlightTrack(teamId) {
+    var track = { elements: $('.team[index='+teamId+']') }
+
+    track.elements.each(function() {
+        $(this).addClass('highlight')
+        if ($(this).hasClass('win'))
+          $(this).parent().find('.connector').addClass('highlight')
+      })
+
+    return track;
+  }
+
+  function deHighlightTrack(track) {
+    track.elements.each(function() {
+        $(this).removeClass('highlight')
+        $(this).parent().find('.connector').removeClass('highlight')
+      })
+  }
   var m = {};
 
   for (var i = 0; i < data.teams.length; i++)
@@ -136,17 +154,9 @@ function postProcess(container, data)
 
   $('.team').mouseover(function() {
       var i = $(this).attr('index') 
-      $('.team[index='+i+']').addClass('highlight')
-      $('.team[index='+i+']').each(function() {
-        if ($(this).hasClass('win')) {
-          $(this).parent().find('.connector').addClass('highlight')
-        }
-      })
+      track = highlightTrack(i);
       $(this).mouseout(function() {
-          $('.team[index='+i+']').each(function() {
-              $(this).removeClass('highlight')
-              $(this).parent().find('.connector').removeClass('highlight')
-            })
+          deHighlightTrack(track)
           $(this).unbind('mouseout')
         })
     })
