@@ -74,44 +74,40 @@ function getTeamNames(results, round, match)
   return [getTeamName(results, round, match, 0), getTeamName(results, round, match, 1)];
 }
 
-var games = function(data){
-  var d = data 
+// used for mapping
+function toText() { return $(this).text() }
+
+var Bracket = function(container)
+{
   return {
+    el: container,
+    getWinnerTeam: function() {
+      var match = container.find('.match:last')
+      var names = match.find('b').map(toText)
+      var scores = match.find('span').map(toText)
+      var winner = {name:null,score:0}
 
-    getWinner: function(bracket, n) {
-      var winnerScore = function(array) {
-        return array[array.length-1][0]
+      if (scores[0] > scores[1]) {
+        winner.score = scores[0]
+        winner.name = names[0]
       }
-      var score = winnerScore(d.results[n])
-
-      var winnerTeam = function(bracket, score) {
-        var best = bracket.find('.round:last .team')
-
-        var filter = ':first'
-        var bigger = score[0]
-        if (score[0] < score[1]) {
-          filter = ':last'
-          bigger = score[1]
-        }
-        return {name: best.find('b').filter(filter).text(), score: bigger}
+      else {
+        winner.score = scores[1]
+        winner.name = names[1]
       }
-
-      return winnerTeam(bracket, score)
+      return winner
     }
   }
 }
-
-var g
 
 function render(data)
 {
   var winners = $('#bracket')
   var losers = $('#loserBracket')
-  g = games(data)
 
   renderWinners(winners, losers, data);
   renderLosers(winners, losers, data);
-  renderFinals(winners, losers, data);
+  renderFinals(new Bracket(winners), new Bracket(losers), data);
 
   postProcess($('#system'), data);
 }
@@ -384,45 +380,35 @@ function renderFinals(winners, losers, data)
   var elClassRound = $('<div class="round"></div>').appendTo('#finals')
   var elClassMatch = $('<div class="match"></div>').appendTo(elClassRound)
   var elClassTeamContainer = $('<div class="teamContainer"></div>');
-  var height = winners.height()+losers.height()
+  var height = winners.el.height()+losers.el.height()
   var finalScore = data.results[2][0]
 
   var winnerScore = function(array) {
     return array[array.length-1][0]
   }
 
-  var winnerTeam = function(bracket, score) {
-    var best = bracket.find('.round:last .team')
-
-    var filter = ':first'
-    if (score[0] < score[1])
-      filter = ':last'
-
-    return best.find('b').filter(filter).text()
-  }
-
-  var finalists = [g.getWinner(winners, 0), g.getWinner(losers, 1)]
+  var finalists = [winners.getWinnerTeam(), losers.getWinnerTeam()]
 
   elClassMatch.css('height', (height)+'px');
   elClassTeamContainer.append(createTeamElement(3, finalists[0].name, finalScore));
   elClassTeamContainer.append(createTeamElement(3, finalists[1].name, [finalScore[1],finalScore[0]]));
   elClassTeamContainer.appendTo(elClassMatch);
 
-  var shift = (winners.height()/2 + winners.height()+losers.height()/2)/2 - elClassTeamContainer.height()/2 
+  var shift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - elClassTeamContainer.height()/2 
   elClassTeamContainer.css('top', (shift)+'px');
 
-  var height = shift-winners.height()/2
+  var height = shift-winners.el.height()/2
   var shift = elClassTeamContainer.height()/4 
 
   var score = winnerScore(data.results[0])
   if (score[0] > score[1]) {
     height = height+shift*2
   }
-  connector(height,  shift,  elClassTeamContainer).appendTo(winners.find('.teamContainer:last'))
+  connector(height,  shift,  elClassTeamContainer).appendTo(winners.el.find('.teamContainer:last'))
 
   var score = winnerScore(data.results[1])
   if (score[0] > score[1]) {
     height = height-shift*2
   }
-  connector(-height, -shift, elClassTeamContainer).appendTo(losers.find('.teamContainer:last'))
+  connector(-height, -shift, elClassTeamContainer).appendTo(losers.el.find('.teamContainer:last'))
 }
