@@ -77,17 +77,28 @@ function getTeamNames(results, round, match)
 // used for mapping
 function toText() { return $(this).text() }
 
-var Match = function(round, id, index, data) {
+var Match = function(round, idAttr, data, id, results) {
   var container = $('<div class="match"></div>').appendTo(round.el);
-  container.attr('id', id)
+
+  if (idAttr == null)
+    container.attr('id', "match-"+round.id+"-"+id)
+  else
+    container.attr('id', idAttr)
+
   if (data) {
     var teamContainer = $('<div class="teamContainer"></div>')
-    teamContainer.append(createTeamElement(index, data[0].name, [data[0].score, data[1].score]))
-    teamContainer.append(createTeamElement(index, data[1].name, [data[1].score, data[0].score]))
+    teamContainer.append(createTeamElement(round.id, data[0].name, [results[0], results[1]]))
+    teamContainer.append(createTeamElement(round.id, data[1].name, [results[1], results[0]]))
     container.append(teamContainer)
+
+    data[0].id = 0
+    data[1].id = 1
+    data[0].score = results[0]
+    data[1].score = results[1]
   }
   return {
     el: container,
+    id: id,
     winner: function() {
       if (data[0].score > data[1].score)
         return data[0]
@@ -104,26 +115,29 @@ var Match = function(round, id, index, data) {
   }
 }
 
-var Round = function(bracket, index) {
+var Round = function(bracket, roundId, results) {
   var matches = []
   var container = $('<div class="round"></div>').appendTo(bracket.el)
   return {
     el: container,
-    addMatch: function(id, teams) {
-        var match = new Match(this, id, index, teams)
+    id: roundId,
+    addMatch: function(idAttr, teams) {
+        var id = matches.length
+        var match = new Match(this, idAttr, teams, id, results[id])
         matches.push(match)
-        return match.el;
+        return match;
     }
   }
 }
 
-var Bracket = function(container)
+var Bracket = function(container, results)
 {
   var rounds = []
   return {
     el: container,
     addRound: function() {
-      var round = new Round(this, (rounds.length - 1))
+      var id = rounds.length
+      var round = new Round(this, id, results[id])
       rounds.push(round)
       return round;
     },
@@ -150,8 +164,8 @@ function render(data)
 {
   var winners = $('#bracket')
   var losers = $('#loserBracket')
-  var w = new Bracket(winners)
-  var l = new Bracket(losers)
+  var w = new Bracket(winners, data.results[0])
+  var l = new Bracket(losers, data.results[1])
   renderWinners(w, losers, data);
   renderLosers(winners, l, data);
   renderFinals(w, l, data);
@@ -232,34 +246,31 @@ function renderWinners(winners, losers, data)
   var graphHeight = winners.el.height();
 
   for (var r = 0; r < rounds; r++) {
-    var round = winners.addRound()
+    var round = winners.addRound(data.results[r])
 
     for (var m = 0; m < matches; m++) {
-      var score = results[0][r][m];
-
       var team;
       if (r == 0)
         team = teams[m];
       else
         team = getTeamNames(results, r, m);
     
-      var match = round.addMatch("match-"+r+"-"+m, 
-                                 [{name: team[0], score: score[0]}, 
-                                  {name: team[1], score: score[1]}])
+      var match = round.addMatch(null, 
+                                 [{name: team[0]}, {name: team[1]}])
 
       /* todo: move to class */
-      var elClassTeamContainer = match.find('.teamContainer')
-      match.css('height', (graphHeight/matches)+'px');
-      elClassTeamContainer.css('top', (match.height()/2-elClassTeamContainer.height()/2)+'px');
+      var elClassTeamContainer = match.el.find('.teamContainer')
+      match.el.css('height', (graphHeight/matches)+'px');
+      elClassTeamContainer.css('top', (match.el.height()/2-elClassTeamContainer.height()/2)+'px');
 
       if (r < (rounds-1)) {
         var height, shift
 
         var connectorOffset = elClassTeamContainer.height()/4
-        var matchupOffset = match.height()/2
+        var matchupOffset = match.el.height()/2
 
         if (m%2 == 0) { // dir == down
-          if (score[0] > score[1]) {
+          if (match.winner().id == 0) {
             height = matchupOffset
             shift = connectorOffset
           }
@@ -269,7 +280,7 @@ function renderWinners(winners, losers, data)
           }
         }
         else { // dir == up
-          if (score[0] > score[1]) {
+          if (match.winner().id == 0) {
             height = -matchupOffset + connectorOffset*2
             shift = -connectorOffset*3
           }
@@ -369,12 +380,12 @@ function renderLosers(winners, losers, data)
         elClassTeamContainer.append(createTeamElement((n%2 == 1)?0:(r*2+n), team[1], [score[1],score[0]]));
 
         var match = round.addMatch('match-'+r+'-'+m+'-'+n)
-        match.css('height', (graphHeight/matches)+'px');
-        elClassTeamContainer.appendTo(match);
-        elClassTeamContainer.css('top', (match.height()/2-elClassTeamContainer.height()/2)+'px');
+        match.el.css('height', (graphHeight/matches)+'px');
+        elClassTeamContainer.appendTo(match.el);
+        elClassTeamContainer.css('top', (match.el.height()/2-elClassTeamContainer.height()/2)+'px');
 
         var connectorOffset = elClassTeamContainer.height()/4
-        var matchupOffset = match.height()/2
+        var matchupOffset = match.el.height()/2
 
         if (r < rounds-1 || n < 1) {
           var height = 0;
