@@ -77,20 +77,42 @@ function getTeamNames(results, round, match)
 // used for mapping
 function toText() { return $(this).text() }
 
+var Match = function(round, id, index, data) {
+  var container = $('<div class="match"></div>').appendTo(round.el);
+  container.attr('id', id)
+  if (data) {
+    var teamContainer = $('<div class="teamContainer"></div>')
+    teamContainer.append(createTeamElement(index, data[0].name, [data[0].score, data[1].score]))
+    teamContainer.append(createTeamElement(index, data[1].name, [data[1].score, data[0].score]))
+    container.append(teamContainer)
+  }
+  return {
+    el: container,
+    winner: function() {
+      if (data[0].score > data[1].score)
+        return data[0]
+      else
+        return data[1]
+    },
+    loser: function() {
+      if (data[0].score > data[1].score)
+        return data[1]
+      else
+        return data[0]
+    },
+    results: data
+  }
+}
+
 var Round = function(bracket, index) {
   var matches = []
+  var container = $('<div class="round"></div>').appendTo(bracket.el)
   return {
+    el: container,
     addMatch: function(id, teams) {
-        var el = $('<div class="match"></div>').appendTo(bracket);
-        el.attr('id', id)
-        if (teams) {
-          var teamContainer = $('<div class="teamContainer"></div>')
-          teamContainer.append(createTeamElement(index, teams[0].name, [teams[0].score, teams[1].score]))
-          teamContainer.append(createTeamElement(index, teams[1].name, [teams[1].score, teams[0].score]))
-          el.append(teamContainer)
-        }
-        matches.push(el)
-        return el;
+        var match = new Match(this, id, index, teams)
+        matches.push(match)
+        return match.el;
     }
   }
 }
@@ -101,9 +123,9 @@ var Bracket = function(container)
   return {
     el: container,
     addRound: function() {
-      var el = $('<div class="round"></div>').appendTo(container)
-      rounds.push(el)
-      return new Round(el, (rounds.length - 1))
+      var round = new Round(this, (rounds.length - 1))
+      rounds.push(round)
+      return round;
     },
     getWinnerTeam: function() {
       var match = container.find('.match:last')
