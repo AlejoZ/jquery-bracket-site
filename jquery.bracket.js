@@ -85,17 +85,17 @@ var Match = function(round, idAttr, data, id, results) {
   else
     container.attr('id', idAttr)
 
-  if (data) {
-    var teamContainer = $('<div class="teamContainer"></div>')
-    teamContainer.append(createTeamElement(round.id, data[0].name, [results[0], results[1]]))
-    teamContainer.append(createTeamElement(round.id, data[1].name, [results[1], results[0]]))
-    container.append(teamContainer)
+  var teamContainer = $('<div class="teamContainer"></div>')
+  teamContainer.append(createTeamElement(round.id, data[0].name, [results[0], results[1]]))
+  teamContainer.append(createTeamElement(round.id, data[1].name, [results[1], results[0]]))
 
-    data[0].id = 0
-    data[1].id = 1
-    data[0].score = results[0]
-    data[1].score = results[1]
-  }
+  container.append(teamContainer)
+
+  data[0].id = 0
+  data[1].id = 1
+  data[0].score = results[0]
+  data[1].score = results[1]
+
   return {
     el: container,
     id: id,
@@ -118,19 +118,30 @@ var Match = function(round, idAttr, data, id, results) {
 var Round = function(bracket, roundId, results) {
   var matches = []
   var container = $('<div class="round"></div>').appendTo(bracket.el)
+
   return {
     el: container,
     id: roundId,
-    addMatch: function(idAttr, teams) {
+    addMatch: function(idAttr, teams, teamCb) {
         var id = matches.length
+
+        if (teamCb != null)
+          var teams = teamCb()
+        else
+          var teams = [{name: bracket.getRound(roundId-1).match(id*2).winner().name},
+                       {name: bracket.getRound(roundId-1).match(id*2+1).winner().name}]
+
         var match = new Match(this, idAttr, teams, id, results[id])
         matches.push(match)
         return match;
+    },
+    match: function(id) {
+      return matches[id]
     }
   }
 }
 
-var Bracket = function(container, results)
+var Bracket = function(container, results, teams)
 {
   var rounds = []
   return {
@@ -140,6 +151,9 @@ var Bracket = function(container, results)
       var round = new Round(this, id, results[id])
       rounds.push(round)
       return round;
+    },
+    getRound: function(id) {
+      return rounds[id]
     },
     getWinnerTeam: function() {
       var match = container.find('.match:last')
@@ -164,8 +178,8 @@ function render(data)
 {
   var winners = $('#bracket')
   var losers = $('#loserBracket')
-  var w = new Bracket(winners, data.results[0])
-  var l = new Bracket(losers, data.results[1])
+  var w = new Bracket(winners, data.results[0], data.teams)
+  var l = new Bracket(losers, data.results[1], null)
   renderWinners(w, losers, data);
   renderLosers(winners, l, data);
   renderFinals(w, l, data);
@@ -250,13 +264,16 @@ function renderWinners(winners, losers, data)
 
     for (var m = 0; m < matches; m++) {
       var team;
-      if (r == 0)
-        team = teams[m];
-      else
-        team = getTeamNames(results, r, m);
+
+      var teamCb = null
+      if (r == 0) {
+        teamCb = function() {
+            var t = teams[m]
+            return [{name: t[0]}, {name: t[1]}]
+          }
+      }
     
-      var match = round.addMatch(null, 
-                                 [{name: team[0]}, {name: team[1]}])
+      var match = round.addMatch(null, null, teamCb)
 
       /* todo: move to class */
       var elClassTeamContainer = match.el.find('.teamContainer')
@@ -329,62 +346,61 @@ function renderLosers(winners, losers, data)
       for (var m = 0; m < matches; m++) {
         var score = results[1][r*2+n][m];
 
-        var elClassTeamContainer = $('<div class="teamContainer"></div>')
-        var team;
-        /* match inside losers bracket */
-        if (n%2 == 0) {
-          /* first round comes from winner bracket */
-          if (r == 0) {
-            var getLoser = function(results, r, m) {
-              var team;
-              if (results[0][r][m][0] < results[0][r][m][1])
-                team = teams[m][0];
-              else
-                team = teams[m][1];
-              return team;
+        var teamCb = function() {
+          var team;
+          /* match inside losers bracket */
+          if (n%2 == 0) {
+            /* first round comes from winner bracket */
+            if (r == 0) {
+              var getLoser = function(results, r, m) {
+                var team;
+                if (results[0][r][m][0] < results[0][r][m][1])
+                  team = teams[m][0];
+                else
+                  team = teams[m][1];
+                return team;
+              };
+              team = [getLoser(results, 0, m*2), getLoser(results, 0, m*2+1)];
+            }
+            else {
+              team = getWinnerTeamNames(losers.el, results, r, m, n);
+            }
+          }
+          else { /* match with dropped */
+            var getWinner = function(results, r, m) {
+              var getTeamName = function(results, round, match) {
+                var score = results[1][round*2][match];
+                var mod = ':first';
+
+                if (score[0] < score[1])
+                  mod = ':last';
+
+                return losers.el.find('#match-'+(round)+'-'+(match)+'-0 .team'+mod+' b').text();
+              }
+
+              return getTeamName(results, r, m);
             };
-            team = [getLoser(results, 0, m*2), getLoser(results, 0, m*2+1)];
-          }
-          else {
-            team = getWinnerTeamNames(losers.el, results, r, m, n);
-          }
-        }
-        else { /* match with dropped */
-          var getWinner = function(results, r, m) {
-            var getTeamName = function(results, round, match) {
-              var score = results[1][round*2][match];
+            var getLoser = function(results, r, m) {
+              var score = results[0][r][m];
               var mod = ':first';
 
-              if (score[0] < score[1])
+              if (score[0] > score[1])
                 mod = ':last';
 
-              return losers.el.find('#match-'+(round)+'-'+(match)+'-0 .team'+mod+' b').text();
-            }
-
-            return getTeamName(results, r, m);
-          };
-          var getLoser = function(results, r, m) {
-            var score = results[0][r][m];
-            var mod = ':first';
-
-            if (score[0] > score[1])
-              mod = ':last';
-
-            return winners.find('#match-'+(r)+'-'+(m)+' .team'+mod+' b').text();
-          };
-          team = [getWinner(results, r, m), getLoser(results, r+1, m)];
+              return winners.find('#match-'+(r)+'-'+(m)+' .team'+mod+' b').text();
+            };
+            team = [getWinner(results, r, m), getLoser(results, r+1, m)];
+          }
+          return [{name: team[0]}, {name: team[1]}]
         }
       
-        elClassTeamContainer.append(createTeamElement(r*2+n, team[0], score));
-        /* no toConnector every second time as this comes from winners */
-        elClassTeamContainer.append(createTeamElement((n%2 == 1)?0:(r*2+n), team[1], [score[1],score[0]]));
-
-        var match = round.addMatch('match-'+r+'-'+m+'-'+n)
+        var match = round.addMatch('match-'+r+'-'+m+'-'+n, null, teamCb)
         match.el.css('height', (graphHeight/matches)+'px');
-        elClassTeamContainer.appendTo(match.el);
-        elClassTeamContainer.css('top', (match.el.height()/2-elClassTeamContainer.height()/2)+'px');
+        var teamContainer = match.el.find('.teamContainer')
+        teamContainer.appendTo(match.el);
+        teamContainer.css('top', (match.el.height()/2-teamContainer.height()/2)+'px');
 
-        var connectorOffset = elClassTeamContainer.height()/4
+        var connectorOffset = teamContainer.height()/4
         var matchupOffset = match.el.height()/2
 
         if (r < rounds-1 || n < 1) {
@@ -422,7 +438,7 @@ function renderLosers(winners, losers, data)
               }
             }
           }
-          elClassTeamContainer.append(connector(height, shift, elClassTeamContainer));
+          teamContainer.append(connector(height, shift, teamContainer));
         }
       }
     }
