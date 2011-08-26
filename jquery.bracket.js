@@ -314,23 +314,6 @@ function renderWinners(winners, losers, data)
   }
 }
 
-/* refactor with loser bracket */
-function getWinnerTeamNames(container, results, round, match, n)
-{
-  var getTeamName = function(results, round, match, n) {
-      var score = results[1][round*2+1][match];
-      var mod = ':first';
-
-      if (score[0] < score[1])
-        mod = ':last';
-
-      return container.find('#match-'+(round)+'-'+(match)+'-1 .team'+mod+' b').text();
-    }
-
-  return [getTeamName(results, round-1, match*2, n), 
-          getTeamName(results, round-1, match*2+1, n)];
-}
-
 function renderLosers(winners, losers, data)
 {
   var teams = data.teams;
@@ -345,8 +328,9 @@ function renderLosers(winners, losers, data)
 
       for (var m = 0; m < matches; m++) {
         var score = results[1][r*2+n][m];
-
-        var teamCb = function() {
+        
+        var teamCb = null
+        if (!(n%2 == 0 && r != 0)) teamCb = function() {
           var team;
           /* match inside losers bracket */
           if (n%2 == 0) {
@@ -361,9 +345,6 @@ function renderLosers(winners, losers, data)
                 return team;
               };
               team = [getLoser(results, 0, m*2), getLoser(results, 0, m*2+1)];
-            }
-            else {
-              team = getWinnerTeamNames(losers.el, results, r, m, n);
             }
           }
           else { /* match with dropped */
