@@ -1,46 +1,46 @@
-function connector(height, shift, teamContainer) {
-  var width = parseInt($('.round:first').css('margin-right'))/2
-  var drop = true;
-  // drop:
-  //  ¨\
-  //    \_
-  // !drop:
-  //    /¨
-  //  _/
-  if (height < 0) {
-    drop = false;
-    height = -height;
-  }
-  var src = $('<div class="connector"></div>').appendTo(teamContainer);
-  src.css('height', height);
-  src.css('width', width+'px');
-  src.css('right', (-width-2)+'px');
-
-  if (shift >= 0)
-    src.css('top', shift+'px');
-  else
-    src.css('bottom', (-shift)+'px');
-  
-  if (drop)
-    src.css('border-bottom', 'none');
-  else
-    src.css('border-top', 'none');
-
-  var dst = $('<div class="connector"></div>').appendTo(src);
-  dst.css('width', width+'px');
-  dst.css('right', -width+'px');
-  if (drop)
-    dst.css('bottom', '0px');
-  else
-    dst.css('top', '0px');
-
-  return src;
-}
 
 // used for mapping
 function toText() { return $(this).text() }
 
 var Match = function(round, data, id, results) {
+  function connector(height, shift, teamContainer) {
+    var width = parseInt($('.round:first').css('margin-right'))/2
+    var drop = true;
+    // drop:
+    // [team]¨\
+    //         \_[team]
+    // !drop:
+    //         /¨[team]
+    // [team]_/
+    if (height < 0) {
+      drop = false;
+      height = -height;
+    }
+    var src = $('<div class="connector"></div>').appendTo(teamContainer);
+    src.css('height', height);
+    src.css('width', width+'px');
+    src.css('right', (-width-2)+'px');
+
+    if (shift >= 0)
+      src.css('top', shift+'px');
+    else
+      src.css('bottom', (-shift)+'px');
+    
+    if (drop)
+      src.css('border-bottom', 'none');
+    else
+      src.css('border-top', 'none');
+
+    var dst = $('<div class="connector"></div>').appendTo(src);
+    dst.css('width', width+'px');
+    dst.css('right', -width+'px');
+    if (drop)
+      dst.css('bottom', '0px');
+    else
+      dst.css('top', '0px');
+
+    return src;
+  }
 
   data[0].id = 0
   data[1].id = 1
@@ -191,12 +191,10 @@ var Bracket = function(container, results, teams)
 
 function render(data)
 {
-  var winners = $('#bracket')
-  var losers = $('#loserBracket')
-  var w = new Bracket(winners, data.results[0], data.teams)
-  var l = new Bracket(losers, data.results[1], null)
+  var w = new Bracket($('#bracket'), data.results[0], data.teams)
+  var l = new Bracket($('#loserBracket'), data.results[1], null)
   var f = new Bracket($('#finals'), data.results[2], null)
-  renderWinners(w, losers, data);
+  renderWinners(w, data);
   renderLosers(w, l, data);
   renderFinals(f, w, l, data);
 
@@ -267,7 +265,7 @@ function postProcess(container, data)
     })
 }
 
-function renderWinners(winners, losers, data)
+function renderWinners(winners, data)
 {
   var teams = data.teams;
   var results = data.results;
