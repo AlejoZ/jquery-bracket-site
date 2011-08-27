@@ -166,22 +166,7 @@ var Bracket = function(container, results, teams)
       return rounds[id]
     },
     winner: function() {
-      var match = container.find('.match:last')
-      var names = match.find('b').map(toText)
-      var scores = match.find('span').map(toText)
-      var winner = {name:null,score:0}
-
-      if (scores[0] > scores[1]) {
-        winner.score = scores[0]
-        winner.name = names[0]
-        winner.id = 0
-      }
-      else {
-        winner.score = scores[1]
-        winner.name = names[1]
-        winner.id = 1
-      }
-      return winner
+      return this.final().winner()
     },
     final: function() {
       return rounds[rounds.length-1].match(0)
@@ -240,7 +225,6 @@ function postProcess(container, data)
   container.find('div.team b').each(
       function() {
         var key = $(this).text()
-        //$(this).parent().addClass('team-'+m[key]); 
         $(this).parent().attr('index', m[key]); 
       } 
     );
@@ -365,28 +349,44 @@ function renderLosers(winners, losers, data)
 function renderFinals(finals, winners, losers, data)
 {
   var round = finals.addRound()
-  var match = round.addMatch(function() { return [winners.winner(), losers.winner()] })
+  var match = round.addMatch(function() { return [{name: winners.winner().name}, {name: losers.winner().name}] })
 
   var height = winners.el.height()+losers.el.height()
   match.el.css('height', (height)+'px');
 
   var teamContainer = match.el.find('.teamContainer')
-  var shift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamContainer.height()/2 
+  var top = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamContainer.height()/2 
 
-  teamContainer.css('top', (shift)+'px');
+  teamContainer.css('top', (top)+'px');
 
-  var height = shift-winners.el.height()/2
-  var shift = teamContainer.height()/4 
+  var connectorOffset = teamContainer.height()/4
+  var matchupOffset = top-winners.el.height()/2
+
+  var shift
+  var height
   
   winners.final().connect(function() {
-      if (winners.winner().id == 0)
-        height = height+shift*2
+      if (winners.winner().id == 0) {
+        height = matchupOffset + connectorOffset*2
+        shift = connectorOffset 
+      }
+      else {
+        height = matchupOffset 
+        shift = connectorOffset*3
+      }
       return {height: height, shift: shift}
     })
 
   losers.final().connect(function() {
-      if (losers.winner().id == 0)
-        height = height-shift*2
+      if (losers.winner().id == 0) {
+        height = matchupOffset
+        shift = connectorOffset*3
+      }
+      else {
+        height = matchupOffset + connectorOffset*2
+        shift = connectorOffset
+      }
+
       return {height: -height, shift: -shift}
     })
 }
