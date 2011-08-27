@@ -247,6 +247,25 @@ function postProcess(container, data)
           $(this).unbind('mouseout')
         })
     })
+
+  $('.team span').click(function() {
+      var span = $(this)
+      function editor() {
+        span.unbind()
+
+        var score = span.text()
+        var input = $('<input type="text">')
+        input.val(score)
+        span.html(input)
+
+        input.focus()
+        input.blur(function() {
+            span.html(input.val())
+            span.click(editor)
+          })
+      }
+      editor()
+    })
 }
 
 function renderWinners(winners, data)

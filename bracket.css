@@ -49,6 +49,12 @@
 
 .team span {
   float: right;
+  cursor: pointer;
+}
+
+.team span input {
+  width: 30px;
+  height: 20px;
 }
 
 .team.win {
