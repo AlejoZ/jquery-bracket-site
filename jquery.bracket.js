@@ -128,8 +128,8 @@ var Round = function(bracket, roundId, results) {
         if (teamCb != null)
           var teams = teamCb()
         else
-          var teams = [{name: bracket.getRound(roundId-1).match(id*2).winner().name},
-                       {name: bracket.getRound(roundId-1).match(id*2+1).winner().name}]
+          var teams = [{name: bracket.round(roundId-1).match(id*2).winner().name},
+                       {name: bracket.round(roundId-1).match(id*2+1).winner().name}]
 
         var match = new Match(this, idAttr, teams, id, results[id])
         matches.push(match)
@@ -152,7 +152,7 @@ var Bracket = function(container, results, teams)
       rounds.push(round)
       return round;
     },
-    getRound: function(id) {
+    round: function(id) {
       return rounds[id]
     },
     getWinnerTeam: function() {
@@ -181,7 +181,7 @@ function render(data)
   var w = new Bracket(winners, data.results[0], data.teams)
   var l = new Bracket(losers, data.results[1], null)
   renderWinners(w, losers, data);
-  renderLosers(winners, l, data);
+  renderLosers(w, l, data);
   renderFinals(w, l, data);
 
   postProcess($('#system'), data);
@@ -330,49 +330,17 @@ function renderLosers(winners, losers, data)
         var score = results[1][r*2+n][m];
         
         var teamCb = null
+        /* special cases */
         if (!(n%2 == 0 && r != 0)) teamCb = function() {
-          var team;
-          /* match inside losers bracket */
-          if (n%2 == 0) {
-            /* first round comes from winner bracket */
-            if (r == 0) {
-              var getLoser = function(results, r, m) {
-                var team;
-                if (results[0][r][m][0] < results[0][r][m][1])
-                  team = teams[m][0];
-                else
-                  team = teams[m][1];
-                return team;
-              };
-              team = [getLoser(results, 0, m*2), getLoser(results, 0, m*2+1)];
-            }
+          /* first round comes from winner bracket */
+          if (n%2 == 0 && r == 0) {
+            return [{name: winners.round(0).match(m*2).loser().name}, 
+                    {name: winners.round(0).match(m*2+1).loser().name}]
           }
           else { /* match with dropped */
-            var getWinner = function(results, r, m) {
-              var getTeamName = function(results, round, match) {
-                var score = results[1][round*2][match];
-                var mod = ':first';
-
-                if (score[0] < score[1])
-                  mod = ':last';
-
-                return losers.el.find('#match-'+(round)+'-'+(match)+'-0 .team'+mod+' b').text();
-              }
-
-              return getTeamName(results, r, m);
-            };
-            var getLoser = function(results, r, m) {
-              var score = results[0][r][m];
-              var mod = ':first';
-
-              if (score[0] > score[1])
-                mod = ':last';
-
-              return winners.find('#match-'+(r)+'-'+(m)+' .team'+mod+' b').text();
-            };
-            team = [getWinner(results, r, m), getLoser(results, r+1, m)];
+            return [{name: losers.round(r*2).match(m).winner().name},
+                    {name: winners.round(r+1).match(m).loser().name}]
           }
-          return [{name: team[0]}, {name: team[1]}]
         }
       
         var match = round.addMatch('match-'+r+'-'+m+'-'+n, null, teamCb)
