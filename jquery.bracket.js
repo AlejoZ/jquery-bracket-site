@@ -1,20 +1,6 @@
 function roundGap() {
   return parseInt($('.round:first').css('margin-right'))/2
 }
-function createTeamElement(round, name, score) {
-  var tEl = $('<div class="team"><b>'+name+'</b><span>'+score[0]+'</span></div>');
-
-  if (score) {
-    if (score[0] > score[1])
-      tEl.addClass('win')
-    else if (score[0] < score[1])
-      tEl.addClass('lose')
-    else
-      tEl.addClass('tie')
-  }
-
-  return tEl;
-}
 
 function connector(height, shift, teamContainer) {
   var width = roundGap()
@@ -59,23 +45,45 @@ function connector(height, shift, teamContainer) {
 function toText() { return $(this).text() }
 
 var Match = function(round, data, id, results) {
-  var container = $('<div class="match"></div>').appendTo(round.el);
-  var teamContainer = $('<div class="teamContainer"></div>')
-  teamContainer.append(createTeamElement(round.id, data[0].name, [results[0], results[1]]))
-  teamContainer.append(createTeamElement(round.id, data[1].name, [results[1], results[0]]))
-
-  container.append(teamContainer)
-
-  /*
-  console.log(round.id+':'+round.el.parent()+':'+results.length)
-  container.css('height', (round.el.parent().height()/results[round.id].length)+'px');
-  teamContainer.css('top', (container.height()/2-teamContainer.height()/2)+'px');
-  */
 
   data[0].id = 0
   data[1].id = 1
   data[0].score = results[0]
   data[1].score = results[1]
+
+  function winner() {
+    if (data[0].score > data[1].score)
+      return data[0]
+    else
+      return data[1]
+  }
+
+  function loser() {
+    if (data[0].score > data[1].score)
+      return data[1]
+    else
+      return data[0]
+  }
+
+  function createTeamElement(round, team) {
+    var tEl = $('<div class="team"><b>'+team.name+'</b><span>'+team.score+'</span></div>');
+
+    if (winner().name == team.name)
+        tEl.addClass('win')
+    else if (loser().name == team.name)
+      tEl.addClass('lose')
+    else
+      tEl.addClass('tie')
+
+    return tEl;
+  }
+
+  var teamContainer = $('<div class="teamContainer"></div>')
+  teamContainer.append(createTeamElement(round.id, data[0]))
+  teamContainer.append(createTeamElement(round.id, data[1]))
+
+  var container = $('<div class="match"></div>').appendTo(round.el)
+  container.append(teamContainer)
 
   return {
     el: container,
@@ -115,18 +123,8 @@ var Match = function(round, data, id, results) {
       }
       teamContainer.append(connector(height, shift, teamContainer));
     },
-    winner: function() {
-      if (data[0].score > data[1].score)
-        return data[0]
-      else
-        return data[1]
-    },
-    loser: function() {
-      if (data[0].score > data[1].score)
-        return data[1]
-      else
-        return data[0]
-    },
+    winner: winner,
+    loser: loser,
     results: data
   }
 }
