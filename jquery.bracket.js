@@ -188,13 +188,13 @@ function render(data)
 
 function postProcess(container, data)
 {
-  var Track = function(teamIndex, class) {
+  var Track = function(teamIndex, cssClass) {
       var index = teamIndex;
       var elements = $('.team[index='+index+']')
-      if (!class)
+      if (!cssClass)
         var addedClass = 'highlight'
       else
-        var addedClass = class
+        var addedClass = cssClass
 
       return {
           highlight: function() {
