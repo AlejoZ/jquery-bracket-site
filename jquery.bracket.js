@@ -69,6 +69,12 @@ var Match = function(round, data, id, results) {
 
   container.append(teamContainer)
 
+  /*
+  console.log(round.id+':'+round.el.parent()+':'+results.length)
+  container.css('height', (round.el.parent().height()/results[round.id].length)+'px');
+  teamContainer.css('top', (container.height()/2-teamContainer.height()/2)+'px');
+  */
+
   data[0].id = 0
   data[1].id = 1
   data[0].score = results[0]
@@ -77,6 +83,41 @@ var Match = function(round, data, id, results) {
   return {
     el: container,
     id: id,
+    connect: function(cb) {
+      var connectorOffset = teamContainer.height()/4
+      var matchupOffset = container.height()/2
+      var shift
+      var height
+
+      if (!cb || cb == null) {
+        if (id%2 == 0) { // dir == down 
+          if (this.winner().id == 0) {
+            shift = connectorOffset
+            height = matchupOffset
+          }
+          else {
+            shift = connectorOffset*3
+            height = matchupOffset - connectorOffset*2
+          }
+        }
+        else { // dir == up
+          if (this.winner().id == 0) {
+            shift = -connectorOffset*3
+            height = -matchupOffset + connectorOffset*2
+          }
+          else {
+            shift = -connectorOffset
+            height = -matchupOffset
+          }
+        }
+      }
+      else {
+        var info = cb()
+        shift = info.shift
+        height = info.height
+      }
+      teamContainer.append(connector(height, shift, teamContainer));
+    },
     winner: function() {
       if (data[0].score > data[1].score)
         return data[0]
@@ -258,35 +299,8 @@ function renderWinners(winners, losers, data)
       match.el.css('height', (graphHeight/matches)+'px');
       elClassTeamContainer.css('top', (match.el.height()/2-elClassTeamContainer.height()/2)+'px');
 
-      if (r < (rounds-1)) {
-        var height, shift
-
-        var connectorOffset = elClassTeamContainer.height()/4
-        var matchupOffset = match.el.height()/2
-
-        if (m%2 == 0) { // dir == down
-          if (match.winner().id == 0) {
-            height = matchupOffset
-            shift = connectorOffset
-          }
-          else {
-            height = matchupOffset - connectorOffset*2
-            shift = connectorOffset*3
-          }
-        }
-        else { // dir == up
-          if (match.winner().id == 0) {
-            height = -matchupOffset + connectorOffset*2
-            shift = -connectorOffset*3
-          }
-          else {
-            height = -matchupOffset
-            shift = -connectorOffset
-          }
-        }
-
-        elClassTeamContainer.append(connector(height, shift, elClassTeamContainer));
-      }
+      if (r < (rounds-1))
+        match.connect()
     }
     matches /= 2;
   }
@@ -324,48 +338,28 @@ function renderLosers(winners, losers, data)
         var match = round.addMatch(null, teamCb)
         match.el.css('height', (graphHeight/matches)+'px');
         var teamContainer = match.el.find('.teamContainer')
-        teamContainer.appendTo(match.el);
         teamContainer.css('top', (match.el.height()/2-teamContainer.height()/2)+'px');
 
         var connectorOffset = teamContainer.height()/4
-        var matchupOffset = match.el.height()/2
 
         if (r < rounds-1 || n < 1) {
-          var height = 0;
-          var shift = 0;
-
+          var cb = null
           // inside lower bracket 
           if (n%2 == 0) {
-            if (score[0] > score[1])
-              height = 0;
-            else
-              height = -connectorOffset*2;
+            cb = function() {
+              var height = 0;
+              var shift = 0;
 
-            shift = connectorOffset
-          }
-          else { // from winner bracket 
-            if (m%2 == 0) { // dir == down 
-              if (score[0] > score[1]) {
-                shift = connectorOffset
-                height = matchupOffset
-              }
-              else {
-                shift = connectorOffset*3
-                height = matchupOffset - connectorOffset*2
-              }
-            }
-            else { // dir == up
-              if (score[0] > score[1]) {
-                shift = -connectorOffset*3
-                height = -matchupOffset + connectorOffset*2
-              }
-              else {
-                shift = -connectorOffset
-                height = -matchupOffset
-              }
+              if (match.winner().id == 0)
+                height = 0;
+              else
+                height = -connectorOffset*2;
+
+              shift = connectorOffset
+              return {height: height, shift: shift}
             }
           }
-          teamContainer.append(connector(height, shift, teamContainer));
+          match.connect(cb)
         }
       }
     }
