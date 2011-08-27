@@ -13,9 +13,6 @@ function createTeamElement(round, name, score) {
       tEl.addClass('tie')
   }
 
-  if (round == 0)
-    return tEl;
-
   return tEl;
 }
 
@@ -141,7 +138,7 @@ var Round = function(bracket, roundId, results) {
   return {
     el: container,
     id: roundId,
-    addMatch: function(teams, teamCb) {
+    addMatch: function(teamCb) {
         var id = matches.length
 
         if (teamCb != null)
@@ -174,7 +171,7 @@ var Bracket = function(container, results, teams)
     round: function(id) {
       return rounds[id]
     },
-    getWinnerTeam: function() {
+    winner: function() {
       var match = container.find('.match:last')
       var names = match.find('b').map(toText)
       var scores = match.find('span').map(toText)
@@ -183,12 +180,17 @@ var Bracket = function(container, results, teams)
       if (scores[0] > scores[1]) {
         winner.score = scores[0]
         winner.name = names[0]
+        winner.id = 0
       }
       else {
         winner.score = scores[1]
         winner.name = names[1]
+        winner.id = 1
       }
       return winner
+    },
+    final: function() {
+      return rounds[rounds.length-1].match(0)
     }
   }
 }
@@ -199,9 +201,10 @@ function render(data)
   var losers = $('#loserBracket')
   var w = new Bracket(winners, data.results[0], data.teams)
   var l = new Bracket(losers, data.results[1], null)
+  var f = new Bracket($('#finals'), data.results[2], null)
   renderWinners(w, losers, data);
   renderLosers(w, l, data);
-  renderFinals(w, l, data);
+  renderFinals(f, w, l, data);
 
   postProcess($('#system'), data);
 }
@@ -292,7 +295,7 @@ function renderWinners(winners, losers, data)
           }
       }
     
-      var match = round.addMatch(null, teamCb)
+      var match = round.addMatch(teamCb)
 
       /* todo: move to class */
       var elClassTeamContainer = match.el.find('.teamContainer')
@@ -335,7 +338,7 @@ function renderLosers(winners, losers, data)
           }
         }
       
-        var match = round.addMatch(null, teamCb)
+        var match = round.addMatch(teamCb)
         match.el.css('height', (graphHeight/matches)+'px');
         var teamContainer = match.el.find('.teamContainer')
         teamContainer.css('top', (match.el.height()/2-teamContainer.height()/2)+'px');
@@ -367,40 +370,31 @@ function renderLosers(winners, losers, data)
   }
 }
 
-function renderFinals(winners, losers, data)
+function renderFinals(finals, winners, losers, data)
 {
-  var elClassRound = $('<div class="round"></div>').appendTo('#finals')
-  var elClassMatch = $('<div class="match"></div>').appendTo(elClassRound)
-  var elClassTeamContainer = $('<div class="teamContainer"></div>');
+  var round = finals.addRound()
+  var match = round.addMatch(function() { return [winners.winner(), losers.winner()] })
+
   var height = winners.el.height()+losers.el.height()
-  var finalScore = data.results[2][0]
+  match.el.css('height', (height)+'px');
 
-  var winnerScore = function(array) {
-    return array[array.length-1][0]
-  }
+  var teamContainer = match.el.find('.teamContainer')
+  var shift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamContainer.height()/2 
 
-  var finalists = [winners.getWinnerTeam(), losers.getWinnerTeam()]
-
-  elClassMatch.css('height', (height)+'px');
-  elClassTeamContainer.append(createTeamElement(3, finalists[0].name, finalScore));
-  elClassTeamContainer.append(createTeamElement(3, finalists[1].name, [finalScore[1],finalScore[0]]));
-  elClassTeamContainer.appendTo(elClassMatch);
-
-  var shift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - elClassTeamContainer.height()/2 
-  elClassTeamContainer.css('top', (shift)+'px');
+  teamContainer.css('top', (shift)+'px');
 
   var height = shift-winners.el.height()/2
-  var shift = elClassTeamContainer.height()/4 
+  var shift = teamContainer.height()/4 
+  
+  winners.final().connect(function() {
+      if (winners.winner().id == 0)
+        height = height+shift*2
+      return {height: height, shift: shift}
+    })
 
-  var score = winnerScore(data.results[0])
-  if (score[0] > score[1]) {
-    height = height+shift*2
-  }
-  connector(height,  shift,  elClassTeamContainer).appendTo(winners.el.find('.teamContainer:last'))
-
-  var score = winnerScore(data.results[1])
-  if (score[0] > score[1]) {
-    height = height-shift*2
-  }
-  connector(-height, -shift, elClassTeamContainer).appendTo(losers.el.find('.teamContainer:last'))
+  losers.final().connect(function() {
+      if (losers.winner().id == 0)
+        height = height-shift*2
+      return {height: -height, shift: -shift}
+    })
 }
