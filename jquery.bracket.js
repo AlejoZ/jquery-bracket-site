@@ -1,9 +1,5 @@
-function roundGap() {
-  return parseInt($('.round:first').css('margin-right'))/2
-}
-
 function connector(height, shift, teamContainer) {
-  var width = roundGap()
+  var width = parseInt($('.round:first').css('margin-right'))/2
   var drop = true;
   // drop:
   //  ¨\
