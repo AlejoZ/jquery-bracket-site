@@ -1,8 +1,11 @@
 #system {
+  font-family: "Arial";
+  font-size: 14px;
   float: left;
   position: relative;
   width: 1000px;
   background-color: #333;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#333));
 }
 #finals {
   float: right;
@@ -45,11 +48,24 @@
   border-radius: 5px;
   margin: 1px 0px;
   cursor: default;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+.team b{
+  font-weight: normal;
+  padding: 3px;
 }
 
 .team span {
+  font-weight: bold;
   float: right;
   cursor: pointer;
+  padding: 0px;
+  padding-right: 5px;
+  background-color: rgba(0,0,0,0.5);
+  border-radius: 3px; 
+  text-align: right;
+  width: 20px;
 }
 
 .team span input {
@@ -65,7 +81,7 @@
   color: #0F0;
 }
 .team.lose span {
-  color: #F00;
+  color: #C00;
 }
 .team.lose {
   background-color: #666;
