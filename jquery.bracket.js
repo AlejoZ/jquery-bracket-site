@@ -58,33 +58,11 @@ function connector(height, shift, teamContainer) {
   return src;
 }
 
-/* refactor with loser bracket */
-function getTeamNames(results, round, match)
-{
-  var getTeamName = function(results, round, match, n) {
-      var score = results[0][round-1][match*2+n];
-      var mod = ':first';
-
-      if (score[0] < score[1])
-        mod = ':last';
-
-      return $('#match-'+(round-1)+'-'+(match*2+n)+' .team'+mod+' b').text();
-    }
-
-  return [getTeamName(results, round, match, 0), getTeamName(results, round, match, 1)];
-}
-
 // used for mapping
 function toText() { return $(this).text() }
 
-var Match = function(round, idAttr, data, id, results) {
+var Match = function(round, data, id, results) {
   var container = $('<div class="match"></div>').appendTo(round.el);
-
-  if (idAttr == null)
-    container.attr('id', "match-"+round.id+"-"+id)
-  else
-    container.attr('id', idAttr)
-
   var teamContainer = $('<div class="teamContainer"></div>')
   teamContainer.append(createTeamElement(round.id, data[0].name, [results[0], results[1]]))
   teamContainer.append(createTeamElement(round.id, data[1].name, [results[1], results[0]]))
@@ -122,7 +100,7 @@ var Round = function(bracket, roundId, results) {
   return {
     el: container,
     id: roundId,
-    addMatch: function(idAttr, teams, teamCb) {
+    addMatch: function(teams, teamCb) {
         var id = matches.length
 
         if (teamCb != null)
@@ -131,7 +109,7 @@ var Round = function(bracket, roundId, results) {
           var teams = [{name: bracket.round(roundId-1).match(id*2).winner().name},
                        {name: bracket.round(roundId-1).match(id*2+1).winner().name}]
 
-        var match = new Match(this, idAttr, teams, id, results[id])
+        var match = new Match(this, teams, id, results[id])
         matches.push(match)
         return match;
     },
@@ -273,7 +251,7 @@ function renderWinners(winners, losers, data)
           }
       }
     
-      var match = round.addMatch(null, null, teamCb)
+      var match = round.addMatch(null, teamCb)
 
       /* todo: move to class */
       var elClassTeamContainer = match.el.find('.teamContainer')
@@ -343,7 +321,7 @@ function renderLosers(winners, losers, data)
           }
         }
       
-        var match = round.addMatch('match-'+r+'-'+m+'-'+n, null, teamCb)
+        var match = round.addMatch(null, teamCb)
         match.el.css('height', (graphHeight/matches)+'px');
         var teamContainer = match.el.find('.teamContainer')
         teamContainer.appendTo(match.el);
