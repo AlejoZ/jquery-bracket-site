@@ -62,7 +62,34 @@ var Match = function(round, data, id, results) {
   }
 
   function createTeamElement(round, team) {
-    var tEl = $('<div class="team"><b>'+team.name+'</b><span>'+team.score+'</span></div>');
+    var sEl = $('<span>'+team.score+'</span>')
+    var tEl = $('<div class="team"><b>'+team.name+'</b></div>');
+    tEl.append(sEl)
+
+    sEl.click(function() {
+        var span = $(this)
+        function editor() {
+          span.unbind()
+
+          var score = parseInt(span.text())
+          var input = $('<input type="text">')
+          input.val(score)
+          span.html(input)
+
+          input.focus()
+          input.blur(function() {
+              span.html(input.val())
+              /*
+              if (score != parseInt(input.val()) {
+                team.score = input.val()
+                //reloadGraph()
+              }
+              */
+              span.click(editor)
+            })
+        }
+        editor()
+      })
 
     if (winner().name == team.name)
         tEl.addClass('win')
@@ -248,24 +275,6 @@ function postProcess(container, data)
         })
     })
 
-  $('.team span').click(function() {
-      var span = $(this)
-      function editor() {
-        span.unbind()
-
-        var score = span.text()
-        var input = $('<input type="text">')
-        input.val(score)
-        span.html(input)
-
-        input.focus()
-        input.blur(function() {
-            span.html(input.val())
-            span.click(editor)
-          })
-      }
-      editor()
-    })
 }
 
 function renderWinners(winners, data)
