@@ -253,7 +253,7 @@ function isValid(data)
   }
 
   for (var i = 0; i < r[0].length; i++) {
-    if (!r[1][i*2])
+    if (!r[1] || !r[1][i*2])
       break;
 
     if (r[0][i].length <= r[1][i*2].length) {
@@ -261,6 +261,47 @@ function isValid(data)
       return false
     }
   }
+
+  // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
+  function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  try {
+    r.forEach(function(br) {
+      br.forEach(function(ro) {
+        ro.forEach(function(ma) {
+          if (ma.length != 2) {
+            console.log('match size not valid', ma)
+            throw {}
+          }
+          /*logical xor*/
+          if (!(isNumber(ma[0])?isNumber(ma[1]):!isNumber(ma[1]))) {
+            console.log('mixed results', ma)
+            throw {}
+          }
+        })
+      })
+    })
+  }
+  catch(e) {
+    return false
+  }
+  
+  /*
+    for (ro in br) {
+      for (ma in ro) {
+      }
+    }
+  }
+  for (var b = 0; b < r.length; b++) {
+    for (var i = 0; i < r[b].length; i++) {
+      for (var j = 0; j < r[b][i].length; j++) {
+        
+      }
+    }
+  }
+*/
 
   return true
 }
