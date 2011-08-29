@@ -4,34 +4,6 @@
 <script type="text/javascript" src="jquery.bracket.js"></script>
 <link rel="stylesheet" type="text/css" href="bracket.css" />
 <script type="text/javascript">
-var results = {  
-    teams : [
-      ["Team 1",  "Team 2" ],
-      ["Team 3",  "Team 4" ],
-      ["Team 5",  "Team 6" ],
-      ["Team 7",  "Team 8" ],
-      ["Team 11", "Team 12"],
-      ["Team 13", "Team 14"],
-      ["Team 15", "Team 16"],
-      ["Team 17", "Team 18"]
-    ],
-    results : [[
-      [[2, 1], [2, 1], [2, 1], [2, 1], [1, 2], [1, 2], [1, 2], [1, 2]],
-      [[1, 2], [3, 4], [5, 6], [7, 8]],
-      [[9, 10], [11, 12]],
-      [[16, 14]]
-    ], [
-      [[5, 1],[1, 2],[1, 2],[1, 2]],
-      [[8, 2],[1, 2],[1, 2],[1, 2]],
-      [[1, 2],[1, 2]],
-      [[3, 2],[6, 2]],
-      [[3, 2]],
-      [[1, 2]]
-    ], [
-      [[3, 2]]
-    ]]
-  };
-
 function testValidation()
 {
   var v
@@ -130,13 +102,71 @@ function testValidation()
     alert('loser bracket has at most half wb teams')
 }
 
+var completeResults = {  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ],
+      ["Team 5",  "Team 6" ],
+      ["Team 7",  "Team 8" ],
+      ["Team 11", "Team 12"],
+      ["Team 13", "Team 14"],
+      ["Team 15", "Team 16"],
+      ["Team 17", "Team 18"]
+    ],
+    results : [[
+      [[2, 1], [2, 1], [2, 1], [2, 1], [1, 2], [1, 2], [1, 2], [1, 2]],
+      [[1, 2], [3, 4], [5, 6], [7, 8]],
+      [[9, 10], [11, 12]],
+      [[16, 14]]
+    ], [
+      [[5, 1],[1, 2],[1, 2],[1, 2]],
+      [[8, 2],[1, 2],[1, 2],[1, 2]],
+      [[1, 2],[1, 2]],
+      [[3, 2],[6, 2]],
+      [[3, 2]],
+      [[1, 2]]
+    ], [
+      [[3, 2]]
+    ]]
+  };
+
+var partialResults = {  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ],
+      ["Team 5",  "Team 6" ],
+      ["Team 7",  "Team 8" ],
+      ["Team 11", "Team 12"],
+      ["Team 13", "Team 14"],
+      ["Team 15", "Team 16"],
+      ["Team 17", "Team 18"]
+    ]
+    /*,
+    results : [[
+      [[2, 1], [2, 1], [2, 1], [2, 1], [1, 2], [1, 2], [1, 2], [1, 2]],
+      [[1, 2], [3, 4], [5, 6], [7, 8]],
+      [[9, 10], [11, 12]],
+      [[16, 14]]
+    ], [
+      [[5, 1],[1, 2],[1, 2],[1, 2]],
+      [[8, 2],[1, 2],[1, 2],[1, 2]],
+      [[1, 2],[1, 2]],
+      [[3, 2],[6, 2]],
+      [[3, 2]],
+      [[1, 2]]
+    ], [
+      [[3, 2]]
+    ]]
+    */
+  };
+
 $(document).ready(function() {
-    if (!isValid(results)) {
+    if (!isValid(partialResults)) {
       console.log('ERROR IN DATA')
       return
     }
 
-    render(results);
+    render(partialResults);
     
     testValidation();
   }

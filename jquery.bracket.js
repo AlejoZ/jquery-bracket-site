@@ -44,59 +44,74 @@ var Match = function(round, data, id, results) {
 
   data[0].id = 0
   data[1].id = 1
-  data[0].score = results[0]
-  data[1].score = results[1]
+  data[0].score = !results?NaN:results[0]
+  data[1].score = !results?NaN:results[1]
 
   function winner() {
     if (data[0].score > data[1].score)
       return data[0]
-    else
+    else if (data[0].score < data[1].score)
       return data[1]
+    else
+      return {name: null, id: -1, score: null}
   }
 
   function loser() {
     if (data[0].score > data[1].score)
       return data[1]
-    else
+    else if (data[0].score < data[1].score)
       return data[0]
+    else
+      return {name: null, id: -1, score: null}
   }
 
   function createTeamElement(round, team) {
-    var sEl = $('<span>'+team.score+'</span>')
-    var tEl = $('<div class="team"><b>'+team.name+'</b></div>');
+    var score = isNaN(team.score)?'--':team.score
+    var sEl = $('<span>'+score+'</span>')
+    var name = !team.name?'--':team.name
+    var tEl = $('<div class="team"><b>'+name+'</b></div>');
     tEl.append(sEl)
 
-    sEl.click(function() {
-        var span = $(this)
-        function editor() {
-          span.unbind()
+    if (team.name) {
+      sEl.click(function() {
+          var span = $(this)
+          function editor() {
+            span.unbind()
 
-          var score = parseInt(span.text())
-          var input = $('<input type="text">')
-          input.val(score)
-          span.html(input)
+            var score
+            if (isNaN(team.score))
+              score = ''
+            else
+              score = span.text()
 
-          input.focus()
-          input.blur(function() {
-              span.html(input.val())
-              /*
-              if (score != parseInt(input.val()) {
-                team.score = input.val()
-                //reloadGraph()
-              }
-              */
-              span.click(editor)
-            })
-        }
-        editor()
-      })
+            var input = $('<input type="text">')
+            input.val(score)
+            span.html(input)
 
-    if (winner().name == team.name)
-        tEl.addClass('win')
+            input.focus()
+            input.blur(function() {
+                span.html(input.val())
+                /*
+                if (score != parseInt(input.val()) {
+                  team.score = input.val()
+                  //reloadGraph()
+                }
+                */
+                span.click(editor)
+              })
+          }
+          editor()
+        })
+    }
+
+    if (!team.name)
+      tEl.addClass('na')
+    else if (winner().name == team.name)
+      tEl.addClass('win')
     else if (loser().name == team.name)
       tEl.addClass('lose')
     else
-      tEl.addClass('tie')
+      tEl.addClass('np')
 
     return tEl;
   }
@@ -123,9 +138,13 @@ var Match = function(round, data, id, results) {
             shift = connectorOffset
             height = matchupOffset
           }
-          else {
+          else if (this.winner().id == 1) {
             shift = connectorOffset*3
             height = matchupOffset - connectorOffset*2
+          }
+          else {
+            shift = connectorOffset*2
+            height = matchupOffset
           }
         }
         else { // dir == up
@@ -133,8 +152,12 @@ var Match = function(round, data, id, results) {
             shift = -connectorOffset*3
             height = -matchupOffset + connectorOffset*2
           }
-          else {
+          else if (this.winner().id == 1) {
             shift = -connectorOffset
+            height = -matchupOffset
+          }
+          else {
+            shift = -connectorOffset*2
             height = -matchupOffset
           }
         }
@@ -168,7 +191,7 @@ var Round = function(bracket, roundId, results) {
           var teams = [{name: bracket.round(roundId-1).match(id*2).winner().name},
                        {name: bracket.round(roundId-1).match(id*2+1).winner().name}]
 
-        var match = new Match(this, teams, id, results[id])
+        var match = new Match(this, teams, id, !results?null:results[id])
         matches.push(match)
         return match;
     },
@@ -185,7 +208,8 @@ var Bracket = function(container, results, teams)
     el: container,
     addRound: function() {
       var id = rounds.length
-      var round = new Round(this, id, results[id])
+      
+      var round = new Round(this, id, !results?null:results[id])
       rounds.push(round)
       return round;
     },
@@ -206,10 +230,13 @@ function isValid(data)
   var t = data.teams 
   var r = data.results
 
-  if (!t || !r) {
-    console.log('no team or result', data)
+  if (!t) {
+    console.log('no teams', data)
     return false
   }
+
+  if (!r)
+    return true
 
   if (t.length < r[0][0].length) {
     console.log('more results than teams', data)
@@ -240,9 +267,11 @@ function isValid(data)
 
 function render(data)
 {
-  var w = new Bracket($('#bracket'), data.results[0], data.teams)
-  var l = new Bracket($('#loserBracket'), data.results[1], null)
-  var f = new Bracket($('#finals'), data.results[2], null)
+  var r = data.results
+  var t = data.results
+  var w = new Bracket($('#bracket'), !r||!r[0]?null:r[0], data.teams)
+  var l = new Bracket($('#loserBracket'), !r||!r[0]?null:r[1], null)
+  var f = new Bracket($('#finals'), !r||!r[0]?null:r[2], null)
   renderWinners(w, data);
   renderLosers(w, l, data);
   renderFinals(f, w, l, data);
@@ -323,7 +352,8 @@ function renderWinners(winners, data)
   var graphHeight = winners.el.height();
 
   for (var r = 0; r < rounds; r++) {
-    var round = winners.addRound(data.results[r])
+    var res = !data.results||!data.results[r]?null:data.results[r]
+    var round = winners.addRound(res)
 
     for (var m = 0; m < matches; m++) {
       var team;
@@ -363,8 +393,6 @@ function renderLosers(winners, losers, data)
       var round = losers.addRound()
 
       for (var m = 0; m < matches; m++) {
-        var score = results[1][r*2+n][m];
-        
         var teamCb = null
         /* special cases */
         if (!(n%2 == 0 && r != 0)) teamCb = function() {
@@ -394,12 +422,18 @@ function renderLosers(winners, losers, data)
               var height = 0;
               var shift = 0;
 
-              if (match.winner().id == 0)
+              if (match.winner().id == 0) {
                 height = 0;
-              else
+                shift = connectorOffset
+              }
+              else if (match.winner().id == 1) {
                 height = -connectorOffset*2;
+                shift = connectorOffset
+              }
+              else {
+                shift = connectorOffset*2
+              }
 
-              shift = connectorOffset
               return {height: height, shift: shift}
             }
           }
@@ -435,9 +469,13 @@ function renderFinals(finals, winners, losers, data)
         height = matchupOffset + connectorOffset*2
         shift = connectorOffset 
       }
-      else {
+      else if (winners.winner().id == 1) {
         height = matchupOffset 
         shift = connectorOffset*3
+      }
+      else {
+        height = matchupOffset+connectorOffset*2
+        shift = connectorOffset*2
       }
       return {height: height, shift: shift}
     })
@@ -447,9 +485,13 @@ function renderFinals(finals, winners, losers, data)
         height = matchupOffset
         shift = connectorOffset*3
       }
-      else {
+      else if (winners.winner().id == 1) {
         height = matchupOffset + connectorOffset*2
         shift = connectorOffset
+      }
+      else {
+        height = matchupOffset+connectorOffset*2
+        shift = connectorOffset*2
       }
 
       return {height: -height, shift: -shift}

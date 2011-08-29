@@ -74,6 +74,16 @@
   height: 20px;
 }
 
+.team.np {
+  background-color: #666;
+  color: #EEE;
+}
+
+.team.na {
+  background-color: #999;
+  color: #CCC;
+}
+
 .team.win {
   background-color: #888;
   color: #EEE;
