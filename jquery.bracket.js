@@ -2,6 +2,11 @@
 // used for mapping
 function toText() { return $(this).text() }
 
+// http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 var Match = function(round, data, id, results) {
   function connector(height, shift, teamContainer) {
     var width = parseInt($('.round:first').css('margin-right'))/2
@@ -44,8 +49,16 @@ var Match = function(round, data, id, results) {
 
   data[0].id = 0
   data[1].id = 1
+
   data[0].score = !results?NaN:results[0]
   data[1].score = !results?NaN:results[1]
+
+  /* match has score even though teams haven't yet been decided */
+  /* todo: would be nice to have in preload check, maybe too much work */
+  if ((!data[0].name || !data[1].name) && (isNumber(data[0].score) || isNumber(data[1].score))) {
+    console.log('ERROR IN SCORE DATA: '+data[0].name+': '+data[0].score+', '+data[1].name+': '+data[1].score)
+    data[0].score = data[1].score = NaN
+  }
 
   function winner() {
     if (data[0].score > data[1].score)
@@ -260,11 +273,6 @@ function isValid(data)
       console.log('lb has more results than wb', data)
       return false
     }
-  }
-
-  // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
-  function isNumber(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
   }
 
   try {
