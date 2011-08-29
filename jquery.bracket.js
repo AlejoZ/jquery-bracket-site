@@ -144,7 +144,7 @@ var Match = function(round, data, id, results) {
           }
           else {
             shift = connectorOffset*2
-            height = matchupOffset
+            height = matchupOffset - connectorOffset
           }
         }
         else { // dir == up
@@ -158,7 +158,7 @@ var Match = function(round, data, id, results) {
           }
           else {
             shift = -connectorOffset*2
-            height = -matchupOffset
+            height = -matchupOffset + connectorOffset
           }
         }
       }
@@ -423,7 +423,6 @@ function renderLosers(winners, losers, data)
               var shift = 0;
 
               if (match.winner().id == 0) {
-                height = 0;
                 shift = connectorOffset
               }
               else if (match.winner().id == 1) {
@@ -474,7 +473,7 @@ function renderFinals(finals, winners, losers, data)
         shift = connectorOffset*3
       }
       else {
-        height = matchupOffset+connectorOffset*2
+        height = matchupOffset+connectorOffset
         shift = connectorOffset*2
       }
       return {height: height, shift: shift}
@@ -490,7 +489,7 @@ function renderFinals(finals, winners, losers, data)
         shift = connectorOffset
       }
       else {
-        height = matchupOffset+connectorOffset*2
+        height = matchupOffset+connectorOffset
         shift = connectorOffset*2
       }
 
