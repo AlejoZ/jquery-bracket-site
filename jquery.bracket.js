@@ -123,13 +123,15 @@ var Match = function(round, data, id, results) {
       tEl.addClass('win')
     else if (loser().name == team.name)
       tEl.addClass('lose')
-    else
-      tEl.addClass('np')
 
     return tEl;
   }
 
   var teamContainer = $('<div class="teamContainer"></div>')
+
+  if (!data[0].name || !data[1].name || !isNumber(data[0].score) || !isNumber(data[1].score))
+    teamContainer.addClass('np')
+
   teamContainer.append(createTeamElement(round.id, data[0]))
   teamContainer.append(createTeamElement(round.id, data[1]))
 
@@ -371,21 +373,27 @@ function postProcess(container, data)
       } 
     );
 
+  /*
   var winTrack = new Track(6, 'highlightWinner');
   var loseTrack = new Track(15, 'highlightLoser');
   winTrack.highlight()
   loseTrack.highlight()
+  */
 
   $('.team').mouseover(function() {
       var i = $(this).attr('index') 
+      /*
       winTrack.deHighlight()
       loseTrack.deHighlight()
+      */
       track = new Track(i);
       track.highlight()
       $(this).mouseout(function() {
           track.deHighlight()
+          /*
           winTrack.highlight()
           loseTrack.highlight()
+          */
           $(this).unbind('mouseout')
         })
     })

@@ -150,6 +150,11 @@
   border-color: #09C;
 }
 
+.np .connector,
+.np .connector div.connector {
+  border-color: #222;
+}
+
 .team.highlightLoser {
   background-color: #09C;
   color: #000;
