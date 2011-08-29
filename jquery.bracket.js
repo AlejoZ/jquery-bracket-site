@@ -201,6 +201,43 @@ var Bracket = function(container, results, teams)
   }
 }
 
+function isValid(data)
+{
+  var t = data.teams 
+  var r = data.results
+
+  if (!t || !r) {
+    console.log('no team or result', data)
+    return false
+  }
+
+  if (t.length < r[0][0].length) {
+    console.log('more results than teams', data)
+    return false
+  }
+
+  for (var b = 0; b < r.length; b++) {
+    for (var i = 0; i < ~~(r[b].length/2); i++) {
+      if (r[b][2*i].length < r[b][2*i+1].length) {
+        console.log('previous round has less scores than next one', data)
+        return false
+      }
+    }
+  }
+
+  for (var i = 0; i < r[0].length; i++) {
+    if (!r[1][i*2])
+      break;
+
+    if (r[0][i].length <= r[1][i*2].length) {
+      console.log('lb has more results than wb', data)
+      return false
+    }
+  }
+
+  return true
+}
+
 function render(data)
 {
   var w = new Bracket($('#bracket'), data.results[0], data.teams)

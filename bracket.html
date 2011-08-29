@@ -31,9 +31,114 @@ var results = {
       [[3, 2]]
     ]]
   };
-$(document).ready(
-  function() {
+
+function testValidation()
+{
+  var v
+  v = isValid({  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ],
+      ["Team 5",  "Team 6" ],
+      ["Team 7",  "Team 8" ],
+      ["Team 11", "Team 12"],
+      ["Team 13", "Team 14"],
+      ["Team 15", "Team 16"],
+      ["Team 17", "Team 18"]
+    ],
+    results : [[
+      [[2, 1], [2, 1], [2, 1], [2, 1], [1, 2], [1, 2], [1, 2], [1, 2]],
+      [[1, 2], [3, 4], [5, 6], [7, 8]],
+      [[9, 10], [11, 12]],
+      [[16, 14]]
+    ], [
+      [[5, 1],[1, 2],[1, 2],[1, 2]],
+      [[8, 2],[1, 2],[1, 2],[1, 2]],
+      [[1, 2],[1, 2]],
+      [[3, 2],[6, 2]],
+      [[3, 2]],
+      [[1, 2]]
+    ], [
+      [[3, 2]]
+    ]]
+  })
+
+  if (!v)
+    alert('fail')
+
+  v = isValid({  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ]
+    ],
+    results : [[
+      [[2, 1], [2, 1]],
+      [[16, 14]]
+    ], [
+      [[1, 2]]
+    ], [
+      [[3, 2]]
+    ]]
+  })
+
+  if (!v)
+    alert('valid data')
+
+  v = isValid({  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ]
+    ],
+    results : [[
+      [[2, 1], [2, 1], [2, 1], [2, 1]]
+    ]]
+  })
+
+  if (v == true)
+    alert('more results than teams')
+
+  v = isValid({  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ]
+    ],
+    results : [[
+      [[2, 1]],
+      [[2, 1], [2, 1]]
+    ]]
+  })
+
+  if (v)
+    alert('next bracket has more results than previous')
+
+  v = isValid({  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ]
+    ],
+    results : [[
+      [[2, 1], [2, 1]],
+      [[16, 14]]
+    ], [
+      [[1, 2], [16, 14]]
+    ], [
+      [[3, 2]]
+    ]]
+  })
+
+  if (v)
+    alert('loser bracket has at most half wb teams')
+}
+
+$(document).ready(function() {
+    if (!isValid(results)) {
+      console.log('ERROR IN DATA')
+      return
+    }
+
     render(results);
+    
+    testValidation();
   }
 );
 </script>
