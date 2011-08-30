@@ -103,13 +103,17 @@ var Match = function(round, data, id, results) {
 
             input.focus()
             input.blur(function() {
-                span.html(input.val())
-                /*
-                if (score != parseInt(input.val()) {
-                  team.score = input.val()
+                var val = input.val()
+                if (!val && isNaN(team.score))
+                  val = '--'
+                else if (!val && isNumber(team.score))
+                  val = team.score
+
+                span.html(val)
+                if (isNumber(val) && score != parseInt(val)) {
+                  team.score = val
                   //reloadGraph()
                 }
-                */
                 span.click(editor)
               })
           }
