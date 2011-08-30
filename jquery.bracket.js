@@ -47,6 +47,8 @@ var Match = function(round, data, id, results) {
     return src;
   }
 
+  var teamContainer = $('<div class="teamContainer"></div>')
+
   data[0].id = 0
   data[1].id = 1
 
@@ -76,6 +78,29 @@ var Match = function(round, data, id, results) {
       return data[0]
     else
       return {name: null, id: -1, score: null}
+  }
+
+  function refreshMatch() {
+    function team(el, team) {
+      el.removeClass('na')
+      el.removeClass('win')
+      el.removeClass('lose')
+
+      if (!team.name)
+        el.addClass('na')
+      else if (winner().name == team.name)
+        el.addClass('win')
+      else if (loser().name == team.name)
+        el.addClass('lose')
+    }
+
+    team(teamContainer.find('.team').eq(0), data[0])
+    team(teamContainer.find('.team').eq(1), data[1])
+
+    if (!data[0].name || !data[1].name || !isNumber(data[0].score) || !isNumber(data[1].score))
+      teamContainer.addClass('np')
+    else
+      teamContainer.removeClass('np')
   }
 
   function createTeamElement(round, team) {
@@ -112,6 +137,7 @@ var Match = function(round, data, id, results) {
                 span.html(val)
                 if (isNumber(val) && score != parseInt(val)) {
                   team.score = val
+                  refreshMatch()
                   //reloadGraph()
                 }
                 span.click(editor)
@@ -120,24 +146,13 @@ var Match = function(round, data, id, results) {
           editor()
         })
     }
-
-    if (!team.name)
-      tEl.addClass('na')
-    else if (winner().name == team.name)
-      tEl.addClass('win')
-    else if (loser().name == team.name)
-      tEl.addClass('lose')
-
     return tEl;
   }
 
-  var teamContainer = $('<div class="teamContainer"></div>')
-
-  if (!data[0].name || !data[1].name || !isNumber(data[0].score) || !isNumber(data[1].score))
-    teamContainer.addClass('np')
-
   teamContainer.append(createTeamElement(round.id, data[0]))
   teamContainer.append(createTeamElement(round.id, data[1]))
+
+  refreshMatch()
 
   var container = $('<div class="match"></div>').appendTo(round.el)
   container.append(teamContainer)
