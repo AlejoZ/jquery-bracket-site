@@ -197,7 +197,7 @@ var Match = function(round, data, id, results) {
         }
       }
       else {
-        var info = cb(teamContainer)
+        var info = cb(teamContainer, this)
         if (info == null) /* no connector */
           return
         shift = info.shift
@@ -533,11 +533,12 @@ function prepareLosers(winners, losers, data)
           var cb = null
           // inside lower bracket 
           if (n%2 == 0) {
-            cb = function(tC) {
+            cb = function(tC, match) {
               var connectorOffset = tC.height()/4
               var height = 0;
               var shift = 0;
 
+              console.log(match.winner().id)
               if (match.winner().id == 0) {
                 shift = connectorOffset
               }
