@@ -8,6 +8,9 @@ function isNumber(n) {
 }
 
 var Match = function(round, data, id, results) {
+  var connectorCb = null
+  var alignCb = null
+
   function connector(height, shift, teamContainer) {
     var width = parseInt($('.round:first').css('margin-right'))/2
     var drop = true;
@@ -47,8 +50,6 @@ var Match = function(round, data, id, results) {
     return src;
   }
 
-  var teamContainer = $('<div class="teamContainer"></div>')
-
   data[0].id = 0
   data[1].id = 1
 
@@ -79,6 +80,8 @@ var Match = function(round, data, id, results) {
     else
       return {name: null, id: -1, score: null}
   }
+
+  var teamContainer = $('<div class="teamContainer"></div>')
 
   function refreshMatch() {
     function team(el, team) {
@@ -149,17 +152,14 @@ var Match = function(round, data, id, results) {
     return tEl;
   }
 
-  teamContainer.append(createTeamElement(round.id, data[0]))
-  teamContainer.append(createTeamElement(round.id, data[1]))
-
-  refreshMatch()
-
-  var container = $('<div class="match"></div>').appendTo(round.el)
-  container.append(teamContainer)
+  var container = $('<div class="match"></div>')
 
   return {
     el: container,
     id: id,
+    connectorCb: function(cb) {
+      connectorCb = cb 
+    },
     connect: function(cb) {
       var connectorOffset = teamContainer.height()/4
       var matchupOffset = container.height()/2
@@ -197,7 +197,9 @@ var Match = function(round, data, id, results) {
         }
       }
       else {
-        var info = cb()
+        var info = cb(teamContainer)
+        if (info == null) /* no connector */
+          return
         shift = info.shift
         height = info.height
       }
@@ -205,7 +207,28 @@ var Match = function(round, data, id, results) {
     },
     winner: winner,
     loser: loser,
-    results: data
+    results: data,
+    setAlignCb: function(cb) {
+      alignCb = cb 
+    },
+    render: function() {
+      teamContainer.append(createTeamElement(round.id, data[0]))
+      teamContainer.append(createTeamElement(round.id, data[1]))
+
+      refreshMatch()
+
+      round.el.append(container)
+      container.append(teamContainer)
+
+      this.el.css('height', (round.bracket.el.height()/round.size())+'px');
+      teamContainer.css('top', (this.el.height()/2-teamContainer.height()/2)+'px');
+
+      /* todo: move to class */
+      if (alignCb)
+        alignCb()
+
+      this.connect(connectorCb)
+    }
   }
 }
 
@@ -215,6 +238,7 @@ var Round = function(bracket, roundId, results) {
 
   return {
     el: container,
+    bracket: bracket,
     id: roundId,
     addMatch: function(teamCb) {
         var id = matches.length
@@ -231,6 +255,14 @@ var Round = function(bracket, roundId, results) {
     },
     match: function(id) {
       return matches[id]
+    },
+    size: function() {
+      return matches.length
+    },
+    render: function() {
+      matches.forEach(function(ma) {
+        ma.render() 
+      })    
     }
   }
 }
@@ -253,8 +285,16 @@ var Bracket = function(container, results, teams)
     winner: function() {
       return this.final().winner()
     },
+    size: function() {
+      return rounds.length
+    },
     final: function() {
       return rounds[rounds.length-1].match(0)
+    },
+    render: function() {
+      rounds.forEach(function(ro) {
+        ro.render() 
+      })    
     }
   }
 }
@@ -342,10 +382,13 @@ function render(data)
   var w = new Bracket($('#bracket'), !r||!r[0]?null:r[0], data.teams)
   var l = new Bracket($('#loserBracket'), !r||!r[0]?null:r[1], null)
   var f = new Bracket($('#finals'), !r||!r[0]?null:r[2], null)
-  renderWinners(w, data);
-  renderLosers(w, l, data);
-  renderFinals(f, w, l, data);
+  prepareWinners(w, data);
+  prepareLosers(w, l, data);
+  prepareFinals(f, w, l, data);
 
+  w.render()
+  l.render()
+  f.render()
   postProcess($('#system'), data);
 }
 
@@ -419,7 +462,7 @@ function postProcess(container, data)
 
 }
 
-function renderWinners(winners, data)
+function prepareWinners(winners, data)
 {
   var teams = data.teams;
   var results = data.results;
@@ -444,19 +487,16 @@ function renderWinners(winners, data)
     
       var match = round.addMatch(teamCb)
 
-      /* todo: move to class */
-      var elClassTeamContainer = match.el.find('.teamContainer')
-      match.el.css('height', (graphHeight/matches)+'px');
-      elClassTeamContainer.css('top', (match.el.height()/2-elClassTeamContainer.height()/2)+'px');
-
+      /*
       if (r < (rounds-1))
         match.connect()
+        */
     }
     matches /= 2;
   }
 }
 
-function renderLosers(winners, losers, data)
+function prepareLosers(winners, losers, data)
 {
   var teams = data.teams;
   var results = data.results;
@@ -484,17 +524,17 @@ function renderLosers(winners, losers, data)
         }
       
         var match = round.addMatch(teamCb)
-        match.el.css('height', (graphHeight/matches)+'px');
         var teamContainer = match.el.find('.teamContainer')
-        teamContainer.css('top', (match.el.height()/2-teamContainer.height()/2)+'px');
-
-        var connectorOffset = teamContainer.height()/4
+        match.setAlignCb(function() {
+          teamContainer.css('top', (match.el.height()/2-teamContainer.height()/2)+'px');
+        })
 
         if (r < rounds-1 || n < 1) {
           var cb = null
           // inside lower bracket 
           if (n%2 == 0) {
-            cb = function() {
+            cb = function(tC) {
+              var connectorOffset = tC.height()/4
               var height = 0;
               var shift = 0;
 
@@ -508,11 +548,10 @@ function renderLosers(winners, losers, data)
               else {
                 shift = connectorOffset*2
               }
-
               return {height: height, shift: shift}
             }
           }
-          match.connect(cb)
+          match.connectorCb(cb)
         }
       }
     }
@@ -520,26 +559,30 @@ function renderLosers(winners, losers, data)
   }
 }
 
-function renderFinals(finals, winners, losers, data)
+function prepareFinals(finals, winners, losers, data)
 {
   var round = finals.addRound()
   var match = round.addMatch(function() { return [{name: winners.winner().name}, {name: losers.winner().name}] })
 
-  var height = winners.el.height()+losers.el.height()
-  match.el.css('height', (height)+'px');
+  match.setAlignCb(function() {
+    var height = winners.el.height()+losers.el.height()
+    match.el.css('height', (height)+'px');
 
-  var teamContainer = match.el.find('.teamContainer')
-  var top = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamContainer.height()/2 
+    var teamContainer = match.el.find('.teamContainer')
+    var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamContainer.height()/2 
 
-  teamContainer.css('top', (top)+'px');
-
-  var connectorOffset = teamContainer.height()/4
-  var matchupOffset = top-winners.el.height()/2
+    teamContainer.css('top', (topShift)+'px');
+  })
 
   var shift
   var height
+
+  match.connectorCb(function() { return null })
   
-  winners.final().connect(function() {
+  winners.final().connectorCb(function(tC) {
+      var connectorOffset = tC.height()/4
+      var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()/2 
+      var matchupOffset = topShift-winners.el.height()/2
       if (winners.winner().id == 0) {
         height = matchupOffset + connectorOffset*2
         shift = connectorOffset 
@@ -555,7 +598,10 @@ function renderFinals(finals, winners, losers, data)
       return {height: height, shift: shift}
     })
 
-  losers.final().connect(function() {
+  losers.final().connectorCb(function(tC) {
+      var connectorOffset = tC.height()/4
+      var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()/2 
+      var matchupOffset = topShift-winners.el.height()/2
       if (losers.winner().id == 0) {
         height = matchupOffset
         shift = connectorOffset*3
@@ -568,7 +614,6 @@ function renderFinals(finals, winners, losers, data)
         height = matchupOffset+connectorOffset
         shift = connectorOffset*2
       }
-
       return {height: -height, shift: -shift}
     })
 }
