@@ -7,6 +7,14 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+var w, l, f
+
+function reloadGraph() {
+  w.render()
+  l.render()
+  f.render()
+}
+
 var Match = function(round, data, id, results) {
   var connectorCb = null
   var alignCb = null
@@ -140,8 +148,8 @@ var Match = function(round, data, id, results) {
                 span.html(val)
                 if (isNumber(val) && score != parseInt(val)) {
                   team.score = val
-                  refreshMatch()
-                  //reloadGraph()
+                  //refreshMatch()
+                  reloadGraph()
                 }
                 span.click(editor)
               })
@@ -212,12 +220,14 @@ var Match = function(round, data, id, results) {
       alignCb = cb 
     },
     render: function() {
+      container.empty()
+      teamContainer.empty()
       teamContainer.append(createTeamElement(round.id, data[0]))
       teamContainer.append(createTeamElement(round.id, data[1]))
 
       refreshMatch()
 
-      round.el.append(container)
+      container.appendTo(round.el)
       container.append(teamContainer)
 
       this.el.css('height', (round.bracket.el.height()/round.size())+'px');
@@ -234,7 +244,7 @@ var Match = function(round, data, id, results) {
 
 var Round = function(bracket, roundId, results) {
   var matches = []
-  var container = $('<div class="round"></div>').appendTo(bracket.el)
+  var container = $('<div class="round"></div>')
 
   return {
     el: container,
@@ -260,6 +270,8 @@ var Round = function(bracket, roundId, results) {
       return matches.length
     },
     render: function() {
+      container.empty()
+      container.appendTo(bracket.el)
       matches.forEach(function(ma) {
         ma.render() 
       })    
@@ -292,6 +304,7 @@ var Bracket = function(container, results, teams)
       return rounds[rounds.length-1].match(0)
     },
     render: function() {
+      container.empty()
       rounds.forEach(function(ro) {
         ro.render() 
       })    
@@ -379,17 +392,22 @@ function render(data)
 {
   var r = data.results
   var t = data.results
-  var w = new Bracket($('#bracket'), !r||!r[0]?null:r[0], data.teams)
-  var l = new Bracket($('#loserBracket'), !r||!r[0]?null:r[1], null)
-  var f = new Bracket($('#finals'), !r||!r[0]?null:r[2], null)
+  var container = $('#system')
+
+  $('<div id="finals"></div>').appendTo(container)
+  $('<div id="bracket"></div>').appendTo(container)
+  $('<div id="loserBracket"></div>').appendTo(container)
+
+  w = new Bracket($('#bracket'), !r||!r[0]?null:r[0], data.teams)
+  l = new Bracket($('#loserBracket'), !r||!r[0]?null:r[1], null)
+  f = new Bracket($('#finals'), !r||!r[0]?null:r[2], null)
+
   prepareWinners(w, data);
   prepareLosers(w, l, data);
   prepareFinals(f, w, l, data);
 
-  w.render()
-  l.render()
-  f.render()
-  postProcess($('#system'), data);
+  reloadGraph()
+  postProcess(container, data);
 }
 
 function postProcess(container, data)
