@@ -305,7 +305,7 @@ function isValid(data)
   var r = data.results
 
   if (!t) {
-    console.log('no teams', data)
+    //console.log('no teams', data)
     return false
   }
 
@@ -313,14 +313,14 @@ function isValid(data)
     return true
 
   if (t.length < r[0][0].length) {
-    console.log('more results than teams', data)
+    //console.log('more results than teams', data)
     return false
   }
 
   for (var b = 0; b < r.length; b++) {
     for (var i = 0; i < ~~(r[b].length/2); i++) {
       if (r[b][2*i].length < r[b][2*i+1].length) {
-        console.log('previous round has less scores than next one', data)
+        //console.log('previous round has less scores than next one', data)
         return false
       }
     }
@@ -331,7 +331,7 @@ function isValid(data)
       break;
 
     if (r[0][i].length <= r[1][i*2].length) {
-      console.log('lb has more results than wb', data)
+      //console.log('lb has more results than wb', data)
       return false
     }
   }
@@ -341,12 +341,12 @@ function isValid(data)
       br.forEach(function(ro) {
         ro.forEach(function(ma) {
           if (ma.length != 2) {
-            console.log('match size not valid', ma)
+            //console.log('match size not valid', ma)
             throw {}
           }
           /*logical xor*/
           if (!(isNumber(ma[0])?isNumber(ma[1]):!isNumber(ma[1]))) {
-            console.log('mixed results', ma)
+            //console.log('mixed results', ma)
             throw {}
           }
         })
@@ -538,7 +538,6 @@ function prepareLosers(winners, losers, data)
               var height = 0;
               var shift = 0;
 
-              console.log(match.winner().id)
               if (match.winner().id == 0) {
                 shift = connectorOffset
               }
