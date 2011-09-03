@@ -1,4 +1,4 @@
-var jqueryBracket = function(bracketContainer, data) {
+var jqueryBracket = function(topCon, data) {
 
   // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
   function isNumber(n) {
@@ -9,14 +9,14 @@ var jqueryBracket = function(bracketContainer, data) {
     w.render()
     l.render()
     f.render()
-    postProcess(bracketContainer)
+    postProcess(topCon)
   }
 
-  var Match = function(round, data, id, results) {
+  var Match = function(round, data, idx, results) {
     var connectorCb = null
     var alignCb = null
 
-    function connector(height, shift, teamContainer) {
+    function connector(height, shift, teamCon) {
       var width = parseInt($('.round:first').css('margin-right'))/2
       var drop = true;
       // drop:
@@ -29,7 +29,7 @@ var jqueryBracket = function(bracketContainer, data) {
         drop = false;
         height = -height;
       }
-      var src = $('<div class="connector"></div>').appendTo(teamContainer);
+      var src = $('<div class="connector"></div>').appendTo(teamCon);
       src.css('height', height);
       src.css('width', width+'px');
       src.css('right', (-width-2)+'px');
@@ -89,7 +89,7 @@ var jqueryBracket = function(bracketContainer, data) {
         return {source: null, name: null, id: -1, score: null}
     }
 
-    var teamContainer = $('<div class="teamContainer"></div>')
+    var teamCon = $('<div class="teamContainer"></div>')
 
     function refreshMatch() {
       function team(el, team) {
@@ -105,16 +105,16 @@ var jqueryBracket = function(bracketContainer, data) {
           el.addClass('lose')
       }
 
-      team(teamContainer.find('.team').eq(0), data[0].source())
-      team(teamContainer.find('.team').eq(1), data[1].source())
+      team(teamCon.find('.team').eq(0), data[0].source())
+      team(teamCon.find('.team').eq(1), data[1].source())
 
       if (!data[0].source().name || !data[1].source().name || !isNumber(data[0].score) || !isNumber(data[1].score))
-        teamContainer.addClass('np')
+        teamCon.addClass('np')
       else
-        teamContainer.removeClass('np')
+        teamCon.removeClass('np')
     }
 
-    function createTeamElement(round, team) {
+    function teamElement(round, team) {
       var score = isNaN(team.score)?'--':team.score
       var sEl = $('<span>'+score+'</span>')
       var name = !team.name?'--':team.name
@@ -167,22 +167,22 @@ var jqueryBracket = function(bracketContainer, data) {
       return tEl;
     }
 
-    var container = $('<div class="match"></div>')
+    var matchCon = $('<div class="match"></div>')
 
     return {
-      el: container,
-      id: id,
+      el: matchCon,
+      id: idx,
       connectorCb: function(cb) {
         connectorCb = cb 
       },
       connect: function(cb) {
-        var connectorOffset = teamContainer.height()/4
-        var matchupOffset = container.height()/2
+        var connectorOffset = teamCon.height()/4
+        var matchupOffset = matchCon.height()/2
         var shift
         var height
 
         if (!cb || cb == null) {
-          if (id%2 == 0) { // dir == down 
+          if (idx%2 == 0) { // dir == down 
             if (this.winner().id == 0) {
               shift = connectorOffset
               height = matchupOffset
@@ -212,13 +212,13 @@ var jqueryBracket = function(bracketContainer, data) {
           }
         }
         else {
-          var info = cb(teamContainer, this)
+          var info = cb(teamCon, this)
           if (info == null) /* no connector */
             return
           shift = info.shift
           height = info.height
         }
-        teamContainer.append(connector(height, shift, teamContainer));
+        teamCon.append(connector(height, shift, teamCon));
       },
       winner: winner,
       loser: loser,
@@ -227,24 +227,24 @@ var jqueryBracket = function(bracketContainer, data) {
         alignCb = cb 
       },
       render: function() {
-        container.empty()
-        teamContainer.empty()
+        matchCon.empty()
+        teamCon.empty()
 
         data[0].name = data[0].source().name
         data[1].name = data[1].source().name
         data[0].idx = data[0].source().idx
         data[1].idx = data[1].source().idx
 
-        teamContainer.append(createTeamElement(round.id, data[0]))
-        teamContainer.append(createTeamElement(round.id, data[1]))
+        teamCon.append(teamElement(round.id, data[0]))
+        teamCon.append(teamElement(round.id, data[1]))
 
         refreshMatch()
 
-        container.appendTo(round.el)
-        container.append(teamContainer)
+        matchCon.appendTo(round.el)
+        matchCon.append(teamCon)
 
         this.el.css('height', (round.bracket.el.height()/round.size())+'px');
-        teamContainer.css('top', (this.el.height()/2-teamContainer.height()/2)+'px');
+        teamCon.css('top', (this.el.height()/2-teamCon.height()/2)+'px');
 
         /* todo: move to class */
         if (alignCb)
@@ -255,24 +255,24 @@ var jqueryBracket = function(bracketContainer, data) {
     }
   }
 
-  var Round = function(bracket, roundId, results) {
+  var Round = function(bracket, roundIdx, results) {
     var matches = []
-    var container = $('<div class="round"></div>')
+    var roundCon = $('<div class="round"></div>')
 
     return {
-      el: container,
+      el: roundCon,
       bracket: bracket,
-      id: roundId,
+      id: roundIdx,
       addMatch: function(teamCb) {
-          var id = matches.length
+          var matchIdx = matches.length
 
           if (teamCb != null)
             var teams = teamCb()
           else
-            var teams = [{source: bracket.round(roundId-1).match(id*2).winner},
-                        {source: bracket.round(roundId-1).match(id*2+1).winner}]
+            var teams = [{source: bracket.round(roundIdx-1).match(matchIdx*2).winner},
+                        {source: bracket.round(roundIdx-1).match(matchIdx*2+1).winner}]
 
-          var match = new Match(this, teams, id, !results?null:results[id])
+          var match = new Match(this, teams, matchIdx, !results?null:results[matchIdx])
           matches.push(match)
           return match;
       },
@@ -283,8 +283,8 @@ var jqueryBracket = function(bracketContainer, data) {
         return matches.length
       },
       render: function() {
-        container.empty()
-        container.appendTo(bracket.el)
+        roundCon.empty()
+        roundCon.appendTo(bracket.el)
         matches.forEach(function(ma) {
           ma.render() 
         })    
@@ -292,11 +292,11 @@ var jqueryBracket = function(bracketContainer, data) {
     }
   }
 
-  var Bracket = function(container, results, teams)
+  var Bracket = function(bracketCon, results, teams)
   {
     var rounds = []
     return {
-      el: container,
+      el: bracketCon,
       addRound: function() {
         var id = rounds.length
         
@@ -317,7 +317,7 @@ var jqueryBracket = function(bracketContainer, data) {
         return rounds[rounds.length-1].match(0).winner()
       },
       render: function() {
-        container.empty()
+        bracketCon.empty()
         rounds.forEach(function(ro) {
           ro.render() 
         })    
@@ -500,9 +500,9 @@ var jqueryBracket = function(bracketContainer, data) {
           }
         
           var match = round.addMatch(teamCb)
-          var teamContainer = match.el.find('.teamContainer')
+          var teamCon = match.el.find('.teamContainer')
           match.setAlignCb(function() {
-            teamContainer.css('top', (match.el.height()/2-teamContainer.height()/2)+'px');
+            teamCon.css('top', (match.el.height()/2-teamCon.height()/2)+'px');
           })
 
           if (r < rounds-1 || n < 1) {
@@ -544,10 +544,10 @@ var jqueryBracket = function(bracketContainer, data) {
       var height = winners.el.height()+losers.el.height()
       match.el.css('height', (height)+'px');
 
-      var teamContainer = match.el.find('.teamContainer')
-      var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamContainer.height()/2 
+      var teamCon = match.el.find('.teamContainer')
+      var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamCon.height()/2 
 
-      teamContainer.css('top', (topShift)+'px');
+      teamCon.css('top', (topShift)+'px');
     })
 
     var shift
@@ -598,9 +598,9 @@ var jqueryBracket = function(bracketContainer, data) {
   var bracketTeams = data.teams
 
   var r = data.results
-  var fEl = $('<div id="finals"></div>').appendTo(bracketContainer)
-  var wEl = $('<div id="bracket"></div>').appendTo(bracketContainer)
-  var lEl = $('<div id="loserBracket"></div>').appendTo(bracketContainer)
+  var fEl = $('<div class="finals"></div>').appendTo(topCon)
+  var wEl = $('<div class="bracket"></div>').appendTo(topCon)
+  var lEl = $('<div class="loserBracket"></div>').appendTo(topCon)
 
   w = new Bracket(wEl, !r||!r[0]?null:r[0], data.teams)
   l = new Bracket(lEl, !r||!r[1]?null:r[1], null)
@@ -611,11 +611,13 @@ var jqueryBracket = function(bracketContainer, data) {
   prepareFinals(f, w, l, data);
 
   reloadGraph()
-  postProcess(bracketContainer, data);
+  postProcess(topCon, data);
 }
 
 function bracket(DOMid, data)
 {
-  new jqueryBracket($('#'+DOMid), data)
+  var el = $('<div class="system"></div>').appendTo('#'+DOMid)
+
+  return new jqueryBracket(el, data)
 }
 

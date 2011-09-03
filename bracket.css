@@ -1,4 +1,4 @@
-#system {
+.system {
   font-family: "Arial";
   font-size: 14px;
   float: left;
@@ -8,19 +8,19 @@
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#333));
   background: -moz-linear-gradient(-90deg, #222, #333);
 }
-#finals {
+.finals {
   float: right;
   right: 0px;
   clear: right;
   position: relative;
 }
-#bracket {
+.bracket {
   float: right;
   height: 400px;
   clear: left;
 }
 
-#loserBracket {
+.loserBracket {
   float: right;
   height: 200px;
   clear: left;
