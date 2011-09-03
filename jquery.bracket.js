@@ -119,7 +119,7 @@ var jqueryBracket = function(topCon, data)
 
                   span.html(val)
                   if (isNumber(val) && score != parseInt(val)) {
-                    team.score = val
+                    team.score = parseInt(val)
                     renderAll()
                   }
                   span.click(editor)
