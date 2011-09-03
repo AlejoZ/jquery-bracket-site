@@ -127,14 +127,15 @@ var Match = function(round, data, id, results) {
     var tEl = $('<div class="team"></div>');
     tEl.append('<b>'+name+'</b>')
 
-    console.log(team.idx)
-
     if (isNumber(team.idx))
       tEl.attr('index', team.idx)
 
     tEl.append(sEl)
 
-    if (team.name) {
+    if (!team.name) {
+      sEl.attr('disabled', 'disabled')
+    }
+    else {
       sEl.click(function() {
           var span = $(this)
           function editor() {

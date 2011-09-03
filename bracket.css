@@ -69,9 +69,15 @@
   width: 20px;
 }
 
+.team span[disabled] {
+  cursor: default;
+}
+
 .team span input {
-  width: 30px;
-  height: 20px;
+  font-size: 10px;
+  padding: 0px;
+  width: inherit;
+  height: 16px;
 }
 
 .team.np {
