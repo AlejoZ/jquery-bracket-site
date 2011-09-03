@@ -5,11 +5,17 @@ var jqueryBracket = function(topCon, data)
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
 
-  function renderAll() {
+  function renderAll(save) {
     w.render()
     l.render()
     f.render()
     postProcess(topCon)
+
+    data.results[0] = w.results()
+    data.results[1] = l.results()
+    data.results[2] = f.results()
+    //console.log(jQuery.toJSON(data))
+    //jQuery.post("io", jQuery.toJSON(data))
   }
 
   var Match = function(round, data, idx, results) 
@@ -120,7 +126,7 @@ var jqueryBracket = function(topCon, data)
                   span.html(val)
                   if (isNumber(val) && score != parseInt(val)) {
                     team.score = parseInt(val)
-                    renderAll()
+                    renderAll(true)
                   }
                   span.click(editor)
                 })
@@ -206,7 +212,6 @@ var jqueryBracket = function(topCon, data)
       },
       winner: winner,
       loser: loser,
-      results: data,
       setAlignCb: function(cb) {
         alignCb = cb 
       },
@@ -238,6 +243,9 @@ var jqueryBracket = function(topCon, data)
           alignCb()
 
         this.connect(connectorCb)
+      },
+      results: function() {
+        return [data[0].score, data[1].score] 
       }
     }
   }
@@ -276,6 +284,13 @@ var jqueryBracket = function(topCon, data)
         matches.forEach(function(ma) {
           ma.render() 
         })    
+      },
+      results: function() {
+        var results = []
+        matches.forEach(function(ma) {
+          results.push(ma.results())
+        })
+        return results
       }
     }
   }
@@ -313,6 +328,13 @@ var jqueryBracket = function(topCon, data)
         rounds.forEach(function(ro) {
           ro.render() 
         })    
+      },
+      results: function() {
+        var results = []
+        rounds.forEach(function(ro) {
+          results.push(ro.results())
+        })    
+        return results
       }
     }
   }
@@ -379,7 +401,7 @@ var jqueryBracket = function(topCon, data)
     return true
   }
 
-  function postProcess(container, data)
+  function postProcess(container)
   {
     var Track = function(teamIndex, cssClass) {
         var index = teamIndex;
@@ -607,8 +629,7 @@ var jqueryBracket = function(topCon, data)
   prepareLosers(w, l, data);
   prepareFinals(f, w, l, data);
 
-  renderAll()
-  postProcess(topCon, data);
+  renderAll(false)
 }
 
 function bracket(DOMid, data)
