@@ -61,13 +61,16 @@ var Match = function(round, data, id, results) {
   data[0].id = 0
   data[1].id = 1
 
+  data[0].name = data[0].source.name
+  data[1].name = data[1].source.name
+
   data[0].score = !results?NaN:results[0]
   data[1].score = !results?NaN:results[1]
 
   /* match has score even though teams haven't yet been decided */
   /* todo: would be nice to have in preload check, maybe too much work */
   if ((!data[0].name || !data[1].name) && (isNumber(data[0].score) || isNumber(data[1].score))) {
-    console.log('ERROR IN SCORE DATA: '+data[0].name+': '+data[0].score+', '+data[1].name+': '+data[1].score)
+    console.log('ERROR IN SCORE DATA: '+data[0].source.name+': '+data[0].score+', '+data[1].source.name+': '+data[1].score)
     data[0].score = data[1].score = NaN
   }
 
@@ -77,7 +80,7 @@ var Match = function(round, data, id, results) {
     else if (data[0].score < data[1].score)
       return data[1]
     else
-      return {name: null, id: -1, score: null}
+      return {source: null, name: null, id: -1, score: null}
   }
 
   function loser() {
@@ -86,7 +89,7 @@ var Match = function(round, data, id, results) {
     else if (data[0].score < data[1].score)
       return data[0]
     else
-      return {name: null, id: -1, score: null}
+      return {source: null, name: null, id: -1, score: null}
   }
 
   var teamContainer = $('<div class="teamContainer"></div>')
@@ -105,10 +108,10 @@ var Match = function(round, data, id, results) {
         el.addClass('lose')
     }
 
-    team(teamContainer.find('.team').eq(0), data[0])
-    team(teamContainer.find('.team').eq(1), data[1])
+    team(teamContainer.find('.team').eq(0), data[0].source)
+    team(teamContainer.find('.team').eq(1), data[1].source)
 
-    if (!data[0].name || !data[1].name || !isNumber(data[0].score) || !isNumber(data[1].score))
+    if (!data[0].source.name || !data[1].source.name || !isNumber(data[0].score) || !isNumber(data[1].score))
       teamContainer.addClass('np')
     else
       teamContainer.removeClass('np')
@@ -222,6 +225,10 @@ var Match = function(round, data, id, results) {
     render: function() {
       container.empty()
       teamContainer.empty()
+
+      data[0].name = data[0].source.name
+      data[1].name = data[1].source.name
+
       teamContainer.append(createTeamElement(round.id, data[0]))
       teamContainer.append(createTeamElement(round.id, data[1]))
 
@@ -256,8 +263,8 @@ var Round = function(bracket, roundId, results) {
         if (teamCb != null)
           var teams = teamCb()
         else
-          var teams = [{name: bracket.round(roundId-1).match(id*2).winner().name},
-                       {name: bracket.round(roundId-1).match(id*2+1).winner().name}]
+          var teams = [{source: bracket.round(roundId-1).match(id*2).winner()},
+                       {source: bracket.round(roundId-1).match(id*2+1).winner()}]
 
         var match = new Match(this, teams, id, !results?null:results[id])
         matches.push(match)
@@ -499,7 +506,7 @@ function prepareWinners(winners, data)
       if (r == 0) {
         teamCb = function() {
             var t = teams[m]
-            return [{name: t[0]}, {name: t[1]}]
+            return [{source: {name: t[0]}}, {source: {name: t[1]}}]
           }
       }
     
@@ -532,12 +539,12 @@ function prepareLosers(winners, losers, data)
         if (!(n%2 == 0 && r != 0)) teamCb = function() {
           /* first round comes from winner bracket */
           if (n%2 == 0 && r == 0) {
-            return [{name: winners.round(0).match(m*2).loser().name}, 
-                    {name: winners.round(0).match(m*2+1).loser().name}]
+            return [{source: winners.round(0).match(m*2).loser()}, 
+                    {source: winners.round(0).match(m*2+1).loser()}]
           }
           else { /* match with dropped */
-            return [{name: losers.round(r*2).match(m).winner().name},
-                    {name: winners.round(r+1).match(m).loser().name}]
+            return [{source: losers.round(r*2).match(m).winner()},
+                    {source: winners.round(r+1).match(m).loser()}]
           }
         }
       
@@ -580,7 +587,7 @@ function prepareLosers(winners, losers, data)
 function prepareFinals(finals, winners, losers, data)
 {
   var round = finals.addRound()
-  var match = round.addMatch(function() { return [{name: winners.winner().name}, {name: losers.winner().name}] })
+  var match = round.addMatch(function() { return [{source: winners.winner()}, {source: losers.winner()}] })
 
   match.setAlignCb(function() {
     var height = winners.el.height()+losers.el.height()
