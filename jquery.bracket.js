@@ -1,4 +1,4 @@
-var jqueryBracket = function(topCon, data) 
+var jqueryBracket = function(topCon, data, options) 
 {
   // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
   function isNumber(n) {
@@ -11,11 +11,23 @@ var jqueryBracket = function(topCon, data)
     f.render()
     postProcess(topCon)
 
-    data.results[0] = w.results()
-    data.results[1] = l.results()
-    data.results[2] = f.results()
-    //console.log(jQuery.toJSON(data))
-    //jQuery.post("io", jQuery.toJSON(data))
+    if (save) {
+      data.results[0] = w.results()
+      data.results[1] = l.results()
+      data.results[2] = f.results()
+
+      if (options && options.change)
+        options.change(jQuery.toJSON(data))
+      //console.log(jQuery.toJSON(data))
+
+      jQuery.ajax("node/set/123", 
+                  {
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    type: 'post',
+                    data: jQuery.toJSON(data)
+                  })
+    }
   }
 
   var Match = function(round, data, idx, results) 
@@ -632,10 +644,10 @@ var jqueryBracket = function(topCon, data)
   renderAll(false)
 }
 
-function bracket(DOMid, data)
+function bracket(DOMid, data, options)
 {
   var el = $('<div class="system"></div>').appendTo('#'+DOMid)
 
-  return new jqueryBracket(el, data)
+  return new jqueryBracket(el, data, options)
 }
 

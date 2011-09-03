@@ -168,7 +168,9 @@ $(document).ready(function() {
     }
     */
 
-    bracket('b4', results4)
+    bracket('b4', results4, {change: function(json) {
+        console.log(json)
+      }})
     bracket('b8', results8)
     bracket('b16', results16)
     

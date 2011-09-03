@@ -1,0 +1,8 @@
+# This is the .htaccess file in our document root.
+Options +FollowSymLinks -MultiViews
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	# Simple URL redirect:
+	RewriteRule ^node/(.+) http://localhost:3000/$1 [P]
+</IfModule>
