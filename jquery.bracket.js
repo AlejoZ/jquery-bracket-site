@@ -387,21 +387,6 @@ function isValid(data)
   catch(e) {
     return false
   }
-  
-  /*
-    for (ro in br) {
-      for (ma in ro) {
-      }
-    }
-  }
-  for (var b = 0; b < r.length; b++) {
-    for (var i = 0; i < r[b].length; i++) {
-      for (var j = 0; j < r[b][i].length; j++) {
-        
-      }
-    }
-  }
-*/
 
   return true
 }
@@ -498,9 +483,8 @@ function prepareWinners(winners, data)
     var round = winners.addRound(res)
 
     for (var m = 0; m < matches; m++) {
-      var team;
-
       var teamCb = null
+
       if (r == 0) {
         teamCb = function() {
             var t = teams[m]
@@ -509,13 +493,8 @@ function prepareWinners(winners, data)
                     {source: function() { return {name: t[1], idx: (i*2+1)} }}]
           }
       }
-    
-      var match = round.addMatch(teamCb)
 
-      /*
-      if (r < (rounds-1))
-        match.connect()
-        */
+      round.addMatch(teamCb)
     }
     matches /= 2;
   }
@@ -535,6 +514,7 @@ function prepareLosers(winners, losers, data)
 
       for (var m = 0; m < matches; m++) {
         var teamCb = null
+
         /* special cases */
         if (!(n%2 == 0 && r != 0)) teamCb = function() {
           /* first round comes from winner bracket */
