@@ -1,21 +1,19 @@
-var jqueryBracket = function(topCon, data) {
-
+var jqueryBracket = function(topCon, data) 
+{
   // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
   function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
 
-  function reloadGraph() {
+  function renderAll() {
     w.render()
     l.render()
     f.render()
     postProcess(topCon)
   }
 
-  var Match = function(round, data, idx, results) {
-    var connectorCb = null
-    var alignCb = null
-
+  var Match = function(round, data, idx, results) 
+  {
     function connector(height, shift, teamCon) {
       var width = parseInt($('.round:first').css('margin-right'))/2
       var drop = true;
@@ -55,22 +53,6 @@ var jqueryBracket = function(topCon, data) {
       return src;
     }
 
-    data[0].id = 0
-    data[1].id = 1
-
-    data[0].name = data[0].source().name
-    data[1].name = data[1].source().name
-
-    data[0].score = !results?NaN:results[0]
-    data[1].score = !results?NaN:results[1]
-
-    /* match has score even though teams haven't yet been decided */
-    /* todo: would be nice to have in preload check, maybe too much work */
-    if ((!data[0].name || !data[1].name) && (isNumber(data[0].score) || isNumber(data[1].score))) {
-      console.log('ERROR IN SCORE DATA: '+data[0].source().name+': '+data[0].score+', '+data[1].source().name+': '+data[1].score)
-      data[0].score = data[1].score = NaN
-    }
-
     function winner() {
       if (data[0].score > data[1].score)
         return data[0]
@@ -89,31 +71,6 @@ var jqueryBracket = function(topCon, data) {
         return {source: null, name: null, id: -1, score: null}
     }
 
-    var teamCon = $('<div class="teamContainer"></div>')
-
-    function refreshMatch() {
-      function team(el, team) {
-        el.removeClass('na')
-        el.removeClass('win')
-        el.removeClass('lose')
-
-        if (!team.name)
-          el.addClass('na')
-        else if (winner().name == team.name)
-          el.addClass('win')
-        else if (loser().name == team.name)
-          el.addClass('lose')
-      }
-
-      team(teamCon.find('.team').eq(0), data[0].source())
-      team(teamCon.find('.team').eq(1), data[1].source())
-
-      if (!data[0].source().name || !data[1].source().name || !isNumber(data[0].score) || !isNumber(data[1].score))
-        teamCon.addClass('np')
-      else
-        teamCon.removeClass('np')
-    }
-
     function teamElement(round, team) {
       var score = isNaN(team.score)?'--':team.score
       var sEl = $('<span>'+score+'</span>')
@@ -123,6 +80,13 @@ var jqueryBracket = function(topCon, data) {
 
       if (isNumber(team.idx))
         tEl.attr('index', team.idx)
+
+      if (!team.name)
+        tEl.addClass('na')
+      else if (winner().name == team.name)
+        tEl.addClass('win')
+      else if (loser().name == team.name)
+        tEl.addClass('lose')
 
       tEl.append(sEl)
 
@@ -156,7 +120,7 @@ var jqueryBracket = function(topCon, data) {
                   span.html(val)
                   if (isNumber(val) && score != parseInt(val)) {
                     team.score = val
-                    reloadGraph()
+                    renderAll()
                   }
                   span.click(editor)
                 })
@@ -167,7 +131,27 @@ var jqueryBracket = function(topCon, data) {
       return tEl;
     }
 
+    var connectorCb = null
+    var alignCb = null
+
     var matchCon = $('<div class="match"></div>')
+    var teamCon = $('<div class="teamContainer"></div>')
+
+    data[0].id = 0
+    data[1].id = 1
+
+    data[0].name = data[0].source().name
+    data[1].name = data[1].source().name
+
+    data[0].score = !results?NaN:results[0]
+    data[1].score = !results?NaN:results[1]
+
+    /* match has score even though teams haven't yet been decided */
+    /* todo: would be nice to have in preload check, maybe too much work */
+    if ((!data[0].name || !data[1].name) && (isNumber(data[0].score) || isNumber(data[1].score))) {
+      console.log('ERROR IN SCORE DATA: '+data[0].source().name+': '+data[0].score+', '+data[1].source().name+': '+data[1].score)
+      data[0].score = data[1].score = NaN
+    }
 
     return {
       el: matchCon,
@@ -238,7 +222,8 @@ var jqueryBracket = function(topCon, data) {
         teamCon.append(teamElement(round.id, data[0]))
         teamCon.append(teamElement(round.id, data[1]))
 
-        refreshMatch()
+        if (!winner().name)
+          teamCon.addClass('np')
 
         matchCon.appendTo(round.el)
         matchCon.append(teamCon)
@@ -255,7 +240,8 @@ var jqueryBracket = function(topCon, data) {
     }
   }
 
-  var Round = function(bracket, roundIdx, results) {
+  var Round = function(bracket, roundIdx, results) 
+  {
     var matches = []
     var roundCon = $('<div class="round"></div>')
 
@@ -295,6 +281,7 @@ var jqueryBracket = function(topCon, data) {
   var Bracket = function(bracketCon, results, teams)
   {
     var rounds = []
+
     return {
       el: bracketCon,
       addRound: function() {
@@ -610,7 +597,7 @@ var jqueryBracket = function(topCon, data) {
   prepareLosers(w, l, data);
   prepareFinals(f, w, l, data);
 
-  reloadGraph()
+  renderAll()
   postProcess(topCon, data);
 }
 
