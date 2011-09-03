@@ -303,6 +303,9 @@ var jqueryBracket = function(topCon, data)
       winner: function() {
         return rounds[rounds.length-1].match(0).winner()
       },
+      loser: function() {
+        return rounds[rounds.length-1].match(0).loser()
+      },
       render: function() {
         bracketCon.empty()
         rounds.forEach(function(ro) {
@@ -401,27 +404,33 @@ var jqueryBracket = function(topCon, data)
           }
         }
       }
-    /*
-    var winTrack = new Track(6, 'highlightWinner');
-    var loseTrack = new Track(15, 'highlightLoser');
-    winTrack.highlight()
-    loseTrack.highlight()
-    */
+
+    var winner = f.winner()
+    var loser = f.loser()
+    var winTrack = null
+    var loseTrack = null
+
+    if (winner && loser) {
+      winTrack = new Track(winner.idx, 'highlightWinner');
+      loseTrack  = new Track(loser.idx, 'highlightLoser');
+      winTrack.highlight()
+      loseTrack.highlight()
+    }
 
     container.find('.team').mouseover(function() {
         var i = $(this).attr('index') 
-        /*
-        winTrack.deHighlight()
-        loseTrack.deHighlight()
-        */
+        if (winTrack) {
+          winTrack.deHighlight()
+          loseTrack.deHighlight()
+        }
         track = new Track(i);
         track.highlight()
         $(this).mouseout(function() {
             track.deHighlight()
-            /*
-            winTrack.highlight()
-            loseTrack.highlight()
-            */
+            if (winTrack) {
+              winTrack.highlight()
+              loseTrack.highlight()
+            }
             $(this).unbind('mouseout')
           })
       })
