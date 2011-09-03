@@ -13,7 +13,10 @@ function reloadGraph() {
   w.render()
   l.render()
   f.render()
+  postProcess($('#system'))
 }
+
+var bracketTeams
 
 var Match = function(round, data, id, results) {
   var connectorCb = null
@@ -121,7 +124,14 @@ var Match = function(round, data, id, results) {
     var score = isNaN(team.score)?'--':team.score
     var sEl = $('<span>'+score+'</span>')
     var name = !team.name?'--':team.name
-    var tEl = $('<div class="team"><b>'+name+'</b></div>');
+    var tEl = $('<div class="team"></div>');
+    tEl.append('<b>'+name+'</b>')
+
+    console.log(team.idx)
+
+    if (isNumber(team.idx))
+      tEl.attr('index', team.idx)
+
     tEl.append(sEl)
 
     if (team.name) {
@@ -151,7 +161,6 @@ var Match = function(round, data, id, results) {
                 span.html(val)
                 if (isNumber(val) && score != parseInt(val)) {
                   team.score = val
-                  //refreshMatch()
                   reloadGraph()
                 }
                 span.click(editor)
@@ -228,6 +237,8 @@ var Match = function(round, data, id, results) {
 
       data[0].name = data[0].source().name
       data[1].name = data[1].source().name
+      data[0].idx = data[0].source().idx
+      data[1].idx = data[1].source().idx
 
       teamContainer.append(createTeamElement(round.id, data[0]))
       teamContainer.append(createTeamElement(round.id, data[1]))
@@ -401,6 +412,8 @@ function render(data)
   var t = data.results
   var container = $('#system')
 
+  bracketTeams = data.teams
+
   $('<div id="finals"></div>').appendTo(container)
   $('<div id="bracket"></div>').appendTo(container)
   $('<div id="loserBracket"></div>').appendTo(container)
@@ -445,21 +458,6 @@ function postProcess(container, data)
         }
       }
     }
-  var m = {};
-
-  for (var i = 0; i < data.teams.length; i++)
-  {
-    m[data.teams[i][0]] = i*2
-    m[data.teams[i][1]] = i*2+1
-  }
-
-  container.find('div.team b').each(
-      function() {
-        var key = $(this).text()
-        $(this).parent().attr('index', m[key]); 
-      } 
-    );
-
   /*
   var winTrack = new Track(6, 'highlightWinner');
   var loseTrack = new Track(15, 'highlightLoser');
@@ -506,7 +504,9 @@ function prepareWinners(winners, data)
       if (r == 0) {
         teamCb = function() {
             var t = teams[m]
-            return [{source: function() { return {name: t[0]} }}, {source: function() { return {name: t[1]} }}]
+            var i = m
+            return [{source: function() { return {name: t[0], idx: (i*2)} }}, 
+                    {source: function() { return {name: t[1], idx: (i*2+1)} }}]
           }
       }
     
