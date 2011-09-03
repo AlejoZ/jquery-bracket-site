@@ -321,7 +321,7 @@ var jqueryBracket = function(topCon, data)
     var r = data.results
 
     if (!t) {
-      //console.log('no teams', data)
+      console.log('no teams', data)
       return false
     }
 
@@ -329,14 +329,14 @@ var jqueryBracket = function(topCon, data)
       return true
 
     if (t.length < r[0][0].length) {
-      //console.log('more results than teams', data)
+      console.log('more results than teams', data)
       return false
     }
 
     for (var b = 0; b < r.length; b++) {
       for (var i = 0; i < ~~(r[b].length/2); i++) {
         if (r[b][2*i].length < r[b][2*i+1].length) {
-          //console.log('previous round has less scores than next one', data)
+          console.log('previous round has less scores than next one', data)
           return false
         }
       }
@@ -347,7 +347,7 @@ var jqueryBracket = function(topCon, data)
         break;
 
       if (r[0][i].length <= r[1][i*2].length) {
-        //console.log('lb has more results than wb', data)
+        console.log('lb has more results than wb', data)
         return false
       }
     }
@@ -357,19 +357,20 @@ var jqueryBracket = function(topCon, data)
         br.forEach(function(ro) {
           ro.forEach(function(ma) {
             if (ma.length != 2) {
-              //console.log('match size not valid', ma)
-              throw {}
+              console.log('match size not valid', ma)
+              throw 'match size not valid'
             }
             /*logical xor*/
             if (!(isNumber(ma[0])?isNumber(ma[1]):!isNumber(ma[1]))) {
-              //console.log('mixed results', ma)
-              throw {}
+              console.log('mixed results', ma)
+              throw 'mixed results'
             }
           })
         })
       })
     }
     catch(e) {
+      console.log(e)
       return false
     }
 
@@ -589,6 +590,12 @@ var jqueryBracket = function(topCon, data)
   var fEl = $('<div class="finals"></div>').appendTo(topCon)
   var wEl = $('<div class="bracket"></div>').appendTo(topCon)
   var lEl = $('<div class="loserBracket"></div>').appendTo(topCon)
+
+  wEl.css('height', data.teams.length*50)
+  lEl.css('height', wEl.height()/2)
+
+  var rounds = (Math.log(data.teams.length*2) / Math.log(2)-1) * 2;
+  topCon.css('width', (rounds+1)*140+40) /*(r+final)*matchlen+margin*/
 
   w = new Bracket(wEl, !r||!r[0]?null:r[0], data.teams)
   l = new Bracket(lEl, !r||!r[1]?null:r[1], null)

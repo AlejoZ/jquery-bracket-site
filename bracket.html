@@ -102,7 +102,7 @@ function testValidation()
     alert('loser bracket has at most half wb teams')
 }
 
-var completeResults = {  
+var results16 = {  
     teams : [
       ["Team 1",  "Team 2" ],
       ["Team 3",  "Team 4" ],
@@ -130,44 +130,63 @@ var completeResults = {
     ]]
   };
 
-var partialResults = {  
+var results8 = {  
     teams : [
       ["Team 1",  "Team 2" ],
       ["Team 3",  "Team 4" ],
       ["Team 5",  "Team 6" ],
-      ["Team 7",  "Team 8" ],
-      ["Team 11", "Team 12"],
-      ["Team 13", "Team 14"],
-      ["Team 15", "Team 16"],
-      ["Team 17", "Team 18"]
+      ["Team 7",  "Team 8" ]
     ],
     results : [[
-      [[2, 1], [2, -1], [2, 0], [NaN, NaN], [1, 2], [1, 2], [1, 2], [1, 2]],
-      [[2, 1], [NaN, NaN], [2, 0], [1, 0]],
+      [[2, 1], [2, -1], [2, 0], [NaN, NaN]],
+      [[2, 1], [NaN, NaN]],
     ], [
       [[2, 1], [NaN, NaN], [1, 2]],
       [[NaN, NaN], [NaN, NaN], [0, 1]]
     ]]
   };
 
+var results4 = {  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ]
+    ],
+    results : [[
+      [[2, 1], [NaN, NaN]],
+      [[NaN, NaN]],
+    ], [
+      [[NaN, NaN]]
+    ]]
+  };
+
 $(document).ready(function() {
     /*
-    if (!isValid(partialResults)) {
+    if (!isValid(results16)) {
       console.log('ERROR IN DATA')
-      return
+      //return
     }
     */
 
-    bracket('b1', partialResults);
-    bracket('b2', completeResults);
+    bracket('b4', results4)
+    bracket('b8', results8)
+    bracket('b16', results16)
     
     //testValidation();
   }
 );
 </script>
+<style>
+h1 {
+  clear: both;
+}
+</style>
 </head>
 <body>
-<div id="b1"></div>
-<div id="b2"></div>
+<h1>Double elimination with max 4 teams</h1>
+<div id="b4"></div>
+<h1>Double elimination with max 8 teams</h1>
+<div id="b8"></div>
+<h1>Double elimination with max 16 teams</h1>
+<div id="b16"></div>
 </body>
 </html>
