@@ -419,18 +419,10 @@ var jqueryBracket = function(topCon, data)
 
     container.find('.team').mouseover(function() {
         var i = $(this).attr('index') 
-        if (winTrack) {
-          winTrack.deHighlight()
-          loseTrack.deHighlight()
-        }
         track = new Track(i);
         track.highlight()
         $(this).mouseout(function() {
             track.deHighlight()
-            if (winTrack) {
-              winTrack.highlight()
-              loseTrack.highlight()
-            }
             $(this).unbind('mouseout')
           })
       })
