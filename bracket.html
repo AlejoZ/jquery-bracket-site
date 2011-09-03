@@ -151,19 +151,23 @@ var partialResults = {
   };
 
 $(document).ready(function() {
+    /*
     if (!isValid(partialResults)) {
       console.log('ERROR IN DATA')
       return
     }
+    */
 
-    render(partialResults);
+    bracket('system', partialResults);
+    bracket('system2', completeResults);
     
-    testValidation();
+    //testValidation();
   }
 );
 </script>
 </head>
 <body>
 <div id="system"></div>
+<div id="system2"></div>
 </body>
 </html>
