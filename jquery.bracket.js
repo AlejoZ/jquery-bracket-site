@@ -224,6 +224,8 @@ var jqueryBracket = function(topCon, data)
 
         if (!winner().name)
           teamCon.addClass('np')
+        else
+          teamCon.removeClass('np')
 
         matchCon.appendTo(round.el)
         matchCon.append(teamCon)
