@@ -47,11 +47,11 @@ var results8 = {
       ["Team 7",  "Team 8" ]
     ],
     results : [[
-      [[2, 1], [2, -1], [2, 0], [NaN, NaN]],
-      [[2, 1], [NaN, NaN]],
+      [[2, 1], [2, -1], [2, 0], [null, null]],
+      [[2, 1], [null, null]],
     ], [
-      [[2, 1], [NaN, NaN], [1, 2]],
-      [[NaN, NaN], [NaN, NaN], [0, 1]]
+      [[2, 1], [null, null], [1, 2]],
+      [[null, null], [null, null], [0, 1]]
     ]]
   };
 
@@ -61,10 +61,10 @@ var results4 = {
       ["Team 3",  "Team 4" ]
     ],
     results : [[
-      [[2, 1], [NaN, NaN]],
-      [[NaN, NaN]],
+      [[2, 1], [null, null]],
+      [[null, null]],
     ], [
-      [[NaN, NaN]]
+      [[null, null]]
     ]]
   };
 

@@ -89,7 +89,7 @@ var jqueryBracket = function(topCon, data, options)
     }
 
     function teamElement(round, team) {
-      var score = isNaN(team.score)?'--':team.score
+      var score = !isNumber(team.score)?'--':team.score
       var sEl = $('<span>'+score+'</span>')
       var name = !team.name?'--':team.name
       var tEl = $('<div class="team"></div>');
@@ -117,7 +117,7 @@ var jqueryBracket = function(topCon, data, options)
               span.unbind()
 
               var score
-              if (isNaN(team.score))
+              if (!isNumber(team.score))
                 score = ''
               else
                 score = span.text()
@@ -129,7 +129,7 @@ var jqueryBracket = function(topCon, data, options)
               input.focus()
               input.blur(function() {
                   var val = input.val()
-                  if (!val && isNaN(team.score))
+                  if (!val && !isNumber(team.score))
                     val = '--'
                   else if (!val && isNumber(team.score))
                     val = team.score
@@ -160,14 +160,14 @@ var jqueryBracket = function(topCon, data, options)
     data[0].name = data[0].source().name
     data[1].name = data[1].source().name
 
-    data[0].score = !results?NaN:results[0]
-    data[1].score = !results?NaN:results[1]
+    data[0].score = !results?null:results[0]
+    data[1].score = !results?null:results[1]
 
     /* match has score even though teams haven't yet been decided */
     /* todo: would be nice to have in preload check, maybe too much work */
     if ((!data[0].name || !data[1].name) && (isNumber(data[0].score) || isNumber(data[1].score))) {
       console.log('ERROR IN SCORE DATA: '+data[0].source().name+': '+data[0].score+', '+data[1].source().name+': '+data[1].score)
-      data[0].score = data[1].score = NaN
+      data[0].score = data[1].score = null
     }
 
     return {
