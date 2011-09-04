@@ -71,21 +71,25 @@ var jqueryBracket = function(topCon, data, options)
     }
 
     function winner() {
-      if (data[0].score > data[1].score)
-        return data[0]
-      else if (data[0].score < data[1].score)
-        return data[1]
-      else
-        return {source: null, name: null, id: -1, score: null}
+      if (isNumber(data[0].score) && isNumber(data[1].score)) {
+        if (data[0].score > data[1].score)
+          return data[0]
+        else if (data[0].score < data[1].score)
+          return data[1]
+      }
+
+      return {source: null, name: null, id: -1, score: null}
     }
 
     function loser() {
-      if (data[0].score > data[1].score)
-        return data[1]
-      else if (data[0].score < data[1].score)
-        return data[0]
-      else
-        return {source: null, name: null, id: -1, score: null}
+      if (isNumber(data[0].score) && isNumber(data[1].score)) {
+        if (data[0].score > data[1].score)
+          return data[1]
+        else if (data[0].score < data[1].score)
+          return data[0]
+      }
+
+      return {source: null, name: null, id: -1, score: null}
     }
 
     function teamElement(round, team) {
