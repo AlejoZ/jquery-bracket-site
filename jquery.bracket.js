@@ -92,7 +92,7 @@ var jqueryBracket = function(topCon, data, options)
       return {source: null, name: null, id: -1, score: null}
     }
 
-    function teamElement(round, team) {
+    function teamElement(round, team, isReady) {
       var score = !isNumber(team.score)?'--':team.score
       var sEl = $('<span>'+score+'</span>')
       var name = !team.name?'--':team.name
@@ -111,7 +111,7 @@ var jqueryBracket = function(topCon, data, options)
 
       tEl.append(sEl)
 
-      if (!team.name) {
+      if (!team.name || !isReady) {
         sEl.attr('disabled', 'disabled')
       }
       else {
@@ -239,13 +239,17 @@ var jqueryBracket = function(topCon, data, options)
         data[0].idx = data[0].source().idx
         data[1].idx = data[1].source().idx
 
-        teamCon.append(teamElement(round.id, data[0]))
-        teamCon.append(teamElement(round.id, data[1]))
+        var isReady = false
+        if (data[0].name && data[1].name)
+          isReady = true
 
         if (!winner().name)
           teamCon.addClass('np')
         else
           teamCon.removeClass('np')
+
+        teamCon.append(teamElement(round.id, data[0], isReady))
+        teamCon.append(teamElement(round.id, data[1], isReady))
 
         matchCon.appendTo(round.el)
         matchCon.append(teamCon)
