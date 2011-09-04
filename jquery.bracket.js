@@ -19,7 +19,7 @@ var jqueryBracket = function(topCon, data, options)
       if (options && options.change)
         options.change(jQuery.toJSON(data))
 
-      jQuery.ajax("node/set/123", 
+      jQuery.ajax("node/set/"+data.id, 
                   {
                     contentType: 'application/json',
                     dataType: 'json',

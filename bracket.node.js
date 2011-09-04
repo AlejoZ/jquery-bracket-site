@@ -12,6 +12,7 @@ app.get('/', function(req, res){
 
 
 var results16 = {  
+    id: 2,
     teams : [
       ["Team 1",  "Team 2" ],
       ["Team 3",  "Team 4" ],
@@ -40,6 +41,7 @@ var results16 = {
   };
 
 var results8 = {  
+    id: 1,
     teams : [
       ["Team 1",  "Team 2" ],
       ["Team 3",  "Team 4" ],
@@ -56,6 +58,7 @@ var results8 = {
   };
 
 var results4 = {  
+    id: 0,
     teams : [
       ["Team 1",  "Team 2" ],
       ["Team 3",  "Team 4" ]
@@ -68,16 +71,21 @@ var results4 = {
     ]]
   };
 
+var results = [results4, results8, results16]
+
 app.get('/get/:id([0-9]+)', function(req, res){
     var id = req.param('id')
     console.log('get: '+id)
-    res.json([results4, results8, results16][id]);
+    res.json(results[id]);
   });
 
 app.post('/set/:id([0-9]+)', function(req, res){
     req.accepts('application/json');
     console.log('set: '+req.param('id'))
+    var id = req.param('id')
+    results[id].results = req.body.results
     console.log(req.body)
+
     res.send('', 200)
   });
 
