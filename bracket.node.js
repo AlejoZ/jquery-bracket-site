@@ -69,15 +69,17 @@ var results4 = {
   };
 
 app.get('/get/:id([0-9]+)', function(req, res){
-    console.log(req.param('id'))
-    res.json(results4);
-    });
+    var id = req.param('id')
+    console.log('get: '+id)
+    res.json([results4, results8, results16][id]);
+  });
 
 app.post('/set/:id([0-9]+)', function(req, res){
     req.accepts('application/json');
+    console.log('set: '+req.param('id'))
     console.log(req.body)
     res.send('', 200)
-    });
+  });
 
 /*
 app.get('/send', function (req, res) {

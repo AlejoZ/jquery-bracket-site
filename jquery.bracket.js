@@ -18,7 +18,6 @@ var jqueryBracket = function(topCon, data, options)
 
       if (options && options.change)
         options.change(jQuery.toJSON(data))
-      //console.log(jQuery.toJSON(data))
 
       jQuery.ajax("node/set/123", 
                   {
@@ -620,7 +619,6 @@ var jqueryBracket = function(topCon, data, options)
   }
 
   var w, l, f
-  var bracketTeams = data.teams
 
   var r = data.results
   var fEl = $('<div class="finals"></div>').appendTo(topCon)
@@ -648,6 +646,14 @@ function bracket(DOMid, data, options)
 {
   var el = $('<div class="system"></div>').appendTo('#'+DOMid)
 
-  return new jqueryBracket(el, data, options)
+  if (options && options.id != undefined) {
+    jQuery.getJSON("node/get/"+options.id, null,
+                  function(data) {
+                    new jqueryBracket(el, data, options)
+                  })
+  }
+  else {
+    return new jqueryBracket(el, data, options)
+  }
 }
 

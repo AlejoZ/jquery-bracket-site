@@ -168,11 +168,11 @@ $(document).ready(function() {
     }
     */
 
-    bracket('b4', results4, {change: function(json) {
+    bracket('b4', null, {id: 0, change: function(json) {
         console.log(json)
       }})
-    bracket('b8', results8)
-    bracket('b16', results16)
+    bracket('b8', null, {id: 1})
+    bracket('b16', null, {id: 2})
     
     //testValidation();
   }
