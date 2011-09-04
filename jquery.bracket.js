@@ -131,11 +131,17 @@ var jqueryBracket = function(topCon, data, options)
               span.html(input)
 
               input.focus()
+              input.keyup(function() {
+                  if (!isNumber($(this).val()))
+                    $(this).addClass('error')
+                  else
+                    $(this).removeClass('error')
+                })
               input.blur(function() {
                   var val = input.val()
-                  if (!val && !isNumber(team.score))
+                  if ((!val || !isNumber(val)) && !isNumber(team.score))
                     val = '--'
-                  else if (!val && isNumber(team.score))
+                  else if ((!val || !isNumber(val)) && isNumber(team.score))
                     val = team.score
 
                   span.html(val)

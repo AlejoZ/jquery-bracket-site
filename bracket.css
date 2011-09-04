@@ -80,6 +80,10 @@
   height: 16px;
 }
 
+.team span input.error {
+  background-color: #FCC;
+}
+
 .team.np {
   background-color: #666;
   color: #EEE;
