@@ -131,11 +131,14 @@ var jqueryBracket = function(topCon, data, options)
               span.html(input)
 
               input.focus()
-              input.keyup(function() {
+              input.keyup(function(e) {
                   if (!isNumber($(this).val()))
                     $(this).addClass('error')
                   else
                     $(this).removeClass('error')
+
+                  if ((e.keyCode || e.which) == 13)
+                    $(this).blur()
                 })
               input.blur(function() {
                   var val = input.val()
