@@ -11,7 +11,7 @@ var jqueryBracket = function(opts)
     throw new Error('ID of target container not given')
   if (!opts.init)
     throw new Error('No bracket data given')
-  if (!opts.userData)
+  if (opts.userData === undefined)
     opts.userData = null
 
   var data = opts.init
@@ -112,9 +112,9 @@ var jqueryBracket = function(opts)
 
       if (!team.name)
         tEl.addClass('na')
-      else if (winner().name == team.name)
+      else if (winner().name === team.name)
         tEl.addClass('win')
-      else if (loser().name == team.name)
+      else if (loser().name === team.name)
         tEl.addClass('lose')
 
       tEl.append(sEl)
@@ -145,7 +145,7 @@ var jqueryBracket = function(opts)
                   else
                     $(this).removeClass('error')
 
-                  if ((e.keyCode || e.which) == 13)
+                  if ((e.keyCode || e.which) === 13)
                     $(this).blur()
                 })
               input.blur(function() {
@@ -203,13 +203,13 @@ var jqueryBracket = function(opts)
         var shift
         var height
 
-        if (!cb || cb == null) {
-          if (idx%2 == 0) { // dir == down 
-            if (this.winner().id == 0) {
+        if (!cb || cb === null) {
+          if (idx%2 === 0) { // dir == down 
+            if (this.winner().id === 0) {
               shift = connectorOffset
               height = matchupOffset
             }
-            else if (this.winner().id == 1) {
+            else if (this.winner().id === 1) {
               shift = connectorOffset*3
               height = matchupOffset - connectorOffset*2
             }
@@ -219,11 +219,11 @@ var jqueryBracket = function(opts)
             }
           }
           else { // dir == up
-            if (this.winner().id == 0) {
+            if (this.winner().id === 0) {
               shift = -connectorOffset*3
               height = -matchupOffset + connectorOffset*2
             }
-            else if (this.winner().id == 1) {
+            else if (this.winner().id === 1) {
               shift = -connectorOffset
               height = -matchupOffset
             }
@@ -235,7 +235,7 @@ var jqueryBracket = function(opts)
         }
         else {
           var info = cb(teamCon, this)
-          if (info == null) /* no connector */
+          if (info === null) /* no connector */
             return
           shift = info.shift
           height = info.height
@@ -505,7 +505,7 @@ var jqueryBracket = function(opts)
       for (var m = 0; m < matches; m++) {
         var teamCb = null
 
-        if (r == 0) {
+        if (r === 0) {
           teamCb = function() {
               var t = teams[m]
               var i = m
@@ -536,9 +536,9 @@ var jqueryBracket = function(opts)
           var teamCb = null
 
           /* special cases */
-          if (!(n%2 == 0 && r != 0)) teamCb = function() {
+          if (!(n%2 === 0 && r != 0)) teamCb = function() {
             /* first round comes from winner bracket */
-            if (n%2 == 0 && r == 0) {
+            if (n%2 === 0 && r === 0) {
               return [{source: winners.round(0).match(m*2).loser}, 
                       {source: winners.round(0).match(m*2+1).loser}]
             }
@@ -557,16 +557,16 @@ var jqueryBracket = function(opts)
           if (r < rounds-1 || n < 1) {
             var cb = null
             // inside lower bracket 
-            if (n%2 == 0) {
+            if (n%2 === 0) {
               cb = function(tC, match) {
                 var connectorOffset = tC.height()/4
                 var height = 0;
                 var shift = 0;
 
-                if (match.winner().id == 0) {
+                if (match.winner().id === 0) {
                   shift = connectorOffset
                 }
-                else if (match.winner().id == 1) {
+                else if (match.winner().id === 1) {
                   height = -connectorOffset*2;
                   shift = connectorOffset
                 }
@@ -608,11 +608,11 @@ var jqueryBracket = function(opts)
         var connectorOffset = tC.height()/4
         var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()/2 
         var matchupOffset = topShift-winners.el.height()/2
-        if (winners.winner().id == 0) {
+        if (winners.winner().id === 0) {
           height = matchupOffset + connectorOffset*2
           shift = connectorOffset 
         }
-        else if (winners.winner().id == 1) {
+        else if (winners.winner().id === 1) {
           height = matchupOffset 
           shift = connectorOffset*3
         }
@@ -627,11 +627,11 @@ var jqueryBracket = function(opts)
         var connectorOffset = tC.height()/4
         var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()/2 
         var matchupOffset = topShift-winners.el.height()/2
-        if (losers.winner().id == 0) {
+        if (losers.winner().id === 0) {
           height = matchupOffset
           shift = connectorOffset*3
         }
-        else if (winners.winner().id == 1) {
+        else if (winners.winner().id === 1) {
           height = matchupOffset + connectorOffset*2
           shift = connectorOffset
         }
