@@ -168,9 +168,25 @@ $(document).ready(function() {
     }
     */
 
-    bracket('b4', null, {id: 0, change: function(json) { /*new data*/ }})
-    bracket('b8', null, {id: 1})
-    bracket('b16', null, {id: 2})
+    function saveFn(data, userData) {
+      jQuery.ajax("node/set/"+userData, 
+                  {contentType: 'application/json',
+                   dataType: 'json',
+                   type: 'post',
+                   data: jQuery.toJSON(data)})
+    }
+
+    function makeBracket(DOMid, bracketId) {
+      jQuery.getJSON("node/get/"+bracketId, null, function(data) {
+          bracket({id: DOMid, 
+                   init: data, 
+                   save: saveFn,
+                   userData: bracketId})
+        })
+    }
+    makeBracket('b4', 0)
+    makeBracket('b8', 1)
+    makeBracket('b16', 2)
     
     //testValidation();
   }

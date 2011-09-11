@@ -1,5 +1,22 @@
-var jqueryBracket = function(topCon, data, options) 
+var jqueryBracket = function(opts) 
 {
+  function assert(statement) {
+    if (!statement)
+      throw new Error('Assertion error')
+  }
+
+  if (!opts)
+    throw new Error('Options not set')
+  if (!opts.id)
+    throw new Error('ID of target container not given')
+  if (!opts.init)
+    throw new Error('No bracket data given')
+  if (!opts.userData)
+    opts.userData = null
+
+  var data = opts.init
+  var topCon = $('<div class="system"></div>').appendTo('#'+opts.id)
+
   // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
   function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
@@ -15,17 +32,8 @@ var jqueryBracket = function(topCon, data, options)
       data.results[0] = w.results()
       data.results[1] = l.results()
       data.results[2] = f.results()
-
-      if (options && options.change)
-        options.change(jQuery.toJSON(data))
-
-      jQuery.ajax("node/set/"+data.id, 
-                  {
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    type: 'post',
-                    data: jQuery.toJSON(data)
-                  })
+      if (opts.save)
+        opts.save(data, opts.userData)
     }
   }
 
@@ -111,10 +119,10 @@ var jqueryBracket = function(topCon, data, options)
 
       tEl.append(sEl)
 
-      if (!team.name || !isReady) {
+      if (!team.name || !isReady || !opts.save) {
         sEl.attr('disabled', 'disabled')
       }
-      else {
+      else if (opts.save) {
         sEl.click(function() {
             var span = $(this)
             function editor() {
@@ -659,18 +667,8 @@ var jqueryBracket = function(topCon, data, options)
   renderAll(false)
 }
 
-function bracket(DOMid, data, options)
+function bracket(opts)
 {
-  var el = $('<div class="system"></div>').appendTo('#'+DOMid)
-
-  if (options && options.id != undefined) {
-    jQuery.getJSON("node/get/"+options.id, null,
-                  function(data) {
-                    new jqueryBracket(el, data, options)
-                  })
-  }
-  else {
-    return new jqueryBracket(el, data, options)
-  }
+  return new jqueryBracket(opts)
 }
 
