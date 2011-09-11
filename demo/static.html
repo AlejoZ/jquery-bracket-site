@@ -1,0 +1,81 @@
+<html>
+<head>
+<script type="text/javascript" src="../jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../jquery.bracket.js"></script>
+<link rel="stylesheet" type="text/css" href="../bracket.css" />
+<style>h1, h2 { clear: both; }</style>
+<script type="text/javascript">
+var results16 = {  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ],
+      ["Team 5",  "Team 6" ],
+      ["Team 7",  "Team 8" ],
+      ["Team 11", "Team 12"],
+      ["Team 13", "Team 14"],
+      ["Team 15", "Team 16"],
+      ["Team 17", "Team 18"]
+    ],
+    results : [[
+      [[2, 1], [2, 1], [2, 1], [2, 1], [1, 2], [1, 2], [1, 2], [1, 2]],
+      [[1, 2], [3, 4], [5, 6], [7, 8]],
+      [[9, 10], [11, 12]],
+      [[16, 14]]
+    ], [
+      [[5, 1],[1, 2],[1, 2],[1, 2]],
+      [[8, 2],[1, 2],[1, 2],[1, 2]],
+      [[1, 2],[1, 2]],
+      [[3, 2],[6, 2]],
+      [[3, 2]],
+      [[1, 2]]
+    ], [
+      [[3, 2]]
+    ]]
+  }
+
+var results8 = {  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ],
+      ["Team 5",  "Team 6" ],
+      ["Team 7",  "Team 8" ]
+    ],
+    results : [[
+      [[2, 1], [2, -1], [2, 0], [null, null]],
+      [[2, 1], [null, null]],
+    ], [
+      [[2, 1], [null, null], [1, 2]],
+      [[null, null], [null, null], [0, 1]]
+    ]]
+  }
+
+var results4 = {  
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ]
+    ],
+    results : [[
+      [[2, 1], [null, null]],
+      [[null, null]],
+    ], [
+      [[null, null]]
+    ]]
+  }
+
+$(document).ready(function() {
+    bracket({id: 'b4',  init: results4})
+    bracket({id: 'b8',  init: results8})
+    bracket({id: 'b16', init: results16})
+  })
+</script>
+</head>
+<body>
+<h1>Static brackets from JSON objects</h1>
+<h2>Double elimination with max 4 teams</h2>
+<div id="b4"></div>
+<h2>Double elimination with max 8 teams</h2>
+<div id="b8"></div>
+<h2>Double elimination with max 16 teams</h2>
+<div id="b16"></div>
+</body>
+</html>

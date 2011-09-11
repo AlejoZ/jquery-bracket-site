@@ -1,0 +1,43 @@
+<html>
+<head>
+<script type="text/javascript" src="../jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../jquery.json-2.2.min.js"></script>
+<script type="text/javascript" src="../jquery.bracket.js"></script>
+<link rel="stylesheet" type="text/css" href="../bracket.css" />
+<style>h1, h2 { clear: both; }</style>
+<script type="text/javascript">
+$(document).ready(function() {
+    function saveFn(data, userData) {
+      jQuery.ajax("../node/set/"+userData, 
+                  {contentType: 'application/json',
+                   dataType: 'json',
+                   type: 'post',
+                   data: jQuery.toJSON(data)})
+    }
+
+    function makeBracket(DOMid, bracketId) {
+      jQuery.getJSON("../node/get/"+bracketId, null, function(data) {
+          bracket({id: DOMid, 
+                   init: data, 
+                   save: saveFn,
+                   userData: bracketId})
+        })
+    }
+
+    makeBracket('b4', 0)
+    makeBracket('b8', 1)
+    makeBracket('b16', 2)
+  }
+);
+</script>
+</head>
+<body>
+<h1>Dynamic brackets with Ajax</h1>
+<h2>Double elimination with max 4 teams</h2>
+<div id="b4"></div>
+<h2>Double elimination with max 8 teams</h2>
+<div id="b8"></div>
+<h2>Double elimination with max 16 teams</h2>
+<div id="b16"></div>
+</body>
+</html>
