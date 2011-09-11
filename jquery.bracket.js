@@ -641,7 +641,7 @@ var jqueryBracket = function(opts)
           height = matchupOffset
           shift = connectorOffset*3
         }
-        else if (winners.winner().id === 1) {
+        else if (losers.winner().id === 1) {
           height = matchupOffset + connectorOffset*2
           shift = connectorOffset
         }
