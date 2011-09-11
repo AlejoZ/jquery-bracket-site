@@ -24,14 +24,18 @@ var jqueryBracket = function(opts)
 
   function renderAll(save) {
     w.render()
-    l.render()
-    f.render()
+    if (l && f) {
+      l.render()
+      f.render()
+    }
     postProcess(topCon)
 
     if (save) {
       data.results[0] = w.results()
-      data.results[1] = l.results()
-      data.results[2] = f.results()
+      if (l && f) {
+        data.results[1] = l.results()
+        data.results[2] = f.results()
+      }
       if (opts.save)
         opts.save(data, opts.userData)
     }
@@ -466,8 +470,11 @@ var jqueryBracket = function(opts)
         }
       }
 
-    var winner = f.winner()
-    var loser = f.loser()
+    var source = f || w
+
+    var winner = source.winner()
+    var loser = source.loser()
+
     var winTrack = null
     var loseTrack = null
 
@@ -490,7 +497,7 @@ var jqueryBracket = function(opts)
 
   }
 
-  function prepareWinners(winners, data)
+  function prepareWinners(winners, data, isSingleElimination)
   {
     var teams = data.teams;
     var results = data.results;
@@ -514,10 +521,13 @@ var jqueryBracket = function(opts)
             }
         }
 
-        round.addMatch(teamCb)
+        var match = round.addMatch(teamCb)
       }
       matches /= 2;
     }
+
+    if (isSingleElimination)
+      winners.final().connectorCb(function() { return null })
   }
 
   function prepareLosers(winners, losers, data)
@@ -646,23 +656,43 @@ var jqueryBracket = function(opts)
   var w, l, f
 
   var r = data.results
-  var fEl = $('<div class="finals"></div>').appendTo(topCon)
-  var wEl = $('<div class="bracket"></div>').appendTo(topCon)
-  var lEl = $('<div class="loserBracket"></div>').appendTo(topCon)
+  var isSingleElimination = (r.length === 1)
+
+  if (isSingleElimination) {
+    var wEl = $('<div class="bracket"></div>').appendTo(topCon)
+  }
+  else {
+    var fEl = $('<div class="finals"></div>').appendTo(topCon)
+    var wEl = $('<div class="bracket"></div>').appendTo(topCon)
+    var lEl = $('<div class="loserBracket"></div>').appendTo(topCon)
+  }
 
   wEl.css('height', data.teams.length*50)
-  lEl.css('height', wEl.height()/2)
 
-  var rounds = (Math.log(data.teams.length*2) / Math.log(2)-1) * 2;
-  topCon.css('width', (rounds+1)*140+40) /*(r+final)*matchlen+margin*/
+  if (lEl)
+    lEl.css('height', wEl.height()/2)
+
+  var rounds
+  if (isSingleElimination)
+    rounds = Math.log(data.teams.length*2) / Math.log(2)
+  else
+    rounds = (Math.log(data.teams.length*2) / Math.log(2)-1) * 2 + 1
+
+  topCon.css('width', rounds*140+40)
 
   w = new Bracket(wEl, !r||!r[0]?null:r[0], data.teams)
-  l = new Bracket(lEl, !r||!r[1]?null:r[1], null)
-  f = new Bracket(fEl, !r||!r[2]?null:r[2], null)
 
-  prepareWinners(w, data);
-  prepareLosers(w, l, data);
-  prepareFinals(f, w, l, data);
+  if (!isSingleElimination) {
+    l = new Bracket(lEl, !r||!r[1]?null:r[1], null)
+    f = new Bracket(fEl, !r||!r[2]?null:r[2], null)
+  }
+
+  prepareWinners(w, data, isSingleElimination)
+
+  if (!isSingleElimination) {
+    prepareLosers(w, l, data);
+    prepareFinals(f, w, l, data);
+  }
 
   renderAll(false)
 }
