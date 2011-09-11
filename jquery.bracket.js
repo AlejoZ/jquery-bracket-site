@@ -656,7 +656,7 @@ var jqueryBracket = function(opts)
   var w, l, f
 
   var r = data.results
-  var isSingleElimination = (r.length === 1)
+  var isSingleElimination = (r.length <= 1)
 
   if (isSingleElimination) {
     var wEl = $('<div class="bracket"></div>').appendTo(topCon)
