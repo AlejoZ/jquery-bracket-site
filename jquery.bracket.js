@@ -114,7 +114,7 @@ var jqueryBracket = function(opts)
       resultIdentifier++
       var name = !team.name?'--':team.name
       var tEl = $('<div class="team"></div>');
-      tEl.append('<b>'+name+'</b>')
+      var nEl = $('<b>'+name+'</b>').appendTo(tEl)
 
       if (isNumber(team.idx))
         tEl.attr('index', team.idx)
@@ -130,8 +130,45 @@ var jqueryBracket = function(opts)
 
       if (!team.name || !isReady || !opts.save) {
         sEl.attr('disabled', 'disabled')
+        nEl.attr('disabled', 'disabled')
       }
       else if (opts.save) {
+        nEl.click(function() {
+            var span = $(this)
+            function editor() {
+              span.unbind()
+
+              var name
+              name = span.text()
+
+              var input = $('<input type="text">')
+              input.val(name)
+              span.html(input)
+
+              input.focus()
+              input.keyup(function(e) {
+                  if ((e.keyCode || e.which) === 13)
+                    $(this).blur()
+                })
+              input.blur(function() {
+                  var val = input.val()
+                  if (!team.name && val === '')
+                    val = '--'
+                  else if (team.name && val === '')
+                    val = team.name
+
+                  span.html(val)
+                  console.log(val)
+                  if (name != val) {
+                    /* TODO: cleaner reference? */
+                    opts.init.teams[~~(team.idx/2)][team.idx%2] = val
+                    renderAll(true)
+                  }
+                  span.click(editor)
+                })
+            }
+            editor()
+          })
         sEl.click(function() {
             var span = $(this)
             function editor() {
