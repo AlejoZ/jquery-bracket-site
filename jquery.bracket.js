@@ -1,5 +1,7 @@
 var jqueryBracket = function(opts) 
 {
+  var resultIdentifier
+
   function assert(statement) {
     if (!statement)
       throw new Error('Assertion error')
@@ -23,6 +25,7 @@ var jqueryBracket = function(opts)
   }
 
   function renderAll(save) {
+    resultIdentifier = 0
     w.render()
     if (l && f) {
       l.render()
@@ -106,7 +109,9 @@ var jqueryBracket = function(opts)
 
     function teamElement(round, team, isReady) {
       var score = !isNumber(team.score)?'--':team.score
-      var sEl = $('<span>'+score+'</span>')
+      var rId = resultIdentifier
+      var sEl = $('<span id="result-'+rId+'">'+score+'</span>')
+      resultIdentifier++
       var name = !team.name?'--':team.name
       var tEl = $('<div class="team"></div>');
       tEl.append('<b>'+name+'</b>')
@@ -149,8 +154,13 @@ var jqueryBracket = function(opts)
                   else
                     $(this).removeClass('error')
 
-                  if ((e.keyCode || e.which) === 13)
+                  if ((e.keyCode || e.which) === 13) {
                     $(this).blur()
+
+                    var next = topCon.find('span[id=result-'+(rId+1)+']')
+                    if (next)
+                      next.click()
+                  }
                 })
               input.blur(function() {
                   var val = input.val()
