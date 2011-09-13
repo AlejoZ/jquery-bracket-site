@@ -158,7 +158,6 @@ var jqueryBracket = function(opts)
                     val = team.name
 
                   span.html(val)
-                  console.log(val)
                   if (name != val) {
                     /* TODO: cleaner reference? */
                     opts.init.teams[~~(team.idx/2)][team.idx%2] = val
