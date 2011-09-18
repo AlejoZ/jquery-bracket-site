@@ -2,6 +2,22 @@ var jqueryBracket = function(opts)
 {
   var resultIdentifier
 
+  function defaultEdit(span, data, done) {
+      var input = $('<input type="text">')
+      input.val(data)
+      span.html(input)
+      input.focus()
+      input.blur(function() { done(input.val()) })
+      input.keyup(function(e) {
+          if ((e.keyCode || e.which) === 13)
+            done(input.val())
+        })
+  }
+
+  function defaultRender(container, team, score) {
+    container.append(team)
+  }
+
   function assert(statement) {
     if (!statement)
       throw new Error('Assertion error')
@@ -15,6 +31,11 @@ var jqueryBracket = function(opts)
     throw new Error('No bracket data given')
   if (opts.userData === undefined)
     opts.userData = null
+
+  if (opts.decorator && (!opts.decorator.edit || !opts.decorator.render))
+    throw new Error('Invalid decorator input')
+  else if (!opts.decorator)
+    opts.decorator = { edit: defaultEdit, render: defaultRender } 
 
   var data = opts.init
   var topCon = $('<div class="system"></div>').appendTo('#'+opts.id)
@@ -114,7 +135,9 @@ var jqueryBracket = function(opts)
       resultIdentifier++
       var name = !team.name?'--':team.name
       var tEl = $('<div class="team"></div>');
-      var nEl = $('<b>'+name+'</b>').appendTo(tEl)
+      var nEl = $('<b></b>').appendTo(tEl)
+
+      opts.decorator.render(nEl, name, score)
 
       if (isNumber(team.idx))
         tEl.attr('index', team.idx)
@@ -136,35 +159,14 @@ var jqueryBracket = function(opts)
         nEl.click(function() {
             var span = $(this)
             function editor() {
+              function done_fn(val) {
+                if (val)
+                  opts.init.teams[~~(team.idx/2)][team.idx%2] = val
+                renderAll(true)
+                span.click(editor)
+              }
               span.unbind()
-
-              var name
-              name = span.text()
-
-              var input = $('<input type="text">')
-              input.val(name)
-              span.html(input)
-
-              input.focus()
-              input.keyup(function(e) {
-                  if ((e.keyCode || e.which) === 13)
-                    $(this).blur()
-                })
-              input.blur(function() {
-                  var val = input.val()
-                  if (!team.name && val === '')
-                    val = '--'
-                  else if (team.name && val === '')
-                    val = team.name
-
-                  span.html(val)
-                  if (name != val) {
-                    /* TODO: cleaner reference? */
-                    opts.init.teams[~~(team.idx/2)][team.idx%2] = val
-                    renderAll(true)
-                  }
-                  span.click(editor)
-                })
+              opts.decorator.edit(span, team.name, done_fn)
             }
             editor()
           })

@@ -64,8 +64,8 @@ var results4 = {
 
 var results4s = {  
     teams : [
-      ["Team 1",  "Team 2" ],
-      ["Team 3",  "Team 4" ]
+      [{name: "Team 1", flag: 'se'}, {name: "Team 2", flag: 'kr'}],
+      [{name: "Team 3", flag: 'se'}, {name: "Team 4", flag: 'kr'}]
     ],
     results : []
   }
@@ -80,8 +80,30 @@ var results8s = {
     results : []
   }
 
+function edit_fn(container, data, doneCb) {
+  var input = $('<input type="text">')
+  input.val(data.name)
+
+  container.html(input)
+
+  input.focus()
+  input.blur(function() { doneCb({flag: data.flag, name: input.val()}) })
+  input.keyup(function(e) {
+      if ((e.keyCode || e.which) === 13)
+        doneCb({flag: data.flag, name: input.val()})
+    })
+}
+
+function render_fn(container, data, score) {
+  if (!data.flag || !data.name)
+    return
+  container.append('<img src="'+data.flag+'.gif" /> ')
+  container.append(data.name)
+}
+
 $(document).ready(function() {
-    bracket({id: 'b4s', init: results4s, save: function(){}})
+    bracket({id: 'b4s', init: results4s, save: function(){}, 
+             decorator: {edit: edit_fn, render: render_fn}})
     bracket({id: 'b4',  init: results4,  save: function(){}})
     bracket({id: 'b8',  init: results8,  save: function(){}})
     bracket({id: 'b8s', init: results8s, save: function(){}})
@@ -92,7 +114,7 @@ $(document).ready(function() {
 <body>
 <h1>Static brackets from JSON objects</h1>
 <p>Editing is enabled here for demo purposes. Changes are lost on reload.</p>
-<h2>Single elimination with max 4 teams</h2>
+<h2>4 team single elimination with team customization</h2>
 <div id="b4s"></div>
 <h2>Double elimination with max 4 teams</h2>
 <div id="b4"></div>
