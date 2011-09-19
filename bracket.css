@@ -42,10 +42,12 @@
 }
 
 .team {
+  position: relative;
   float: left;
   background-color: #666;
   color: #FFF;
   width: 100px;
+  height: 16px;
   border-radius: 5px;
   margin: 1px 0px;
   cursor: default;
@@ -54,10 +56,11 @@
 
 .team b {
   font-weight: normal;
-  padding: 3px;
+  padding: 1px;
   cursor: pointer;
   height: inherit;
-  position: relative;
+  position: absolute;
+  max-width: 80px;
 }
 
 .team b[disabled] {
@@ -139,14 +142,14 @@
   border-left: none;
   position: absolute;
   display: block;
-  z-index: 100;
+  z-index: 1;
 }
 
 .connector div.connector {
   border: none;
   border-bottom: 2px solid #666;
   height: 0px;
-  z-index: 100;
+  z-index: 1;
   position: absolute;
   display: block;
 }
@@ -185,3 +188,18 @@
   background-color: #09C;
   color: #000;
 }
+
+
+/*
+<ul class="ui-autocomplete ui-menu ui-widget ui-widget-content ui-corner-all">
+<li class="ui-menu-item">
+<a class="ui-corner-all">item 1</a>
+</li>
+<li class="ui-menu-item">
+<a class="ui-corner-all">item 2</a>
+</li>
+<li class="ui-menu-item">
+<a class="ui-corner-all">item 3</a>
+</li>
+</ul>
+*/

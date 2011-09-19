@@ -142,7 +142,7 @@ var jqueryBracket = function(opts)
       if (isNumber(team.idx))
         tEl.attr('index', team.idx)
 
-      if (!team.name)
+      if (team.name === null)
         tEl.addClass('na')
       else if (winner().name === team.name)
         tEl.addClass('win')
@@ -151,7 +151,7 @@ var jqueryBracket = function(opts)
 
       tEl.append(sEl)
 
-      if (!team.name || !isReady || !opts.save) {
+      if (team.name === null || !isReady || !opts.save) {
         sEl.attr('disabled', 'disabled')
         nEl.attr('disabled', 'disabled')
       }
@@ -309,7 +309,8 @@ var jqueryBracket = function(opts)
         data[1].idx = data[1].source().idx
 
         var isReady = false
-        if (data[0].name && data[1].name)
+        if ((data[0].name || data[0].name === '') && 
+            (data[1].name || data[1].name === ''))
           isReady = true
 
         if (!winner().name)
