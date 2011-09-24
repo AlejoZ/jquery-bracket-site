@@ -32,7 +32,7 @@ var saveData = {
       ["Team 1", "Team 2"], /* first matchup */
       ["Team 3", "Team 4"]  /* second matchup */
     ],
-    results : []
+    results : [[[[1,0]]]]
   }
 
 /* Called whenever bracket is modified, data contains the whole bracket
@@ -92,7 +92,7 @@ $(document).ready(function() {
   })
 </script>
 <script class="doubleElimination" type="text/javascript">
-var results4 = {  
+var doubleEliminationData = {  
     teams : [
       ["Team 1", "Team 2"],
       ["Team 3", "Team 4"]
@@ -103,14 +103,14 @@ var results4 = {
     ], [              /* LOSER BRACKET */
       [[7,8]],        /* first round */
       [[9,10]]        /* second round */
-    ],                /* FINALS */
+    ], [              /* FINALS */
       [[11,12]]
-    ]
+    ]]
   }
 
 $(document).ready(function() {
-    bracket({id: 'b4',
-             init: results4})
+    bracket({id: 'doubleElimination',
+             init: doubleEliminationData})
   })
 </script>
 <script class="customHandlers" type="text/javascript">
@@ -120,7 +120,7 @@ var customData = {
       [{name: "Team 1", flag: 'fi'}, {name: "Team 2", flag: 'kr'}],
       [{name: "Team 3", flag: 'se'}, {name: "Team 4", flag: 'us'}]
     ],
-    results : []
+    results : [[[[4,2]]]]
   }
 
 /* Edit function is called when team label is clicked */
@@ -212,18 +212,18 @@ Feedback can be sent to teijo(a)aropupu.fi.</p>
 <h2>Minimal</h2>
 <div class="demo" id="minimal"></div>
 <pre class="minimal"></pre>
-<h2>Save functionality</h2>
+<h2>Save functionality (click team and score labels to edit)</h2>
 <p>Note that you can press return when entering scores to procede to next
 field.</p>
 <div class="demo" id="save"></div>
 <pre class="save"></pre>
-<h3>Save output (try to modify scores and teams)</h3>
-<pre id="saveOutput"></pre>
+<h3>Save output</h3>
+<pre id="saveOutput">Try to first modify some scores or teams</pre>
 <h2>Data customization</h2>
 <div class="demo" id="customDemo"></div>
 <pre class="customHandlers"></pre>
 <h2>Double elimination with max 4 teams</h2>
-<div class="demo" id="b4"></div>
+<div class="demo" id="doubleElimination"></div>
 <pre class="doubleElimination"></pre>
 <h2>Autocomplete demo, try input as "countrycode:name"</h2>
 <div class="demo" id="autoComplete"></div>
