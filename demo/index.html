@@ -23,22 +23,6 @@
   background-color: #EEE !important;
 }
 </style>
-<script type="text/javascript">
-$(document).ready(function() {
-    var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
-    demos.forEach(function(d){
-      var pre = $('pre.'+d)
-      var script = $('script.'+d)
-      pre.text(script.html())
-      var div = $('div#'+d)
-      div.scrollLeft(div.width())
-    })
-    $('pre').addClass('brush: js;')
-    SyntaxHighlighter.defaults['gutter'] = false
-    SyntaxHighlighter.defaults['auto-links'] = false
-    SyntaxHighlighter.all()
-  })
-</script>
 </head>
 <body>
 <div id="main">
@@ -246,5 +230,21 @@ $(document).ready(function() { $('#big').bracket({init: bigData}) })
 <div class="demo" id="big"></div>
 <pre class="big"></pre>
 </div>
+<script type="text/javascript">
+$(document).ready(function() {
+    var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
+    demos.forEach(function(d){
+      var pre = $('pre.'+d)
+      var script = $('script.'+d)
+      pre.text(script.html())
+      var div = $('div#'+d)
+      div.scrollLeft(div.width())
+    })
+    $('pre').addClass('brush: js;')
+    SyntaxHighlighter.defaults['gutter'] = false
+    SyntaxHighlighter.defaults['auto-links'] = false
+    SyntaxHighlighter.all()
+  })
+</script>
 </body>
 </html>
