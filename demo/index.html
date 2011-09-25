@@ -7,6 +7,7 @@
 <script type="text/javascript" src="deps/jquery.json-2.2.min.js"></script>
 <script type="text/javascript" src="deps/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
 <script type="text/javascript" src="deps/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="deps/syntaxhighlighter_3.0.83/scripts/shBrushXML.js"></script>
 <link rel="stylesheet" type="text/css" href="deps/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
 <link rel="stylesheet" type="text/css" href="deps/jquery-ui-1.8.16/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
 <link rel="stylesheet" type="text/css" href="site.css" />
@@ -17,7 +18,7 @@ $(document).ready(function() {
     demos.forEach(function(d){
       var demo = $('div#'+d)
       $('<div class="demo"></div>').appendTo(demo)
-      var pre = $('<pre></pre>').appendTo(demo)
+      var pre = $('<pre name="code" class="js"></pre>').appendTo(demo)
       var script = demo.find('script')
       pre.text(script.html())
     })
@@ -35,6 +36,13 @@ Feedback can be sent to teijo(a)aropupu.fi.</p>
 <li>Check out <a href="http://jqueryui.com/">jQuery UI</a> for autocomplete</li>
 <li><a href="http://code.google.com/p/jquery-json/">jQuery JSON</a> for dynamic functionality</li>
 </ul>
+
+To try the examples, make sure you have the following includes:
+<pre name="code" class="html">
+&lt;script type="text/javascript" src="jquery-1.6.2.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="jquery.bracket.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" type="text/css" href="bracket.css" /&gt;
+</pre>
 
 <div id="minimal">
   <h2>Minimal</h2>
@@ -71,10 +79,10 @@ Feedback can be sent to teijo(a)aropupu.fi.</p>
     }
 
   /* Called whenever bracket is modified
-  *
-  * data:     changed bracket object in format given to init
-  * userData: optional data given when bracket is created.
-  */
+   *
+   * data:     changed bracket object in format given to init
+   * userData: optional data given when bracket is created.
+   */
   function saveFn(data, userData) {
     var json = jQuery.toJSON(data)
     $('#saveOutput').text('POST '+userData+' '+json)
@@ -119,7 +127,7 @@ Feedback can be sent to teijo(a)aropupu.fi.</p>
   }
 
   /* Render function is called for each team label when data is changed, data
-  * contains the data object given in init and belonging to this slot. */
+   * contains the data object given in init and belonging to this slot. */
   function render_fn(container, data, score) {
     if (!data.flag || !data.name)
       return
@@ -245,10 +253,11 @@ $(document).ready(function() {
     var big = $('#big div.demo')
     big.scrollLeft(big.width())
 
-    $('pre').addClass('brush: js;')
+    $('pre.html').addClass('brush: html;')
+    $('pre.js').addClass('brush: js;')
     SyntaxHighlighter.defaults['gutter'] = false
     SyntaxHighlighter.defaults['auto-links'] = false
-    SyntaxHighlighter.all()
+    SyntaxHighlighter.all('code')
   })
 </script>
 </body>
