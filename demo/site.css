@@ -17,3 +17,13 @@ div.demo {
 pre {
   overflow: hidden;
 }
+
+/* overwrite and patch syntaxhighlight module styles */
+.syntaxhighlighter { overflow-y: hidden !important; }
+.syntaxhighlighter,
+.syntaxhighlighter .line,
+.syntaxhighlighter .line.alt1,
+.syntaxhighlighter .line.alt2,
+.syntaxhighlighter .gutter .line.highlighted {
+  background-color: #EEE !important;
+}
