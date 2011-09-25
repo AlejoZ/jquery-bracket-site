@@ -25,8 +25,8 @@ var jqueryBracket = function(opts)
 
   if (!opts)
     throw new Error('Options not set')
-  if (!opts.id)
-    throw new Error('ID of target container not given')
+  if (!opts.el)
+    throw new Error('Invalid jQuery object as container')
   if (!opts.init)
     throw new Error('No bracket data given')
   if (opts.userData === undefined)
@@ -38,7 +38,7 @@ var jqueryBracket = function(opts)
     opts.decorator = { edit: defaultEdit, render: defaultRender } 
 
   var data = opts.init
-  var topCon = $('<div class="system"></div>').appendTo('#'+opts.id)
+  var topCon = $('<div class="system"></div>').appendTo(opts.el)
 
   // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
   function isNumber(n) {
@@ -746,8 +746,7 @@ var jqueryBracket = function(opts)
   renderAll(false)
 }
 
-function bracket(opts)
-{
-  return new jqueryBracket(opts)
-}
-
+jQuery.fn.bracket = function(opts) {
+    opts.el = this
+    return new jqueryBracket(opts)
+  }

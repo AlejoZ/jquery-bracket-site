@@ -36,8 +36,7 @@ var minimalData = {
   }
 
 $(document).ready(function() {
-    bracket({id: 'minimal',    /* element id(="minimal") of the container */
-             init: minimalData /* data to initialize the bracket with */ })
+    $('#minimal').bracket({init: minimalData /* data to initialize the bracket with */ })
   })
 </script>
 <script class="save" type="text/javascript">
@@ -66,10 +65,9 @@ function saveFn(data, userData) {
 }
 
 $(document).ready(function() {
-    bracket({id: 'save',
-             init: saveData,
-             save: saveFn,
-             userData: "http://myapi"})
+    $('#save').bracket({init: saveData,
+                        save: saveFn,
+                        userData: "http://myapi"})
   })
 </script>
 <script class="big" type="text/javascript">
@@ -101,10 +99,7 @@ var bigData = {
     ]]
   }
 
-$(document).ready(function() {
-    bracket({id: 'big',
-             init: bigData})
-  })
+$(document).ready(function() { $('#big').bracket({init: bigData}) })
 </script>
 <script class="doubleElimination" type="text/javascript">
 var doubleEliminationData = {
@@ -124,8 +119,7 @@ var doubleEliminationData = {
   }
 
 $(document).ready(function() {
-    bracket({id: 'doubleElimination',
-             init: doubleEliminationData})
+    $('#doubleElimination').bracket({init: doubleEliminationData})
   })
 </script>
 <script class="customHandlers" type="text/javascript">
@@ -156,10 +150,9 @@ function render_fn(container, data, score) {
 }
 
 $(document).ready(function() {
-  bracket({id: 'customDemo',
-           init: customData,
-           decorator: {edit: edit_fn,
-                       render: render_fn}})
+  $('#customDemo').bracket({init: customData,
+                            decorator: {edit: edit_fn,
+                                        render: render_fn}})
   })
 </script>
 <script class="autoComplete" type="text/javascript">
@@ -194,11 +187,10 @@ function acRenderFn(container, data, score) {
 }
 
 $(document).ready(function() {
-    bracket({id: 'autoComplete',
-             init: autoCompleteData,
-             save: function(){}, /* without save() labels are disabled */
-             decorator: {edit: acEditFn,
-                         render: acRenderFn}})
+    $('#autoComplete').bracket({init: autoCompleteData,
+                                save: function(){}, /* without save() labels are disabled */
+                                decorator: {edit: acEditFn,
+                                            render: acRenderFn}})
   })
 </script>
 <script type="text/javascript">
