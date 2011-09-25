@@ -37,7 +37,8 @@ var minimalData = {
   }
 
 $(document).ready(function() {
-    $('#minimal').bracket({init: minimalData /* data to initialize the bracket with */ })
+    $('#minimal').bracket({
+      init: minimalData /* data to initialize the bracket with */ })
   })
 </script>
 <div class="demo" id="minimal"></div>
@@ -174,10 +175,11 @@ function acRenderFn(container, data, score) {
 }
 
 $(document).ready(function() {
-    $('#autoComplete').bracket({init: autoCompleteData,
-                                save: function(){}, /* without save() labels are disabled */
-                                decorator: {edit: acEditFn,
-                                            render: acRenderFn}})
+    $('#autoComplete').bracket({
+      init: autoCompleteData,
+      save: function(){}, /* without save() labels are disabled */
+      decorator: {edit: acEditFn,
+                  render: acRenderFn}})
   })
 </script>
 <div class="demo" id="autoComplete"></div>
