@@ -23,6 +23,35 @@
   background-color: #EEE !important;
 }
 </style>
+<script type="text/javascript">
+$(document).ready(function() {
+    var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
+    demos.forEach(function(d){
+      var pre = $('pre.'+d)
+      var script = $('script.'+d)
+      pre.text(script.html())
+      var div = $('div#'+d)
+      div.scrollLeft(div.width())
+    })
+    $('pre').addClass('brush: js;')
+    SyntaxHighlighter.defaults['gutter'] = false
+    SyntaxHighlighter.defaults['auto-links'] = false
+    SyntaxHighlighter.all()
+  })
+</script>
+</head>
+<body>
+<div id="main">
+<h1>jQuery Brackets demo</h1>
+<p>The code is still in alpha phase and some modifications are likely happen.
+Feedback can be sent to teijo(a)aropupu.fi.</p>
+<ul>
+<li>Get <a href="../jquery.bracket.js">the code</a> and <a href="../bracket.css">the stylesheet</a> to try it out</a></li>
+<li>Depends on <a href="http://jquery.com/">jQuery 1.6.4+</a></li>
+<li>Check out <a href="http://jqueryui.com/">jQuery UI</a> for autocomplete</li>
+<li><a href="http://code.google.com/p/jquery-json/">jQuery JSON</a> for dynamic functionality</li>
+</ul>
+<h2>Minimal</h2>
 <script class="minimal" type="text/javascript">
 var minimalData = {
     teams : [
@@ -39,6 +68,11 @@ $(document).ready(function() {
     $('#minimal').bracket({init: minimalData /* data to initialize the bracket with */ })
   })
 </script>
+<div class="demo" id="minimal"></div>
+<pre class="minimal"></pre>
+<h2>Save functionality (click team and score labels to edit)</h2>
+<p>Note that you can press return when entering scores to procede to next
+field.</p>
 <script class="save" type="text/javascript">
 var saveData = {
     teams : [
@@ -70,58 +104,11 @@ $(document).ready(function() {
                         userData: "http://myapi"})
   })
 </script>
-<script class="big" type="text/javascript">
-var bigData = {
-    teams : [
-      ["Team 1",  "Team 2" ],
-      ["Team 3",  "Team 4" ],
-      ["Team 5",  "Team 6" ],
-      ["Team 7",  "Team 8" ],
-      ["Team 11", "Team 12"],
-      ["Team 13", "Team 14"],
-      ["Team 15", "Team 16"],
-      ["Team 17", "Team 18"]
-    ],
-    results : [[ /* WINNER BRACKET */
-      [[3,5], [2,4], [6,3], [2,3], [1,5], [5,3], [7,2], [1,2]],
-      [[1,2], [3,4], [5,6], [7,8]],
-      [[9,1], [8,2]],
-      [[1,3]]
-    ], [         /* LOSER BRACKET */
-      [[5,1], [1,2], [3,2], [6,9]],
-      [[8,2], [1,2], [6,2], [1,3]],
-      [[1,2], [3,1]],
-      [[3,0], [1,9]],
-      [[3,2]],
-      [[4,2]]
-    ], [         /* FINALS */
-      [[3,8]]
-    ]]
-  }
-
-$(document).ready(function() { $('#big').bracket({init: bigData}) })
-</script>
-<script class="doubleElimination" type="text/javascript">
-var doubleEliminationData = {
-    teams : [
-      ["Team 1", "Team 2"],
-      ["Team 3", "Team 4"]
-    ],
-    results : [[      /* WINNER BRACKET */
-      [[1,2], [3,4]], /* first and second matches of the first round */
-      [[5,6]]         /* second round */
-    ], [              /* LOSER BRACKET */
-      [[7,8]],        /* first round */
-      [[9,10]]        /* second round */
-    ], [              /* FINALS */
-      [[11,12]]
-    ]]
-  }
-
-$(document).ready(function() {
-    $('#doubleElimination').bracket({init: doubleEliminationData})
-  })
-</script>
+<div class="demo" id="save"></div>
+<pre class="save"></pre>
+<h3>Save output</h3>
+<pre id="saveOutput">Try to first modify some scores or teams</pre>
+<h2>Data customization</h2>
 <script class="customHandlers" type="text/javascript">
 /* Custom data objects passed as teams */
 var customData = {
@@ -155,6 +142,34 @@ $(document).ready(function() {
                                         render: render_fn}})
   })
 </script>
+<div class="demo" id="customDemo"></div>
+<pre class="customHandlers"></pre>
+<h2>Double elimination</h2>
+<script class="doubleElimination" type="text/javascript">
+var doubleEliminationData = {
+    teams : [
+      ["Team 1", "Team 2"],
+      ["Team 3", "Team 4"]
+    ],
+    results : [[      /* WINNER BRACKET */
+      [[1,2], [3,4]], /* first and second matches of the first round */
+      [[5,6]]         /* second round */
+    ], [              /* LOSER BRACKET */
+      [[7,8]],        /* first round */
+      [[9,10]]        /* second round */
+    ], [              /* FINALS */
+      [[11,12]]
+    ]]
+  }
+
+$(document).ready(function() {
+    $('#doubleElimination').bracket({init: doubleEliminationData})
+  })
+</script>
+<div class="demo" id="doubleElimination"></div>
+<pre class="doubleElimination"></pre>
+<h2>Autocomplete demo, try input as "countrycode:name"</h2>
+<p>This demo uses <a href="http://jqueryui.com/">jQuery UI</a> for the autocomplete.</p>
 <script class="autoComplete" type="text/javascript">
 var autoCompleteData = {
     teams : [
@@ -193,56 +208,41 @@ $(document).ready(function() {
                                             render: acRenderFn}})
   })
 </script>
-<script type="text/javascript">
-$(document).ready(function() {
-    var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
-    demos.forEach(function(d){
-      var pre = $('pre.'+d)
-      var script = $('script.'+d)
-      pre.text(script.html())
-      var div = $('div#'+d)
-      div.scrollLeft(div.width())
-    })
-    $('pre').addClass('brush: js;')
-    SyntaxHighlighter.defaults['gutter'] = false
-    SyntaxHighlighter.defaults['auto-links'] = false
-    SyntaxHighlighter.all()
-  })
-</script>
-</head>
-<body>
-<div id="main">
-<h1>jQuery Brackets demo</h1>
-<p>The code is still in alpha phase and some modifications are likely happen.
-Feedback can be sent to teijo(a)aropupu.fi.</p>
-<ul>
-<li>Get <a href="../jquery.bracket.js">the code</a> and <a href="../bracket.css">the stylesheet</a> to try it out</a></li>
-<li>Depends on <a href="http://jquery.com/">jQuery 1.6.4+</a></li>
-<li>Check out <a href="http://jqueryui.com/">jQuery UI</a> for autocomplete</li>
-<li><a href="http://code.google.com/p/jquery-json/">jQuery JSON</a> for dynamic functionality</li>
-</ul>
-<h2>Minimal</h2>
-<div class="demo" id="minimal"></div>
-<pre class="minimal"></pre>
-<h2>Save functionality (click team and score labels to edit)</h2>
-<p>Note that you can press return when entering scores to procede to next
-field.</p>
-<div class="demo" id="save"></div>
-<pre class="save"></pre>
-<h3>Save output</h3>
-<pre id="saveOutput">Try to first modify some scores or teams</pre>
-<h2>Data customization</h2>
-<div class="demo" id="customDemo"></div>
-<pre class="customHandlers"></pre>
-<h2>Double elimination</h2>
-<div class="demo" id="doubleElimination"></div>
-<pre class="doubleElimination"></pre>
-<h2>Autocomplete demo, try input as "countrycode:name"</h2>
-<p>This demo uses <a href="http://jqueryui.com/">jQuery UI</a> for the autocomplete.</p>
 <div class="demo" id="autoComplete"></div>
 <pre class="autoComplete"></pre>
 <div class="demo" id="b8"></div>
 <h2>Large double elimination with 16 teams</h2>
+<script class="big" type="text/javascript">
+var bigData = {
+    teams : [
+      ["Team 1",  "Team 2" ],
+      ["Team 3",  "Team 4" ],
+      ["Team 5",  "Team 6" ],
+      ["Team 7",  "Team 8" ],
+      ["Team 11", "Team 12"],
+      ["Team 13", "Team 14"],
+      ["Team 15", "Team 16"],
+      ["Team 17", "Team 18"]
+    ],
+    results : [[ /* WINNER BRACKET */
+      [[3,5], [2,4], [6,3], [2,3], [1,5], [5,3], [7,2], [1,2]],
+      [[1,2], [3,4], [5,6], [7,8]],
+      [[9,1], [8,2]],
+      [[1,3]]
+    ], [         /* LOSER BRACKET */
+      [[5,1], [1,2], [3,2], [6,9]],
+      [[8,2], [1,2], [6,2], [1,3]],
+      [[1,2], [3,1]],
+      [[3,0], [1,9]],
+      [[3,2]],
+      [[4,2]]
+    ], [         /* FINALS */
+      [[3,8]]
+    ]]
+  }
+
+$(document).ready(function() { $('#big').bracket({init: bigData}) })
+</script>
 <div class="demo" id="big"></div>
 <pre class="big"></pre>
 </div>
