@@ -24,7 +24,7 @@
 }
 </style>
 <script class="minimal" type="text/javascript">
-var minimalData = {  
+var minimalData = {
     teams : [
       ["Team 1", "Team 2"], /* first matchup */
       ["Team 3", "Team 4"]  /* second matchup */
@@ -41,7 +41,7 @@ $(document).ready(function() {
   })
 </script>
 <script class="save" type="text/javascript">
-var saveData = {  
+var saveData = {
     teams : [
       ["Team 1", "Team 2"], /* first matchup */
       ["Team 3", "Team 4"]  /* second matchup */
@@ -49,30 +49,31 @@ var saveData = {
     results : [[[[1,0]]]]
   }
 
-/* Called whenever bracket is modified, data contains the whole bracket
- * contens as an object, userData is optional data given when bracket is
- * created. */
+/* Called whenever bracket is modified
+ *
+ * data:     changed bracket object in format given to init
+ * userData: optional data given when bracket is created.
+ */
 function saveFn(data, userData) {
   var json = jQuery.toJSON(data)
   $('#saveOutput').text('POST '+userData+' '+json)
-  // You probably want to do something like this
-  // jQuery.ajax("rest/"+userData, 
-  //             {contentType: 'application/json',
-  //              dataType: 'json',
-  //              type: 'post',
-  //              data: json})
+  /* You probably want to do something like this
+  jQuery.ajax("rest/"+userData, {contentType: 'application/json',
+                                 dataType: 'json',
+                                 type: 'post',
+                                 data: json})
+  */
 }
 
 $(document).ready(function() {
-    bracket({id: 'save', 
+    bracket({id: 'save',
              init: saveData,
              save: saveFn,
-             userData: "http://myapi"
-             })
+             userData: "http://myapi"})
   })
 </script>
 <script class="big" type="text/javascript">
-var bigData = {  
+var bigData = {
     teams : [
       ["Team 1",  "Team 2" ],
       ["Team 3",  "Team 4" ],
@@ -106,7 +107,7 @@ $(document).ready(function() {
   })
 </script>
 <script class="doubleElimination" type="text/javascript">
-var doubleEliminationData = {  
+var doubleEliminationData = {
     teams : [
       ["Team 1", "Team 2"],
       ["Team 3", "Team 4"]
@@ -129,7 +130,7 @@ $(document).ready(function() {
 </script>
 <script class="customHandlers" type="text/javascript">
 /* Custom data objects passed as teams */
-var customData = {  
+var customData = {
     teams : [
       [{name: "Team 1", flag: 'fi'}, {name: "Team 2", flag: 'kr'}],
       [{name: "Team 3", flag: 'se'}, {name: "Team 4", flag: 'us'}]
@@ -151,18 +152,18 @@ function edit_fn(container, data, doneCb) {
 function render_fn(container, data, score) {
   if (!data.flag || !data.name)
     return
-  container.append('<img src="deps/png/'+data.flag+'.png" /> ')
-  container.append(data.name)
+  container.append('<img src="deps/png/'+data.flag+'.png" /> ').append(data.name)
 }
 
 $(document).ready(function() {
-  bracket({id: 'customDemo', 
+  bracket({id: 'customDemo',
            init: customData,
-           decorator: {edit: edit_fn, render: render_fn}})
+           decorator: {edit: edit_fn,
+                       render: render_fn}})
   })
 </script>
 <script class="autoComplete" type="text/javascript">
-var autoCompleteData = {  
+var autoCompleteData = {
     teams : [
       ['fi:Player 1', ''],
       ['', '']
@@ -171,35 +172,33 @@ var autoCompleteData = {
   }
 
 /* Data for autocomplete */
-var acData = ["kr:MC", "ca:HuK", "se:Naniwa", "pe:Fenix", 
+var acData = ["kr:MC", "ca:HuK", "se:Naniwa", "pe:Fenix",
               "us:IdrA", "tw:Sen", "fi:Naama"]
 
 function acEditFn(container, data, doneCb) {
   var input = $('<input type="text">')
-  input.autocomplete({ source: acData })
   input.val(data)
+  input.autocomplete({ source: acData })
+  input.blur(function() { doneCb(input.val()) })
+  input.keyup(function(e) { if ((e.keyCode||e.which)===13) input.blur() })
   container.html(input)
   input.focus()
-  input.blur(function() { doneCb(input.val()) })
-  /* you probably want to bind return key to blur here */
 }
 
 function acRenderFn(container, data, score) {
   var fields = data.split(':')
-  if (fields.length < 2) {
+  if (fields.length != 2)
     container.append('--')
-  }
-  else {
-    container.append('<img src="deps/png/'+fields[0]+'.png"> ')
-    container.append(fields[1])
-  }
+  else
+    container.append('<img src="deps/png/'+fields[0]+'.png"> ').append(fields[1])
 }
 
 $(document).ready(function() {
     bracket({id: 'autoComplete',
              init: autoCompleteData,
              save: function(){}, /* without save() labels are disabled */
-             decorator: {edit: acEditFn, render: acRenderFn}})
+             decorator: {edit: acEditFn,
+                         render: acRenderFn}})
   })
 </script>
 <script type="text/javascript">
@@ -209,6 +208,8 @@ $(document).ready(function() {
       var pre = $('pre.'+d)
       var script = $('script.'+d)
       pre.text(script.html())
+      var div = $('div#'+d)
+      div.scrollLeft(div.width())
     })
     $('pre').addClass('brush: js;')
     SyntaxHighlighter.defaults['gutter'] = false
@@ -245,6 +246,7 @@ field.</p>
 <div class="demo" id="doubleElimination"></div>
 <pre class="doubleElimination"></pre>
 <h2>Autocomplete demo, try input as "countrycode:name"</h2>
+<p>This demo uses <a href="http://jqueryui.com/">jQuery UI</a> for the autocomplete.</p>
 <div class="demo" id="autoComplete"></div>
 <pre class="autoComplete"></pre>
 <div class="demo" id="b8"></div>
