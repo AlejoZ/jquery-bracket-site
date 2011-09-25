@@ -1,14 +1,28 @@
 <html>
 <head>
+<title>jQuery Brackets demo</title>
 <script type="text/javascript" src="../deps/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="../deps/jquery-ui-1.8.16.custom.min.js"></script>
 <script type="text/javascript" src="../deps/jquery.json-2.2.min.js"></script>
 <script type="text/javascript" src="../jquery.bracket.js"></script>
 
+<script type="text/javascript" src="deps/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
+<script type="text/javascript" src="deps/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"></script>
+<link type="text/css" rel="stylesheet" href="deps/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
 <link rel="stylesheet" type="text/css" href="../deps/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
 <link rel="stylesheet" type="text/css" href="../bracket.css" />
 <link rel="stylesheet" type="text/css" href="site.css" />
-<style>h1, h2 { clear: both; }</style>
+<script type="text/javascript"></script>
+<style type="text/css">
+.syntaxhighlighter { overflow-y: hidden !important; }
+.syntaxhighlighter,
+.syntaxhighlighter .line,
+.syntaxhighlighter .line.alt1,
+.syntaxhighlighter .line.alt2,
+.syntaxhighlighter .gutter .line.highlighted {
+  background-color: #EEE !important;
+}
+</style>
 <script class="minimal" type="text/javascript">
 var minimalData = {  
     teams : [
@@ -157,7 +171,8 @@ var autoCompleteData = {
   }
 
 /* Data for autocomplete */
-var acData = ["kr:MC", "ca:HuK", "se:Naniwa", "pe:Fenix", "us:IdrA", "tw:Sen", "fi:Naama"]
+var acData = ["kr:MC", "ca:HuK", "se:Naniwa", "pe:Fenix", 
+              "us:IdrA", "tw:Sen", "fi:Naama"]
 
 function acEditFn(container, data, doneCb) {
   var input = $('<input type="text">')
@@ -195,6 +210,10 @@ $(document).ready(function() {
       var script = $('script.'+d)
       pre.text(script.html())
     })
+    $('pre').addClass('brush: js;')
+    SyntaxHighlighter.defaults['gutter'] = false
+    SyntaxHighlighter.defaults['auto-links'] = false
+    SyntaxHighlighter.all()
   })
 </script>
 </head>
@@ -222,14 +241,14 @@ field.</p>
 <h2>Data customization</h2>
 <div class="demo" id="customDemo"></div>
 <pre class="customHandlers"></pre>
-<h2>Double elimination with max 4 teams</h2>
+<h2>Double elimination</h2>
 <div class="demo" id="doubleElimination"></div>
 <pre class="doubleElimination"></pre>
 <h2>Autocomplete demo, try input as "countrycode:name"</h2>
 <div class="demo" id="autoComplete"></div>
 <pre class="autoComplete"></pre>
 <div class="demo" id="b8"></div>
-<h2>Double elimination with max 16 teams</h2>
+<h2>Large double elimination with 16 teams</h2>
 <div class="demo" id="big"></div>
 <pre class="big"></pre>
 </div>

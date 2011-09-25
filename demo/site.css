@@ -1,23 +1,19 @@
 body {
   background: #666;
+  font-family: 'Arial'
 }
 
 div#main {
   width: 780px;
   background: #FFF;
   float: left;
-  padding: 5px;
+  padding: 10px;
 }
-
+h1, h2 { clear: both; }
 div.demo {
   overflow: auto;
-  margin: 10px;
 }
 
 pre {
-  border-left: 5px solid #CCC;
-  background-color: #EEE;
-  margin: 10px;
-  padding: 5px;
-  overflow: auto;
+  overflow: hidden;
 }
