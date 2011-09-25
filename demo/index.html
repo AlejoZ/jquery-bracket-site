@@ -11,6 +11,18 @@
 <link rel="stylesheet" type="text/css" href="deps/jquery-ui-1.8.16/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
 <link rel="stylesheet" type="text/css" href="site.css" />
 <link rel="stylesheet" type="text/css" href="../bracket.css" />
+<script type="text/javascript">
+$(document).ready(function() {
+    var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
+    demos.forEach(function(d){
+      var demo = $('div#'+d)
+      $('<div class="demo"></div>').appendTo(demo)
+      var pre = $('<pre></pre>').appendTo(demo)
+      var script = demo.find('script')
+      pre.text(script.html())
+    })
+  })
+</script>
 </head>
 <body>
 <div id="main">
@@ -23,171 +35,180 @@ Feedback can be sent to teijo(a)aropupu.fi.</p>
 <li>Check out <a href="http://jqueryui.com/">jQuery UI</a> for autocomplete</li>
 <li><a href="http://code.google.com/p/jquery-json/">jQuery JSON</a> for dynamic functionality</li>
 </ul>
-<h2>Minimal</h2>
-<script class="minimal" type="text/javascript">
-var minimalData = {
-    teams : [
-      ["Team 1", "Team 2"], /* first matchup */
-      ["Team 3", "Team 4"]  /* second matchup */
-    ],
-    results : [[
-      [[1,2], [3,4]],       /* first round */
-      [[2,1]]               /* second round */
-    ]]
-  }
 
-$(document).ready(function() {
-    $('#minimal').bracket({
-      init: minimalData /* data to initialize the bracket with */ })
-  })
-</script>
-<div class="demo" id="minimal"></div>
-<pre class="minimal"></pre>
-<h2>Save functionality (click team and score labels to edit)</h2>
-<p>Note that you can press return when entering scores to procede to next
-field.</p>
-<script class="save" type="text/javascript">
-var saveData = {
-    teams : [
-      ["Team 1", "Team 2"], /* first matchup */
-      ["Team 3", "Team 4"]  /* second matchup */
-    ],
-    results : [[[[1,0]]]]
-  }
+<div id="minimal">
+  <h2>Minimal</h2>
+  <script type="text/javascript">
+  var minimalData = {
+      teams : [
+        ["Team 1", "Team 2"], /* first matchup */
+        ["Team 3", "Team 4"]  /* second matchup */
+      ],
+      results : [[
+        [[1,2], [3,4]],       /* first round */
+        [[2,1]]               /* second round */
+      ]]
+    }
 
-/* Called whenever bracket is modified
- *
- * data:     changed bracket object in format given to init
- * userData: optional data given when bracket is created.
- */
-function saveFn(data, userData) {
-  var json = jQuery.toJSON(data)
-  $('#saveOutput').text('POST '+userData+' '+json)
-  /* You probably want to do something like this
-  jQuery.ajax("rest/"+userData, {contentType: 'application/json',
-                                 dataType: 'json',
-                                 type: 'post',
-                                 data: json})
+  $(document).ready(function() {
+      $('#minimal .demo').bracket({
+        init: minimalData /* data to initialize the bracket with */ })
+    })
+  </script>
+</div>
+
+<div id="save">
+  <h2>Save functionality (click team and score labels to edit)</h2>
+  <p>Note that you can press return when entering scores to procede to next
+  field.</p>
+  <script type="text/javascript">
+  var saveData = {
+      teams : [
+        ["Team 1", "Team 2"], /* first matchup */
+        ["Team 3", "Team 4"]  /* second matchup */
+      ],
+      results : [[[[1,0]]]]
+    }
+
+  /* Called whenever bracket is modified
+  *
+  * data:     changed bracket object in format given to init
+  * userData: optional data given when bracket is created.
   */
-}
+  function saveFn(data, userData) {
+    var json = jQuery.toJSON(data)
+    $('#saveOutput').text('POST '+userData+' '+json)
+    /* You probably want to do something like this
+    jQuery.ajax("rest/"+userData, {contentType: 'application/json',
+                                  dataType: 'json',
+                                  type: 'post',
+                                  data: json})
+    */
+  }
 
-$(document).ready(function() {
-    $('#save').bracket({init: saveData,
-                        save: saveFn,
-                        userData: "http://myapi"})
-  })
-</script>
-<div class="demo" id="save"></div>
-<pre class="save"></pre>
+  $(document).ready(function() {
+      $('div#save .demo').bracket({
+        init: saveData,
+        save: saveFn,
+        userData: "http://myapi"})
+    })
+  </script>
+</div>
 <h3>Save output</h3>
 <pre id="saveOutput">Try to first modify some scores or teams</pre>
-<h2>Data customization</h2>
-<script class="customHandlers" type="text/javascript">
-/* Custom data objects passed as teams */
-var customData = {
-    teams : [
-      [{name: "Team 1", flag: 'fi'}, {name: "Team 2", flag: 'kr'}],
-      [{name: "Team 3", flag: 'se'}, {name: "Team 4", flag: 'us'}]
-    ],
-    results : [[[[4,2]]]]
+
+<div id="customHandlers">
+  <h2>Data customization</h2>
+  <script type="text/javascript">
+  /* Custom data objects passed as teams */
+  var customData = {
+      teams : [
+        [{name: "Team 1", flag: 'fi'}, {name: "Team 2", flag: 'kr'}],
+        [{name: "Team 3", flag: 'se'}, {name: "Team 4", flag: 'us'}]
+      ],
+      results : [[[[4,2]]]]
+    }
+
+  /* Edit function is called when team label is clicked */
+  function edit_fn(container, data, doneCb) {
+    var input = $('<input type="text">')
+    input.val(data.name)
+    container.html(input)
+    input.focus()
+    input.blur(function() { doneCb({flag: data.flag, name: input.val()}) })
   }
 
-/* Edit function is called when team label is clicked */
-function edit_fn(container, data, doneCb) {
-  var input = $('<input type="text">')
-  input.val(data.name)
-  container.html(input)
-  input.focus()
-  input.blur(function() { doneCb({flag: data.flag, name: input.val()}) })
-}
-
-/* Render function is called for each team label when data is changed, data
- * contains the data object given in init and belonging to this slot. */
-function render_fn(container, data, score) {
-  if (!data.flag || !data.name)
-    return
-  container.append('<img src="deps/png/'+data.flag+'.png" /> ').append(data.name)
-}
-
-$(document).ready(function() {
-  $('#customDemo').bracket({init: customData,
-                            decorator: {edit: edit_fn,
-                                        render: render_fn}})
-  })
-</script>
-<div class="demo" id="customDemo"></div>
-<pre class="customHandlers"></pre>
-<h2>Double elimination</h2>
-<script class="doubleElimination" type="text/javascript">
-var doubleEliminationData = {
-    teams : [
-      ["Team 1", "Team 2"],
-      ["Team 3", "Team 4"]
-    ],
-    results : [[      /* WINNER BRACKET */
-      [[1,2], [3,4]], /* first and second matches of the first round */
-      [[5,6]]         /* second round */
-    ], [              /* LOSER BRACKET */
-      [[7,8]],        /* first round */
-      [[9,10]]        /* second round */
-    ], [              /* FINALS */
-      [[11,12]]
-    ]]
+  /* Render function is called for each team label when data is changed, data
+  * contains the data object given in init and belonging to this slot. */
+  function render_fn(container, data, score) {
+    if (!data.flag || !data.name)
+      return
+    container.append('<img src="deps/png/'+data.flag+'.png" /> ').append(data.name)
   }
 
-$(document).ready(function() {
-    $('#doubleElimination').bracket({init: doubleEliminationData})
-  })
-</script>
-<div class="demo" id="doubleElimination"></div>
-<pre class="doubleElimination"></pre>
-<h2>Autocomplete demo, try input as "countrycode:name"</h2>
-<p>This demo uses <a href="http://jqueryui.com/">jQuery UI</a> for the autocomplete.</p>
-<script class="autoComplete" type="text/javascript">
-var autoCompleteData = {
-    teams : [
-      ['fi:Player 1', ''],
-      ['', '']
-    ],
-    results : []
+  $(document).ready(function() {
+    $('div#customHandlers .demo').bracket({
+      init: customData,
+      decorator: {edit: edit_fn,
+                  render: render_fn}})
+    })
+  </script>
+</div>
+
+<div id="doubleElimination">
+  <h2>Double elimination</h2>
+  <script type="text/javascript">
+  var doubleEliminationData = {
+      teams : [
+        ["Team 1", "Team 2"],
+        ["Team 3", "Team 4"]
+      ],
+      results : [[      /* WINNER BRACKET */
+        [[1,2], [3,4]], /* first and second matches of the first round */
+        [[5,6]]         /* second round */
+      ], [              /* LOSER BRACKET */
+        [[7,8]],        /* first round */
+        [[9,10]]        /* second round */
+      ], [              /* FINALS */
+        [[11,12]]
+      ]]
+    }
+
+  $(document).ready(function() {
+      $('div#doubleElimination .demo').bracket({
+        init: doubleEliminationData})
+    })
+  </script>
+</div>
+
+<div id="autoComplete">
+  <h2>Autocomplete demo, try input as "countrycode:name"</h2>
+  <p>This demo uses <a href="http://jqueryui.com/">jQuery UI</a> for the autocomplete.</p>
+  <script type="text/javascript">
+  var autoCompleteData = {
+      teams : [
+        ['fi:Player 1', ''],
+        ['', '']
+      ],
+      results : []
+    }
+
+  /* Data for autocomplete */
+  var acData = ["kr:MC", "ca:HuK", "se:Naniwa", "pe:Fenix",
+                "us:IdrA", "tw:Sen", "fi:Naama"]
+
+  function acEditFn(container, data, doneCb) {
+    var input = $('<input type="text">')
+    input.val(data)
+    input.autocomplete({ source: acData })
+    input.blur(function() { doneCb(input.val()) })
+    input.keyup(function(e) { if ((e.keyCode||e.which)===13) input.blur() })
+    container.html(input)
+    input.focus()
   }
 
-/* Data for autocomplete */
-var acData = ["kr:MC", "ca:HuK", "se:Naniwa", "pe:Fenix",
-              "us:IdrA", "tw:Sen", "fi:Naama"]
+  function acRenderFn(container, data, score) {
+    var fields = data.split(':')
+    if (fields.length != 2)
+      container.append('--')
+    else
+      container.append('<img src="deps/png/'+fields[0]+'.png"> ').append(fields[1])
+  }
 
-function acEditFn(container, data, doneCb) {
-  var input = $('<input type="text">')
-  input.val(data)
-  input.autocomplete({ source: acData })
-  input.blur(function() { doneCb(input.val()) })
-  input.keyup(function(e) { if ((e.keyCode||e.which)===13) input.blur() })
-  container.html(input)
-  input.focus()
-}
+  $(document).ready(function() {
+      $('div#autoComplete .demo').bracket({
+        init: autoCompleteData,
+        save: function(){}, /* without save() labels are disabled */
+        decorator: {edit: acEditFn,
+                    render: acRenderFn}})
+    })
+  </script>
+</div>
 
-function acRenderFn(container, data, score) {
-  var fields = data.split(':')
-  if (fields.length != 2)
-    container.append('--')
-  else
-    container.append('<img src="deps/png/'+fields[0]+'.png"> ').append(fields[1])
-}
-
-$(document).ready(function() {
-    $('#autoComplete').bracket({
-      init: autoCompleteData,
-      save: function(){}, /* without save() labels are disabled */
-      decorator: {edit: acEditFn,
-                  render: acRenderFn}})
-  })
-</script>
-<div class="demo" id="autoComplete"></div>
-<pre class="autoComplete"></pre>
-<div class="demo" id="b8"></div>
-<h2>Large double elimination with 16 teams</h2>
-<script class="big" type="text/javascript">
-var bigData = {
+<div id="big">
+  <h2>Large double elimination with 16 teams</h2>
+  <script type="text/javascript">
+  var bigData = {
     teams : [
       ["Team 1",  "Team 2" ],
       ["Team 3",  "Team 4" ],
@@ -215,21 +236,15 @@ var bigData = {
     ]]
   }
 
-$(document).ready(function() { $('#big').bracket({init: bigData}) })
-</script>
-<div class="demo" id="big"></div>
-<pre class="big"></pre>
+  $(document).ready(function() { $('div#big .demo').bracket({init: bigData}) })
+  </script>
+</div>
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
-    var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
-    demos.forEach(function(d){
-      var pre = $('pre.'+d)
-      var script = $('script.'+d)
-      pre.text(script.html())
-      var div = $('div#'+d)
-      div.scrollLeft(div.width())
-    })
+    var big = $('#big div.demo')
+    big.scrollLeft(big.width())
+
     $('pre').addClass('brush: js;')
     SyntaxHighlighter.defaults['gutter'] = false
     SyntaxHighlighter.defaults['auto-links'] = false
