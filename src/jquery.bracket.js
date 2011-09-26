@@ -1,3 +1,11 @@
+/**
+ * jQuery Bracket
+ *
+ * Copyright (c) 2011, Teijo Laine,
+ * http://aropupu.fi/bracket/
+ *
+ * Licenced under the MIT licence
+ */
 (function($) {
   var jqueryBracket = function(opts) 
   {
