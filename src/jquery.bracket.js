@@ -7,7 +7,7 @@
  * Licenced under the MIT licence
  */
 (function($) {
-  var jqueryBracket = function(opts) 
+  var jqueryBracket = function(opts)
   {
     var resultIdentifier
 
@@ -44,7 +44,7 @@
     if (opts.decorator && (!opts.decorator.edit || !opts.decorator.render))
       throw new Error('Invalid decorator input')
     else if (!opts.decorator)
-      opts.decorator = { edit: defaultEdit, render: defaultRender } 
+      opts.decorator = { edit: defaultEdit, render: defaultRender }
 
     var data = opts.init
     var topCon = $('<div class="system"></div>').appendTo(opts.el)
@@ -74,7 +74,7 @@
       }
     }
 
-    var Match = function(round, data, idx, results) 
+    var Match = function(round, data, idx, results)
     {
       function connector(height, shift, teamCon) {
         var width = parseInt($('.round:first').css('margin-right'))/2
@@ -98,7 +98,7 @@
           src.css('top', shift+'px');
         else
           src.css('bottom', (-shift)+'px');
-        
+
         if (drop)
           src.css('border-bottom', 'none');
         else
@@ -256,7 +256,7 @@
         el: matchCon,
         id: idx,
         connectorCb: function(cb) {
-          connectorCb = cb 
+          connectorCb = cb
         },
         connect: function(cb) {
           var connectorOffset = teamCon.height()/4
@@ -265,7 +265,7 @@
           var height
 
           if (!cb || cb === null) {
-            if (idx%2 === 0) { // dir == down 
+            if (idx%2 === 0) { // dir == down
               if (this.winner().id === 0) {
                 shift = connectorOffset
                 height = matchupOffset
@@ -306,7 +306,7 @@
         winner: winner,
         loser: loser,
         setAlignCb: function(cb) {
-          alignCb = cb 
+          alignCb = cb
         },
         render: function() {
           matchCon.empty()
@@ -318,7 +318,7 @@
           data[1].idx = data[1].source().idx
 
           var isReady = false
-          if ((data[0].name || data[0].name === '') && 
+          if ((data[0].name || data[0].name === '') &&
               (data[1].name || data[1].name === ''))
             isReady = true
 
@@ -343,12 +343,12 @@
           this.connect(connectorCb)
         },
         results: function() {
-          return [data[0].score, data[1].score] 
+          return [data[0].score, data[1].score]
         }
       }
     }
 
-    var Round = function(bracket, roundIdx, results) 
+    var Round = function(bracket, roundIdx, results)
     {
       var matches = []
       var roundCon = $('<div class="round"></div>')
@@ -380,8 +380,8 @@
           roundCon.empty()
           roundCon.appendTo(bracket.el)
           matches.forEach(function(ma) {
-            ma.render() 
-          })    
+            ma.render()
+          })
         },
         results: function() {
           var results = []
@@ -401,7 +401,7 @@
         el: bracketCon,
         addRound: function() {
           var id = rounds.length
-          
+
           var round = new Round(this, id, !results?null:results[id])
           rounds.push(round)
           return round;
@@ -424,14 +424,14 @@
         render: function() {
           bracketCon.empty()
           rounds.forEach(function(ro) {
-            ro.render() 
-          })    
+            ro.render()
+          })
         },
         results: function() {
           var results = []
           rounds.forEach(function(ro) {
             results.push(ro.results())
-          })    
+          })
           return results
         }
       }
@@ -439,7 +439,7 @@
 
     function isValid(data)
     {
-      var t = data.teams 
+      var t = data.teams
       var r = data.results
 
       if (!t) {
@@ -544,7 +544,7 @@
       }
 
       container.find('.team').mouseover(function() {
-          var i = $(this).attr('index') 
+          var i = $(this).attr('index')
           track = new Track(i);
           track.highlight()
           $(this).mouseout(function() {
@@ -574,7 +574,7 @@
             teamCb = function() {
                 var t = teams[m]
                 var i = m
-                return [{source: function() { return {name: t[0], idx: (i*2)} }}, 
+                return [{source: function() { return {name: t[0], idx: (i*2)} }},
                         {source: function() { return {name: t[1], idx: (i*2+1)} }}]
               }
           }
@@ -607,7 +607,7 @@
             if (!(n%2 === 0 && r != 0)) teamCb = function() {
               /* first round comes from winner bracket */
               if (n%2 === 0 && r === 0) {
-                return [{source: winners.round(0).match(m*2).loser}, 
+                return [{source: winners.round(0).match(m*2).loser},
                         {source: winners.round(0).match(m*2+1).loser}]
               }
               else { /* match with dropped */
@@ -615,7 +615,7 @@
                         {source: winners.round(r+1).match(m).loser}]
               }
             }
-          
+
             var match = round.addMatch(teamCb)
             var teamCon = match.el.find('.teamContainer')
             match.setAlignCb(function() {
@@ -624,7 +624,7 @@
 
             if (r < rounds-1 || n < 1) {
               var cb = null
-              // inside lower bracket 
+              // inside lower bracket
               if (n%2 === 0) {
                 cb = function(tC, match) {
                   var connectorOffset = tC.height()/4
@@ -662,7 +662,7 @@
         match.el.css('height', (height)+'px');
 
         var teamCon = match.el.find('.teamContainer')
-        var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamCon.height()/2 
+        var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamCon.height()/2
 
         teamCon.css('top', (topShift)+'px');
       })
@@ -671,17 +671,17 @@
       var height
 
       match.connectorCb(function() { return null })
-      
+
       winners.final().connectorCb(function(tC) {
           var connectorOffset = tC.height()/4
-          var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()/2 
+          var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()/2
           var matchupOffset = topShift-winners.el.height()/2
           if (winners.winner().id === 0) {
             height = matchupOffset + connectorOffset*2
-            shift = connectorOffset 
+            shift = connectorOffset
           }
           else if (winners.winner().id === 1) {
-            height = matchupOffset 
+            height = matchupOffset
             shift = connectorOffset*3
           }
           else {
@@ -693,7 +693,7 @@
 
       losers.final().connectorCb(function(tC) {
           var connectorOffset = tC.height()/4
-          var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()/2 
+          var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()/2
           var matchupOffset = topShift-winners.el.height()/2
           if (losers.winner().id === 0) {
             height = matchupOffset
