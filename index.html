@@ -1,17 +1,19 @@
 <html>
 <head>
 <title>jQuery Brackets demo</title>
-<script type="text/javascript" src="../deps/jquery-1.6.2.min.js"></script>
-<script type="text/javascript" src="../jquery.bracket.js"></script>
-<script type="text/javascript" src="deps/jquery-ui-1.8.16/jquery-ui-1.8.16.custom.min.js"></script>
-<script type="text/javascript" src="deps/jquery.json-2.2.min.js"></script>
-<script type="text/javascript" src="deps/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
-<script type="text/javascript" src="deps/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"></script>
-<script type="text/javascript" src="deps/syntaxhighlighter_3.0.83/scripts/shBrushXml.js"></script>
-<link rel="stylesheet" type="text/css" href="deps/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
-<link rel="stylesheet" type="text/css" href="deps/jquery-ui-1.8.16/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
-<link rel="stylesheet" type="text/css" href="site.css" />
-<link rel="stylesheet" type="text/css" href="../bracket.css" />
+<script type="text/javascript" src="site/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="site/jquery-ui-1.8.16/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="site/jquery.json-2.2.min.js"></script>
+<script type="text/javascript" src="site/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
+<script type="text/javascript" src="site/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="site/syntaxhighlighter_3.0.83/scripts/shBrushXml.js"></script>
+<link rel="stylesheet" type="text/css" href="site/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
+<link rel="stylesheet" type="text/css" href="site/jquery-ui-1.8.16/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+<link rel="stylesheet" type="text/css" href="site/jquery.bracket-site.css" />
+
+<link rel="stylesheet" type="text/css" href="src/jquery.bracket.css" />
+<script type="text/javascript" src="src/jquery.bracket.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
     var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
@@ -31,7 +33,7 @@ $(document).ready(function() {
 <p>The code is still in alpha phase and some modifications are likely happen.
 Feedback can be sent to teijo(a)aropupu.fi.</p>
 <ul>
-<li>Get <a href="../jquery.bracket.js">the code</a> and <a href="../bracket.css">the stylesheet</a> to try it out</a></li>
+<li>Get <a href="src/jquery.bracket.js">the code</a> and <a href="src/jquery.bracket.css">the stylesheet</a> to try it out</a></li>
 <li>Depends on <a href="http://jquery.com/">jQuery 1.6.4+</a></li>
 <li>Check out <a href="http://jqueryui.com/">jQuery UI</a> for autocomplete</li>
 <li><a href="http://code.google.com/p/jquery-json/">jQuery JSON</a> for dynamic functionality</li>
@@ -131,7 +133,7 @@ To try the examples, make sure you have the following includes:
   function render_fn(container, data, score) {
     if (!data.flag || !data.name)
       return
-    container.append('<img src="deps/png/'+data.flag+'.png" /> ').append(data.name)
+    container.append('<img src="site/png/'+data.flag+'.png" /> ').append(data.name)
   }
 
   $(document).ready(function() {
@@ -200,7 +202,7 @@ To try the examples, make sure you have the following includes:
     if (fields.length != 2)
       container.append('--')
     else
-      container.append('<img src="deps/png/'+fields[0]+'.png"> ').append(fields[1])
+      container.append('<img src="site/png/'+fields[0]+'.png"> ').append(fields[1])
   }
 
   $(document).ready(function() {
