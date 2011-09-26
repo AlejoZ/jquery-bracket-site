@@ -47,7 +47,7 @@
       opts.decorator = { edit: defaultEdit, render: defaultRender }
 
     var data = opts.init
-    var topCon = $('<div class="system"></div>').appendTo(opts.el)
+    var topCon = $('<div class="jQBracket"></div>').appendTo(opts.el)
 
     // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
     function isNumber(n) {

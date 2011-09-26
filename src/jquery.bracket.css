@@ -6,7 +6,7 @@
  *
  * Licenced under the MIT licence
  */
-.system {
+div.jQBracket {
   font-family: "Arial";
   font-size: 14px;
   float: left;
@@ -16,40 +16,42 @@
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#333));
   background: -moz-linear-gradient(-90deg, #222, #333);
 }
-.finals {
+
+div.jQBracket .finals {
   float: right;
   right: 0px;
   clear: right;
   position: relative;
 }
-.bracket {
+
+div.jQBracket .bracket {
   float: right;
   height: 400px;
   clear: left;
 }
 
-.loserBracket {
+div.jQBracket .loserBracket {
   float: right;
   height: 200px;
   clear: left;
   position: relative;
 }
 
-.round {
+div.jQBracket .round {
   position: relative;
   width: 100px;
   margin-right: 40px;
   float: left;
 }
 
-.match {
+div.jQBracket .match {
   position: relative;
   float: left;
   display: block;
   width: 100%;
 }
 
-.team {
+div.jQBracket .team {
   position: relative;
   float: left;
   background-color: #666;
@@ -62,7 +64,7 @@
   box-shadow: 1px 1px 2px rgba(0,0,0,0.4);
 }
 
-.team b {
+div.jQBracket .team b {
   font-weight: normal;
   padding: 1px;
   cursor: pointer;
@@ -71,11 +73,11 @@
   max-width: 80px;
 }
 
-.team b[disabled] {
+div.jQBracket .team b[disabled] {
   cursor: default;
 }
 
-.team b input {
+div.jQBracket .team b input {
   font-size: 10px;
   padding: 0px;
   width: 60px;
@@ -83,7 +85,7 @@
   position: absolute;
 }
 
-.team span {
+div.jQBracket .team span {
   font-weight: bold;
   float: right;
   cursor: pointer;
@@ -95,57 +97,61 @@
   width: 20px;
 }
 
-.team span[disabled] {
+div.jQBracket .team span[disabled] {
   cursor: default;
 }
 
-.team span input {
+div.jQBracket .team span input {
   font-size: 10px;
   padding: 0px;
   width: inherit;
   height: 16px;
 }
 
-.team b input.error,
-.team span input.error {
+div.jQBracket .team b input.error,
+div.jQBracket .team span input.error {
   background-color: #FCC;
 }
 
-.team.np {
+div.jQBracket .team.np {
   background-color: #666;
   color: #EEE;
 }
 
-.team.na {
+div.jQBracket .team.na {
   background-color: #999;
   color: #CCC;
 }
 
-.team.win {
+div.jQBracket .team.win {
   background-color: #888;
   color: #EEE;
 }
-.team.win span {
+
+div.jQBracket .team.win span {
   color: #0F0;
 }
-.team.lose span {
+
+div.jQBracket .team.lose span {
   color: #C00;
 }
-.team.lose {
+
+div.jQBracket .team.lose {
   background-color: #666;
   color: #333;
 }
-.team.tie span {
+
+div.jQBracket .team.tie span {
   color: #00F;
 }
 
-.teamContainer {
+div.jQBracket .teamContainer {
   position: relative;
   float: left;
   display: block;
 }
 
-.connector {
+div.jQBracket .connector {
   border: 2px solid #666;
   border-left: none;
   position: absolute;
@@ -153,7 +159,7 @@
   z-index: 1;
 }
 
-.connector div.connector {
+div.jQBracket .connector div.connector {
   border: none;
   border-bottom: 2px solid #666;
   height: 0px;
@@ -162,37 +168,37 @@
   display: block;
 }
 
-.connector.highlight,
-.connector div.connector.highlight {
+div.jQBracket .connector.highlight,
+div.jQBracket .connector div.connector.highlight {
   border-color: #0C0;
 }
 
-.team.highlight {
+div.jQBracket .team.highlight {
   background-color: #3C0;
   color: #000;
 }
 
-.connector.highlightWinner,
-.connector div.connector.highlightWinner {
+div.jQBracket .connector.highlightWinner,
+div.jQBracket .connector div.connector.highlightWinner {
   border-color: #C90;
 }
 
-.team.highlightWinner {
+div.jQBracket .team.highlightWinner {
   background-color: #C90;
   color: #000;
 }
 
-.connector.highlightLoser,
-.connector div.connector.highlightLoser {
+div.jQBracket .connector.highlightLoser,
+div.jQBracket .connector div.connector.highlightLoser {
   border-color: #09C;
 }
 
-.np .connector,
-.np .connector div.connector {
+div.jQBracket .np .connector,
+div.jQBracket .np .connector div.connector {
   border-color: #222;
 }
 
-.team.highlightLoser {
+div.jQBracket .team.highlightLoser {
   background-color: #09C;
   color: #000;
 }
