@@ -1,6 +1,7 @@
 body {
   background: #666;
-  font-family: 'Arial'
+  font-family: "Arial";
+  font-size: 12px;
 }
 
 div#main {
