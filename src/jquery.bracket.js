@@ -714,6 +714,24 @@
     var w, l, f
 
     var r = data.results
+
+    function depth(a) {
+      function df(a, d) {
+        if (a instanceof Array)
+          return df(a[0], d+1) 
+        return d
+      }
+      return df(a, 0)
+    }
+    function wrap(a, d) {
+      if (d > 0)
+        a = wrap([a], d-1)
+      return a
+    }
+
+    /* wrap data to into necessary arrays */
+    r = wrap(r, 4-depth(r))
+
     var isSingleElimination = (r.length <= 1)
 
     if (isSingleElimination) {

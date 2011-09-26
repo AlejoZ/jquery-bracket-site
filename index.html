@@ -60,10 +60,10 @@ To try most of the examples use these includes:
         ["Team 1", "Team 2"], /* first matchup */
         ["Team 3", "Team 4"]  /* second matchup */
       ],
-      results : [[
+      results : [
         [[1,2], [3,4]],       /* first round */
         [[2,1]]               /* second round */
-      ]]
+      ]
     }
 
   $(document).ready(function() {
@@ -83,7 +83,7 @@ To try most of the examples use these includes:
         ["Team 1", "Team 2"], /* first matchup */
         ["Team 3", "Team 4"]  /* second matchup */
       ],
-      results : [[[[1,0]]]]
+      results : [[1,0], [2,7]]
     }
 
   /* Called whenever bracket is modified
@@ -122,7 +122,7 @@ To try most of the examples use these includes:
         [{name: "Team 1", flag: 'fi'}, {name: "Team 2", flag: 'kr'}],
         [{name: "Team 3", flag: 'se'}, {name: "Team 4", flag: 'us'}]
       ],
-      results : [[[[4,2]]]]
+      results : [4,2]
     }
 
   /* Edit function is called when team label is clicked */
