@@ -36,8 +36,8 @@
       throw new Error('Options not set')
     if (!opts.el)
       throw new Error('Invalid jQuery object as container')
-    if (!opts.init)
-      throw new Error('No bracket data given')
+    if (!opts.init && !opts.save)
+      throw new Error('No bracket data or save callback given')
     if (opts.userData === undefined)
       opts.userData = null
 
@@ -46,8 +46,56 @@
     else if (!opts.decorator)
       opts.decorator = { edit: defaultEdit, render: defaultRender }
 
-    var data = opts.init
-    var topCon = $('<div class="jQBracket"></div>').appendTo(opts.el)
+    var data
+    if (!opts.init)
+      opts.init = {teams: [['', '']],
+                   results: [] }
+
+    data = opts.init
+
+    var topCon = $('<div class="jQBracket"></div>').appendTo(opts.el.empty())
+
+    if (opts.save) {
+      var tools = $('<div class="tools"></div>').appendTo(topCon)
+      var inc = $('<span class="increment">+</span>').appendTo(tools)
+      inc.click(function() {
+          var i
+          var len = data.teams.length
+          for (i = 0; i < len; i++)
+            data.teams.push(['',''])
+          new jqueryBracket(opts)
+        })
+
+      if (data.teams.length > 1 && data.results.length === 1 ||
+          data.teams.length > 2 && data.results.length === 3) {
+        var dec = $('<span class="decrement">-</span>').appendTo(tools)
+        dec.click(function() {
+            if (data.teams.length > 1) {
+              data.teams = data.teams.slice(0, data.teams.length/2)
+              new jqueryBracket(opts)
+            }
+          })
+      }
+
+      if (data.results.length === 1 && data.teams.length > 1) {
+        var type = $('<span class="doubleElimination">de</span>').appendTo(tools)
+        type.click(function() {
+            if (data.teams.length > 1 && data.results.length < 3) {
+              data.results.push([],[])
+              new jqueryBracket(opts)
+            }
+          })
+      }
+      else if (data.results.length === 3 && data.teams.length > 1) {
+        var type = $('<span class="singleElimination">se</span>').appendTo(tools)
+        type.click(function() {
+            if (data.results.length == 3) {
+              data.results = data.results.slice(0,1)
+              new jqueryBracket(opts)
+            }
+          })
+      }
+    }
 
     // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
     function isNumber(n) {
@@ -731,6 +779,7 @@
 
     /* wrap data to into necessary arrays */
     r = wrap(r, 4-depth(r))
+    data.results = r
 
     var isSingleElimination = (r.length <= 1)
 

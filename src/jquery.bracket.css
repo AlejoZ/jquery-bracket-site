@@ -17,6 +17,26 @@ div.jQBracket {
   background: -moz-linear-gradient(-90deg, #222, #333);
 }
 
+div.jQBracket .tools {
+  position: absolute;
+  top: 0px;
+  color: #FFF;
+}
+
+div.jQBracket .tools span {
+  cursor: pointer;
+  margin: 5px;
+  display: block;
+  text-align: center;
+  width: 18px;
+  height: 18px;
+  background-color: #666;
+}
+
+div.jQBracket .tools span:hover {
+  background-color: #999;
+}
+
 div.jQBracket .finals {
   float: right;
   right: 0px;
