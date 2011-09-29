@@ -55,48 +55,6 @@
 
     var topCon = $('<div class="jQBracket"></div>').appendTo(opts.el.empty())
 
-    if (opts.save) {
-      var tools = $('<div class="tools"></div>').appendTo(topCon)
-      var inc = $('<span class="increment">+</span>').appendTo(tools)
-      inc.click(function() {
-          var i
-          var len = data.teams.length
-          for (i = 0; i < len; i++)
-            data.teams.push(['',''])
-          new jqueryBracket(opts)
-        })
-
-      if (data.teams.length > 1 && data.results.length === 1 ||
-          data.teams.length > 2 && data.results.length === 3) {
-        var dec = $('<span class="decrement">-</span>').appendTo(tools)
-        dec.click(function() {
-            if (data.teams.length > 1) {
-              data.teams = data.teams.slice(0, data.teams.length/2)
-              new jqueryBracket(opts)
-            }
-          })
-      }
-
-      if (data.results.length === 1 && data.teams.length > 1) {
-        var type = $('<span class="doubleElimination">de</span>').appendTo(tools)
-        type.click(function() {
-            if (data.teams.length > 1 && data.results.length < 3) {
-              data.results.push([],[])
-              new jqueryBracket(opts)
-            }
-          })
-      }
-      else if (data.results.length === 3 && data.teams.length > 1) {
-        var type = $('<span class="singleElimination">se</span>').appendTo(tools)
-        type.click(function() {
-            if (data.results.length == 3) {
-              data.results = data.results.slice(0,1)
-              new jqueryBracket(opts)
-            }
-          })
-      }
-    }
-
     // http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric
     function isNumber(n) {
       return !isNaN(parseFloat(n)) && isFinite(n);
@@ -782,6 +740,48 @@
     data.results = r
 
     var isSingleElimination = (r.length <= 1)
+
+    if (opts.save) {
+      var tools = $('<div class="tools"></div>').appendTo(topCon)
+      var inc = $('<span class="increment">+</span>').appendTo(tools)
+      inc.click(function() {
+          var i
+          var len = data.teams.length
+          for (i = 0; i < len; i++)
+            data.teams.push(['',''])
+          new jqueryBracket(opts)
+        })
+
+      if (data.teams.length > 1 && data.results.length === 1 ||
+          data.teams.length > 2 && data.results.length === 3) {
+        var dec = $('<span class="decrement">-</span>').appendTo(tools)
+        dec.click(function() {
+            if (data.teams.length > 1) {
+              data.teams = data.teams.slice(0, data.teams.length/2)
+              new jqueryBracket(opts)
+            }
+          })
+      }
+
+      if (data.results.length === 1 && data.teams.length > 1) {
+        var type = $('<span class="doubleElimination">de</span>').appendTo(tools)
+        type.click(function() {
+            if (data.teams.length > 1 && data.results.length < 3) {
+              data.results.push([],[])
+              new jqueryBracket(opts)
+            }
+          })
+      }
+      else if (data.results.length === 3 && data.teams.length > 1) {
+        var type = $('<span class="singleElimination">se</span>').appendTo(tools)
+        type.click(function() {
+            if (data.results.length == 3) {
+              data.results = data.results.slice(0,1)
+              new jqueryBracket(opts)
+            }
+          })
+      }
+    }
 
     if (isSingleElimination) {
       var wEl = $('<div class="bracket"></div>').appendTo(topCon)
