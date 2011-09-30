@@ -820,10 +820,35 @@
     }
 
     renderAll(false)
+
+    return {
+      data: function() {
+        return opts.init
+      }
+    }
   }
 
-  $.fn.bracket = function(opts) {
-      opts.el = this
-      return new jqueryBracket(opts)
+  var methods = {
+    init: function(opts) { 
+        var that = this
+        opts.el = this
+        var bracket = new jqueryBracket(opts)
+        $(this).data('bracket', {target: that, obj: bracket})
+        return bracket
+      },
+    data: function() {
+      var bracket = $(this).data('bracket')
+      return bracket.obj.data()
     }
+  }
+
+  $.fn.bracket = function(method) {
+    if (methods[method]) {
+      return methods[method].apply(this, Array.prototype.slice.call(arguments, 1))
+    } else if (typeof method === 'object' || !method) {
+      return methods.init.apply(this, arguments)
+    } else {
+      $.error('Method '+ method+' does not exist on jQuery.bracket')
+    }    
+  }
 })(jQuery)

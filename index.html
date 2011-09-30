@@ -103,15 +103,22 @@ To try most of the examples use these includes:
   }
 
   $(document).ready(function() {
-      $('div#save .demo').bracket({
+      var container = $('div#save .demo')
+      container.bracket({
         init: saveData,
         save: saveFn,
         userData: "http://myapi"})
+
+      /* You can also inquiry the current data */
+      var data = container.bracket('data')
+      $('#dataOutput').text(jQuery.toJSON(data))
     })
   </script>
 </div>
 <h3>Save output</h3>
 <pre id="saveOutput">Try to first modify some scores or teams</pre>
+<h3>Data inquired at startup</h3>
+<pre id="dataOutput"></pre>
 
 <div id="customHandlers">
   <h2>Data customization</h2>
