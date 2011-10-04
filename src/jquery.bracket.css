@@ -118,6 +118,7 @@ div.jQBracket .team span {
 }
 
 div.jQBracket .team span[disabled] {
+  color: #999;
   cursor: default;
 }
 

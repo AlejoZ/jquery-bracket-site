@@ -147,10 +147,20 @@
       }
 
       function teamElement(round, team, isReady) {
-        var score = !isNumber(team.score)?'--':team.score
         var rId = resultIdentifier
-        var sEl = $('<span id="result-'+rId+'">'+score+'</span>')
+        var sEl = $('<span id="result-'+rId+'"></span>')
+        var score
+        if (!team.name || !isReady) {
+          score = '--'
+          sEl.attr('disabled', 'disabled')
+        }
+        else {
+          score = !isNumber(team.score)?'0':team.score
+        }
+        sEl.append(score)
+
         resultIdentifier++
+
         var name = !team.name?'--':team.name
         var tEl = $('<div class="team"></div>');
         var nEl = $('<b></b>').appendTo(tEl)
@@ -173,7 +183,6 @@
         tEl.append(sEl)
 
         if (team.name === null || !isReady || !opts.save) {
-          sEl.attr('disabled', 'disabled')
           nEl.attr('disabled', 'disabled')
         }
         else if (opts.save) {
@@ -194,14 +203,14 @@
               }
               editor()
             })
-          sEl.click(function() {
+          if (team.name) sEl.click(function() {
               var span = $(this)
               function editor() {
                 span.unbind()
 
                 var score
                 if (!isNumber(team.score))
-                  score = ''
+                  score = '0'
                 else
                   score = span.text()
 
@@ -209,7 +218,7 @@
                 input.val(score)
                 span.html(input)
 
-                input.focus()
+                input.focus().select()
                 input.keyup(function(e) {
                     if (!isNumber($(this).val()))
                       $(this).addClass('error')
@@ -227,7 +236,7 @@
                 input.blur(function() {
                     var val = input.val()
                     if ((!val || !isNumber(val)) && !isNumber(team.score))
-                      val = '--'
+                      val = '0'
                     else if ((!val || !isNumber(val)) && isNumber(team.score))
                       val = team.score
 
