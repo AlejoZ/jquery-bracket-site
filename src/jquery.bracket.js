@@ -21,7 +21,7 @@
             var key = (e.keyCode || e.which)
             if (key === 9 /*tab*/ || key === 13 /*return*/ || key === 27 /*esc*/) {
               e.preventDefault()
-              done(input.val(), (key != 27))
+              done(input.val(), (key !== 27))
             }
           })
     }
@@ -375,7 +375,7 @@
         addMatch: function(teamCb) {
             var matchIdx = matches.length
 
-            if (teamCb != null)
+            if (teamCb !== null)
               var teams = teamCb()
             else
               var teams = [{source: bracket.round(roundIdx-1).match(matchIdx*2).winner},
@@ -493,7 +493,7 @@
         r.forEach(function(br) {
           br.forEach(function(ro) {
             ro.forEach(function(ma) {
-              if (ma.length != 2) {
+              if (ma.length !== 2) {
                 console.log('match size not valid', ma)
                 throw 'match size not valid'
               }
@@ -619,7 +619,7 @@
             var teamCb = null
 
             /* special cases */
-            if (!(n%2 === 0 && r != 0)) teamCb = function() {
+            if (!(n%2 === 0 && r !== 0)) teamCb = function() {
               /* first round comes from winner bracket */
               if (n%2 === 0 && r === 0) {
                 return [{source: winners.round(0).match(m*2).loser},
@@ -784,7 +784,7 @@
       else if (data.results.length === 3 && data.teams.length > 1) {
         var type = $('<span class="singleElimination">se</span>').appendTo(tools)
         type.click(function() {
-            if (data.results.length == 3) {
+            if (data.results.length === 3) {
               data.results = data.results.slice(0,1)
               new jqueryBracket(opts)
             }
