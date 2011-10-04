@@ -155,7 +155,9 @@
           sEl.attr('disabled', 'disabled')
         }
         else {
-          score = !isNumber(team.score)?'0':team.score
+          if (!isNumber(team.score))
+            team.score = 0
+          score = team.score
         }
         sEl.append(score)
 
