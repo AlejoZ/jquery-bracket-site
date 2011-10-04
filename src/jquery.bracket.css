@@ -86,11 +86,11 @@ div.jQBracket .team {
 
 div.jQBracket .team b {
   font-weight: normal;
-  padding: 1px;
+  padding-left: 3px;
   cursor: pointer;
   height: inherit;
   position: absolute;
-  max-width: 80px;
+  width: 70px;
 }
 
 div.jQBracket .team b[disabled] {
