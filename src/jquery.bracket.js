@@ -17,9 +17,12 @@
         span.html(input)
         input.focus()
         input.blur(function() { done(input.val()) })
-        input.keyup(function(e) {
-            if ((e.keyCode || e.which) === 13)
-              done(input.val())
+        input.keydown(function(e) {
+            var key = (e.keyCode || e.which)
+            if (key === 9 /*tab*/ || key === 13 /*return*/ || key === 27 /*esc*/) {
+              e.preventDefault()
+              done(input.val(), (key != 27))
+            }
           })
     }
 
@@ -152,6 +155,9 @@
         var tEl = $('<div class="team"></div>');
         var nEl = $('<b></b>').appendTo(tEl)
 
+        if (round === 0)
+          tEl.attr('id', 'team-'+rId)
+
         opts.decorator.render(nEl, name, score)
 
         if (isNumber(team.idx))
@@ -174,11 +180,14 @@
           nEl.click(function() {
               var span = $(this)
               function editor() {
-                function done_fn(val) {
+                function done_fn(val, next) {
                   if (val)
                     opts.init.teams[~~(team.idx/2)][team.idx%2] = val
                   renderAll(true)
                   span.click(editor)
+                  var labels = opts.el.find('#team-'+(team.idx + 1)+' b:first')
+                  if (labels.length && next === true && round === 0)
+                    $(labels).click()
                 }
                 span.unbind()
                 opts.decorator.edit(span, team.name, done_fn)

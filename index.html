@@ -152,6 +152,7 @@ To try most of the examples use these includes:
   $(document).ready(function() {
     $('div#customHandlers .demo').bracket({
       init: customData,
+      save: function(){}, /* without save() labels are disabled */
       decorator: {edit: edit_fn,
                   render: render_fn}})
     })
@@ -200,6 +201,8 @@ To try most of the examples use these includes:
   var acData = ["kr:MC", "ca:HuK", "se:Naniwa", "pe:Fenix",
                 "us:IdrA", "tw:Sen", "fi:Naama"]
 
+  /* If you call doneCb([value], true), the next edit will be automatically 
+     activated. This works only in the first round. */
   function acEditFn(container, data, doneCb) {
     var input = $('<input type="text">')
     input.val(data)
