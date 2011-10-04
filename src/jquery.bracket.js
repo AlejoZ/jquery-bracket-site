@@ -232,7 +232,7 @@
                       val = team.score
 
                     span.html(val)
-                    if (isNumber(val) && score != parseInt(val)) {
+                    if (isNumber(val) && score !== parseInt(val)) {
                       team.score = parseInt(val)
                       renderAll(true)
                     }
