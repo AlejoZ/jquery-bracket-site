@@ -219,14 +219,18 @@
                 span.html(input)
 
                 input.focus().select()
-                input.keyup(function(e) {
+                input.keydown(function(e) {
                     if (!isNumber($(this).val()))
                       $(this).addClass('error')
                     else
                       $(this).removeClass('error')
 
-                    if ((e.keyCode || e.which) === 13) {
+                    var key = (e.keyCode || e.which)
+                    if (key === 9 || key === 13 || key === 27) {
+                      e.preventDefault()
                       $(this).blur()
+                      if (key === 27)
+                        return
 
                       var next = topCon.find('span[id=result-'+(rId+1)+']')
                       if (next)
