@@ -285,6 +285,9 @@
       return {
         el: matchCon,
         id: idx,
+        round: function() {
+          return round
+        },
         connectorCb: function(cb) {
           connectorCb = cb
         },
@@ -368,7 +371,7 @@
 
           /* todo: move to class */
           if (alignCb)
-            alignCb()
+            alignCb(teamCon)
 
           this.connect(connectorCb)
         },
@@ -378,7 +381,7 @@
       }
     }
 
-    var Round = function(bracket, roundIdx, results)
+    var Round = function(bracket, previousRound, roundIdx, results)
     {
       var matches = []
       var roundCon = $('<div class="round"></div>')
@@ -402,6 +405,9 @@
         },
         match: function(id) {
           return matches[id]
+        },
+        prev: function() {
+          return previousRound 
         },
         size: function() {
           return matches.length
@@ -431,8 +437,11 @@
         el: bracketCon,
         addRound: function() {
           var id = rounds.length
+          var previous = null 
+          if (id > 0)
+            previous = rounds[id-1]
 
-          var round = new Round(this, id, !results?null:results[id])
+          var round = new Round(this, previous, id, !results?null:results[id])
           rounds.push(round)
           return round;
         },
@@ -687,20 +696,32 @@
       var round = finals.addRound()
       var match = round.addMatch(function() { return [{source: winners.winner}, {source: losers.winner}] })
 
-      match.setAlignCb(function() {
-        var height = winners.el.height()+losers.el.height()
+      match.setAlignCb(function(tC) {
+        var height = (winners.el.height()+losers.el.height())/2
         match.el.css('height', (height)+'px');
 
-        var teamCon = match.el.find('.teamContainer')
-        var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - teamCon.height()/2
+        var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()
 
-        teamCon.css('top', (topShift)+'px');
+        tC.css('top', (topShift)+'px')
       })
 
       var shift
       var height
 
+      var fourth = losers.final().round().prev().match(0).loser
+      var consol = round.addMatch(function() { return [{source: fourth}, {source: losers.loser}] })
+      consol.setAlignCb(function(tC) {
+        var height = (winners.el.height()+losers.el.height())/2
+        consol.el.css('height', (height)+'px');
+
+        var topShift = tC.height()/2
+        var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 + tC.height()/2 - height
+
+        tC.css('top', (topShift)+'px');
+      })
+
       match.connectorCb(function() { return null })
+      consol.connectorCb(function() { return null })
 
       winners.final().connectorCb(function(tC) {
           var connectorOffset = tC.height()/4
@@ -718,6 +739,7 @@
             height = matchupOffset+connectorOffset
             shift = connectorOffset*2
           }
+          height -= tC.height()/2
           return {height: height, shift: shift}
         })
 
@@ -737,6 +759,7 @@
             height = matchupOffset+connectorOffset
             shift = connectorOffset*2
           }
+          height += tC.height()/2
           return {height: -height, shift: -shift}
         })
     }
