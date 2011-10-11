@@ -46,6 +46,9 @@ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga
 elimination brackets</a> for tournament play. The underlying idea is that
 the bracket can be visually customized and easily used to edit the
 results. Please see the examples below.</p>
+<ul>
+<li>2011-10-11: Bugfix: Zero not properly accepted as a result</li>
+</ul>
 <p>The code is still in alpha phase and some modifications are likely happen.
 Feedback can be sent to teijo(a)aropupu.fi or via IRC to Aroppuu @
 IRC/Quakenet.</p>
@@ -269,7 +272,7 @@ To try most of the examples use these includes:
       [[3,2]],
       [[4,2]]
     ], [         /* FINALS */
-      [[3,8]]
+      [[3,8], [1,2]]
     ]]
   }
 
