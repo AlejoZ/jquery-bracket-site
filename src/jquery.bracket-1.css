@@ -1,5 +1,5 @@
 /**
- * jQuery Bracket
+ * jQuery Bracket - release 1
  *
  * Copyright (c) 2011, Teijo Laine,
  * http://aropupu.fi/bracket/
