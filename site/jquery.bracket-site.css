@@ -19,6 +19,20 @@ pre {
   overflow: hidden;
 }
 
+table {
+  border: 1px solid #999;
+  margin: 5px 0;
+}
+
+td {
+  font-size: 12px;
+  padding: 2px 5px;
+}
+
+tr:first-child {
+  background-color: #9F9;
+}
+
 /* overwrite and patch syntaxhighlight module styles */
 .syntaxhighlighter { overflow-y: hidden !important; }
 .syntaxhighlighter,
