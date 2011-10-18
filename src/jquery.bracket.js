@@ -601,10 +601,11 @@
       var rounds = Math.log(teams.length*2) / Math.log(2);
       var matches = teams.length;
       var graphHeight = winners.el.height();
+      var round
 
       for (var r = 0; r < rounds; r++) {
         var res = !data.results||!data.results[r]?null:data.results[r]
-        var round = winners.addRound(res)
+        round = winners.addRound(res)
 
         for (var m = 0; m < matches; m++) {
           var teamCb = null
@@ -619,12 +620,35 @@
           }
 
           var match = round.addMatch(teamCb)
+          if (r === rounds-1 && isSingleElimination) {
+            match.setAlignCb(function(tC) {
+              tC.css('top', '');
+              tC.css('position', 'absolute');
+              tC.css('bottom', (-tC.height()/2)+'px');
+            })
+          }
         }
         matches /= 2;
       }
 
-      if (isSingleElimination)
+      if (isSingleElimination) {
         winners.final().connectorCb(function() { return null })
+
+        var third = winners.final().round().prev().match(0).loser
+        var fourth = winners.final().round().prev().match(1).loser
+        var consol = round.addMatch(function() { return [{source: third}, {source: fourth}] })
+
+        consol.setAlignCb(function(tC) {
+          var height = (winners.el.height())/2
+          consol.el.css('height', (height)+'px');
+
+          var topShift = tC.height()
+
+          tC.css('top', (topShift)+'px');
+        })
+
+        consol.connectorCb(function() { return null })
+      }
     }
 
     function prepareLosers(winners, losers, data)
@@ -839,7 +863,15 @@
       var lEl = $('<div class="loserBracket"></div>').appendTo(topCon)
     }
 
-    wEl.css('height', data.teams.length*50)
+    var height = data.teams.length*50
+
+    wEl.css('height', height)
+
+    // reserve space for consolidation
+    if (isSingleElimination && data.teams.length <= 2) {
+      height += 30
+      topCon.css('height', height)
+    }
 
     if (lEl)
       lEl.css('height', wEl.height()/2)
@@ -876,7 +908,7 @@
   }
 
   var methods = {
-    init: function(opts) { 
+    init: function(opts) {
         var that = this
         opts.el = this
         var bracket = new jqueryBracket(opts)
@@ -896,6 +928,6 @@
       return methods.init.apply(this, arguments)
     } else {
       $.error('Method '+ method+' does not exist on jQuery.bracket')
-    }    
+    }
   }
 })(jQuery)
