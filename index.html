@@ -45,7 +45,11 @@ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga
 <a href="http://en.wikipedia.org/wiki/Bracket_(tournament)">single and double
 elimination brackets</a> for tournament play. The underlying idea is that
 the bracket can be visually customized and easily used to edit the
-results. Please see the examples below.</p>
+results (see examples for backend integration).</p>
+<p>Feedback can be sent via mail to teijo(a)aropupu.fi or via IRC to Aroppuu @
+IRC/Quakenet. If you've found use for this script, I'd be happy to hear about
+it. Drop me a link and let me know if it can be shared on this project page.</p>
+<h2>Changes</h2>
 <ul>
 <li>2012-04-09 (release 3): Fix bug preventing edit click of finalist in Firefox and Chrome.</li>
 <li>2012-01-23: SASS conversion for styles. Fix bug with 2 teams.</li>
@@ -53,9 +57,7 @@ results. Please see the examples below.</p>
 <li>2011-10-18 (release 1): Consolidation final support for single elimination.</li>
 <li>2011-10-11: Bugfix: Zero not properly accepted as a result</li>
 </ul>
-<p>The code is still in alpha phase and some modifications are likely happen.
-Feedback can be sent to teijo(a)aropupu.fi or via IRC to Aroppuu @
-IRC/Quakenet.</p>
+<h2>Download</h2>
 <ul>
 <li>Get the code and css<br>
 <table>
@@ -69,6 +71,7 @@ IRC/Quakenet.</p>
 <li><a href="http://code.google.com/p/jquery-json/">jQuery JSON</a> for dynamic functionality</li>
 </ul>
 
+<h2>Examples</h2>
 To try most of the examples use these includes:
 <pre name="code" class="html">
 &lt;script type="text/javascript" src="jquery-1.6.2.min.js"&gt;&lt;/script&gt;
@@ -77,7 +80,7 @@ To try most of the examples use these includes:
 </pre>
 
 <div id="minimal">
-  <h2>Minimal</h2>
+  <h3>Minimal</h3>
   <script type="text/javascript">
   var minimalData = {
       teams : [
@@ -98,7 +101,7 @@ To try most of the examples use these includes:
 </div>
 
 <div id="save">
-  <h2>Save functionality (click team and score labels to edit)</h2>
+  <h3>Save functionality (click team and score labels to edit)</h3>
   <p>Note that you can press return when entering scores to procede to next
   field.</p>
   <script type="text/javascript">
@@ -139,13 +142,13 @@ To try most of the examples use these includes:
     })
   </script>
 </div>
-<h3>Save output</h3>
+<h4>Save output</h4>
 <pre id="saveOutput">Try to first modify some scores or teams</pre>
-<h3>Data inquired at startup</h3>
+<h4>Data inquired at startup</h4>
 <pre id="dataOutput"></pre>
 
 <div id="customHandlers">
-  <h2>Data customization</h2>
+  <h3>Data customization</h3>
   <script type="text/javascript">
   /* Custom data objects passed as teams */
   var customData = {
@@ -184,7 +187,7 @@ To try most of the examples use these includes:
 </div>
 
 <div id="doubleElimination">
-  <h2>Double elimination</h2>
+  <h3>Double elimination</h3>
   <script type="text/javascript">
   var doubleEliminationData = {
       teams : [
@@ -210,7 +213,7 @@ To try most of the examples use these includes:
 </div>
 
 <div id="autoComplete">
-  <h2>Autocomplete demo, try input as "countrycode:name"</h2>
+  <h3>Autocomplete demo, try input as "countrycode:name"</h3>
   <p>This demo uses <a href="http://jqueryui.com/">jQuery UI</a> for the autocomplete.</p>
   <script type="text/javascript">
   var autoCompleteData = {
@@ -256,7 +259,7 @@ To try most of the examples use these includes:
 </div>
 
 <div id="big">
-  <h2>Large double elimination with 16 teams</h2>
+  <h3>Large double elimination with 16 teams</h3>
   <script type="text/javascript">
   var bigData = {
     teams : [
