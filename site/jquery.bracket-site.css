@@ -15,6 +15,11 @@ div.demo {
   overflow: auto;
 }
 
+ul#issues {
+  color: #C00;
+  width: 80%;
+}
+
 pre {
   overflow: hidden;
 }
