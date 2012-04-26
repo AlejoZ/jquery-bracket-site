@@ -62,14 +62,18 @@ page.</p>
 it into proper production quality. This is a list of known issues that I'll be
 working on while I have time. Thanks to everyone sending feedback! Code
 contributions are also welcome ;)</p>
-<p>Updated: 23rd April 2012</p>
+<p>Updated: 26rd April 2012</p>
 <ul id="issues">
 <li>There is no support for second final match. If LB winner wins the first
 round in finals, you must practically score the match according to rounds, e.g.
 1-0, 0-1 or 0-2.</li>
 <li>Losers from WB will be assigned in same order to LB. This means that
 participants will have to play against previous opponents earlier than
-necessary.</li>
+necessary.
+<ul><li><span class="fix">26.4. Fix in bleeding edge JS</span> This fix is not
+backwards compatible! Every second round of WB losers will be assigned in
+reverse order to LB in order to maximize the time it takes for two teams to
+play against each other twice.</li></ul></li>
 </ul>
 <h2>Download</h2>
 <ul>

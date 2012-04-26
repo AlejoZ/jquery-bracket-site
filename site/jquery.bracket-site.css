@@ -16,8 +16,10 @@ div.demo {
 }
 
 ul#issues {
-  color: #C00;
   width: 80%;
+}
+ul#issues li {
+  margin: 5px;
 }
 
 pre {
@@ -46,4 +48,12 @@ tr:first-child {
 .syntaxhighlighter .line.alt2,
 .syntaxhighlighter .gutter .line.highlighted {
   background-color: #EEE !important;
+}
+
+span.fix {
+  background-color: #090;
+  color: #FFF;
+  border-radius: 3px;
+  padding: 2px;
+  margin: 2px;
 }
