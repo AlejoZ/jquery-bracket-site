@@ -98,6 +98,10 @@
           drop = false;
           height = -height;
         }
+        /* straight lines are prettier */
+        if (height < 2)
+          height = 0
+
         var src = $('<div class="connector"></div>').appendTo(teamCon);
         src.css('height', height);
         src.css('width', width+'px');
