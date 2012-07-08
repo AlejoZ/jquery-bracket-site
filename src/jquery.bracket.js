@@ -342,6 +342,12 @@
         },
         winner: winner,
         loser: loser,
+        first: function() {
+          return data[0]
+        },
+        second: function() {
+          return data[1]
+        },
         setAlignCb: function(cb) {
           alignCb = cb
         },
@@ -377,10 +383,12 @@
           if (alignCb)
             alignCb(teamCon)
 
-          this.connect(connectorCb)
-
+          var isLast = false
           if (typeof(renderCb) === 'function')
-            renderCb(this.el)
+            isLast = renderCb(this)
+
+          if (!isLast)
+            this.connect(connectorCb)
         },
         results: function() {
           return [data[0].score, data[1].score]
@@ -388,7 +396,7 @@
       }
     }
 
-    var Round = function(bracket, previousRound, roundIdx, results)
+    var Round = function(bracket, previousRound, roundIdx, results, doRenderCb)
     {
       var matches = []
       var roundCon = $('<div class="round"></div>')
@@ -421,6 +429,9 @@
         },
         render: function() {
           roundCon.empty()
+          if (typeof(doRenderCb) === 'function')
+            if (!doRenderCb())
+              return
           roundCon.appendTo(bracket.el)
           matches.forEach(function(ma) {
             ma.render()
@@ -442,15 +453,18 @@
 
       return {
         el: bracketCon,
-        addRound: function() {
+        addRound: function(doRenderCb) {
           var id = rounds.length
           var previous = null 
           if (id > 0)
             previous = rounds[id-1]
 
-          var round = new Round(this, previous, id, !results?null:results[id])
+          var round = new Round(this, previous, id, !results?null:results[id], doRenderCb)
           rounds.push(round)
           return round;
+        },
+        dropRound: function() {
+          rounds.pop()
         },
         round: function(id) {
           return rounds[id]
@@ -469,9 +483,11 @@
         },
         render: function() {
           bracketCon.empty()
-          rounds.forEach(function(ro) {
-            ro.render()
-          })
+          /* Length of 'rounds' can increase during render in special case when
+             LB win in finals adds new final round in match render callback.
+             Therefore length must be read on each iteration. */
+          for (var i = 0; i < rounds.length; i++)
+            rounds[i].render()
         },
         results: function() {
           var results = []
@@ -601,16 +617,20 @@
 
     }
 
-    function winnerBubbles(el) { 
+    function winnerBubbles(match) {
+        var el = match.el
         var winner = el.find('.team.win')
         winner.append('<div class="bubble">1st</div>')
         var loser = el.find('.team.lose')
         loser.append('<div class="bubble">2nd</div>')
+        return true
     }
 
-    function consolidationBubbles(el) { 
+    function consolidationBubbles(match) {
+      var el = match.el
       var winner = el.find('.team.win')
       winner.append('<div class="bubble">3rd</div>')
+      return true
     }
 
     function prepareWinners(winners, data, isSingleElimination)
@@ -623,8 +643,7 @@
       var round
 
       for (var r = 0; r < rounds; r++) {
-        var res = !data.results||!data.results[r]?null:data.results[r]
-        round = winners.addRound(res)
+        round = winners.addRound()
 
         for (var m = 0; m < matches; m++) {
           var teamCb = null
@@ -751,7 +770,53 @@
     {
       var round = finals.addRound()
       var match = round.addMatch(function() { return [{source: winners.winner}, {source: losers.winner}] },
-                                 winnerBubbles)
+        function(match) {
+          /* Track if container has been resized for final rematch */
+          var _isResized = false
+          /* LB winner won first final match, need a new one */
+          if ((match.winner().name != null && match.winner().name === losers.winner().name)) {
+            if (finals.size() == 2)
+              return
+            /* This callback is ugly, would be nice to make more sensible solution */
+            var round = finals.addRound(function() {
+              var rematch = ((match.winner().name != null && match.winner().name === losers.winner().name))
+              if (_isResized === false) {
+                if (rematch) {
+                  _isResized = true
+                  topCon.css('width', (parseInt(topCon.css('width'))+140)+'px')
+                }
+              }
+              if (!rematch && _isResized) {
+                _isResized = false
+                finals.dropRound()
+                topCon.css('width', (parseInt(topCon.css('width'))-140)+'px')
+              }
+              return rematch
+            })
+            /* keep order the same, WB winner top, LB winner below */
+            var match2 = round.addMatch(function() { return [{source: match.first}, {source: match.second}] },
+                                        winnerBubbles)
+
+            match.connectorCb(function(tC) {
+              return {height: 0, shift: tC.height()/2}
+            })
+
+            match2.connectorCb(function() { return null })
+            match2.setAlignCb(function(tC) {
+              var height = (winners.el.height()+losers.el.height())/2
+              match2.el.css('height', (height)+'px');
+
+              var topShift = (winners.el.height()/2 + winners.el.height()+losers.el.height()/2)/2 - tC.height()
+
+              tC.css('top', (topShift)+'px')
+            })
+            return false
+          }
+          else {
+            return winnerBubbles(match)
+          }
+        })
+
       match.setAlignCb(function(tC) {
         var height = (winners.el.height()+losers.el.height())/2
         match.el.css('height', (height)+'px');
