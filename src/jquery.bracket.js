@@ -629,7 +629,9 @@
     function consolidationBubbles(match) {
       var el = match.el
       var winner = el.find('.team.win')
-      winner.append('<div class="bubble">3rd</div>')
+      winner.append('<div class="bubble third">3rd</div>')
+      var loser = el.find('.team.lose')
+      loser.append('<div class="bubble fourth">4th</div>')
       return true
     }
 
