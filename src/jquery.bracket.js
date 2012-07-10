@@ -156,7 +156,6 @@
         var score
         if (!team.name || !isReady) {
           score = '--'
-          sEl.attr('disabled', 'disabled')
         }
         else {
           if (!isNumber(team.score))
@@ -189,7 +188,6 @@
         tEl.append(sEl)
 
         if (team.name === null || !isReady || !opts.save) {
-          nEl.attr('disabled', 'disabled')
         }
         else if (opts.save) {
           nEl.click(function() {
@@ -433,13 +431,13 @@
             if (!doRenderCb())
               return
           roundCon.appendTo(bracket.el)
-          matches.forEach(function(ma) {
+          $.each(matches, function(i, ma) {
             ma.render()
           })
         },
         results: function() {
           var results = []
-          matches.forEach(function(ma) {
+          $.each(matches, function(i, ma) {
             results.push(ma.results())
           })
           return results
@@ -491,7 +489,7 @@
         },
         results: function() {
           var results = []
-          rounds.forEach(function(ro) {
+          $.each(rounds, function(i, ro) {
             results.push(ro.results())
           })
           return results
@@ -537,9 +535,9 @@
       }
 
       try {
-        r.forEach(function(br) {
-          br.forEach(function(ro) {
-            ro.forEach(function(ma) {
+        $.each(r, function(i, br) {
+          $.each(br, function(i, ro) {
+            $.each(ro, function(i, ma) {
               if (ma.length !== 2) {
                 console.log('match size not valid', ma)
                 throw 'match size not valid'

@@ -17,7 +17,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
     var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
-    demos.forEach(function(d){
+    $.each(demos, function(i, d){
       var demo = $('div#'+d)
       $('<div class="demo"></div>').appendTo(demo)
       var pre = $('<pre name="code" class="js"></pre>').appendTo(demo)
