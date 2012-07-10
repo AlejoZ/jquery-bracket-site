@@ -420,7 +420,7 @@
           return matches[id]
         },
         prev: function() {
-          return previousRound 
+          return previousRound
         },
         size: function() {
           return matches.length
@@ -453,7 +453,7 @@
         el: bracketCon,
         addRound: function(doRenderCb) {
           var id = rounds.length
-          var previous = null 
+          var previous = null
           if (id > 0)
             previous = rounds[id-1]
 
@@ -893,7 +893,7 @@
     function depth(a) {
       function df(a, d) {
         if (a instanceof Array)
-          return df(a[0], d+1) 
+          return df(a[0], d+1)
         return d
       }
       return df(a, 0)
