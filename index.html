@@ -1,5 +1,8 @@
+<!DOCTYPE html>
 <html>
 <head>
+<!--[if ie]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>jQuery Bracket</title>
 <script type="text/javascript" src="site/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="site/jquery-ui-1.8.16/jquery-ui-1.8.16.custom.min.js"></script>
@@ -53,24 +56,27 @@ page.</p>
 <ul>
 <li>2012-07-10 (release 5): IE 8 support and remove "disabled" attributes as it
 messed IE8+ colors.</li>
-<li>2012-07-09 (release 4): Included following fixes and added bubble for 4th place.</li>
+<li>2012-07-09 (release 4): Included following fixes and added bubble for 4th place.
   <ul id="issues">
     <li>There is no support for second final match. If LB winner wins the first
     round in finals, you must practically score the match according to rounds,
-    e.g. 1-0, 0-1 or 0-2.</li>
-    <ul><li><span class="fix">9.7. Fix in release 4</span> If LB winner wins
-    first final match, a new round will be created. Fix not perfectly backwards
-    compatible. LB winning brackets with old results will be displayed
-    unresolved as new final round is generated. Updated demos to reflect this
-    change.</li></ul></li>
+    e.g. 1-0, 0-1 or 0-2.
+      <ul><li><span class="fix">9.7. Fix in release 4</span> If LB winner wins
+      first final match, a new round will be created. Fix not perfectly backwards
+      compatible. LB winning brackets with old results will be displayed
+      unresolved as new final round is generated. Updated demos to reflect this
+      change.</li></ul>
+    </li>
     <li>Losers from WB will be assigned in same order to LB. This means that
     participants will have to play against previous opponents earlier than
     necessary.
-    <ul><li><span class="fix">26.4. Fix in bleeding edge JS</span> This fix is not
-    backwards compatible! Every second round of WB losers will be assigned in
-    reverse order to LB in order to maximize the time it takes for two teams to
-    play against each other twice.</li></ul></li>
+      <ul><li><span class="fix">26.4. Fix in bleeding edge JS</span> This fix is not
+      backwards compatible! Every second round of WB losers will be assigned in
+      reverse order to LB in order to maximize the time it takes for two teams to
+      play against each other twice.</li></ul>
+    </li>
   </ul>
+</li>
 <li>2012-05-14: Released a demo server implementation. Check it out from the <a href="http://aropupu.fi/bracket-server/">jQuery bracket server page</a>.</li>
 <li>2012-04-09 (release 3): Fix bug preventing edit click of finalist in Firefox and Chrome.</li>
 <li>2012-01-23: SASS conversion for styles. Fix bug with 2 teams.</li>
@@ -89,11 +95,11 @@ contributions are also welcome ;)</p>
 <ul>
 <li>Get the code and css<br>
 <table>
-<tr><td>Release 5</td><td><a href="src/jquery.bracket-5.js">.js</a></td><td><a href="src/jquery.bracket-5.css">.css</a></td></tr>
-<tr><td>Release 4</td><td><a href="src/jquery.bracket-4.js">.js</a></td><td><a href="src/jquery.bracket-4.css">.css</a></td></tr>
-<tr><td>Release 3</td><td><a href="src/jquery.bracket-3.js">.js</a></td><td><a href="src/jquery.bracket-3.css">.css</a></td></tr>
-<tr><td>Release 2</td><td><a href="src/jquery.bracket-2.js">.js</a></td><td><a href="src/jquery.bracket-2.css">.css</a></td></tr>
-<tr><td>Release 1</td><td><a href="src/jquery.bracket-1.js">.js</a></td><td><a href="src/jquery.bracket-1.css">.css</a></td></tr>
+<tr><td>Release 5</td><td><a href="src/jquery.bracket-5.js">.js</a></td><td><a href="src/jquery.bracket-5.css">.css</a></td><td></td></tr>
+<tr><td>Release 4</td><td><a href="src/jquery.bracket-4.js">.js</a></td><td><a href="src/jquery.bracket-4.css">.css</a></td><td></td></tr>
+<tr><td>Release 3</td><td><a href="src/jquery.bracket-3.js">.js</a></td><td><a href="src/jquery.bracket-3.css">.css</a></td><td></td></tr>
+<tr><td>Release 2</td><td><a href="src/jquery.bracket-2.js">.js</a></td><td><a href="src/jquery.bracket-2.css">.css</a></td><td></td></tr>
+<tr><td>Release 1</td><td><a href="src/jquery.bracket-1.js">.js</a></td><td><a href="src/jquery.bracket-1.css">.css</a></td><td></td></tr>
 <tr><td>Bleeding edge</td><td><a href="src/jquery.bracket.js">.js</a></td><td><a href="src/jquery.bracket.css">.css</a></td><td><a href="src/jquery.bracket.sass">.sass</a> (<a href="http://sass-lang.com/">?</a>)</td></tr>
 </table></li>
 <li>Depends on <a href="http://jquery.com/">jQuery 1.6.4+</a></li>
@@ -103,7 +109,7 @@ contributions are also welcome ;)</p>
 
 <h2>Examples</h2>
 To try most of the examples use these includes:
-<pre name="code" class="html">
+<pre class="html">
 &lt;script type="text/javascript" src="jquery-1.6.2.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="jquery.bracket.js"&gt;&lt;/script&gt;
 &lt;link rel="stylesheet" type="text/css" href="jquery.bracket.css" /&gt;
