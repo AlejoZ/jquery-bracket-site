@@ -18,7 +18,7 @@
 <script type="text/javascript" src="src/jquery.bracket.js"></script>
 
 <script type="text/javascript">
-$(document).ready(function() {
+$(function() {
     var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
     $.each(demos, function(i, d){
       var demo = $('div#'+d)
@@ -184,7 +184,7 @@ var doubleElimination = {
       ]
     }
 
-  $(document).ready(function() {
+  $(function() {
       $('#minimal .demo').bracket({
         init: minimalData /* data to initialize the bracket with */ })
     })
@@ -220,7 +220,7 @@ var doubleElimination = {
     */
   }
 
-  $(document).ready(function() {
+  $(function() {
       var container = $('div#save .demo')
       container.bracket({
         init: saveData,
@@ -267,7 +267,7 @@ var doubleElimination = {
     container.append('<img src="site/png/'+data.flag+'.png" /> ').append(data.name)
   }
 
-  $(document).ready(function() {
+  $(function() {
     $('div#customHandlers .demo').bracket({
       init: customData,
       save: function(){}, /* without save() labels are disabled */
@@ -297,7 +297,7 @@ var doubleElimination = {
       ]]
     }
 
-  $(document).ready(function() {
+  $(function() {
       $('div#doubleElimination .demo').bracket({
         init: doubleEliminationData})
     })
@@ -340,7 +340,7 @@ var doubleElimination = {
       container.append('<img src="site/png/'+fields[0]+'.png"> ').append(fields[1])
   }
 
-  $(document).ready(function() {
+  $(function() {
       $('div#autoComplete .demo').bracket({
         init: autoCompleteData,
         save: function(){}, /* without save() labels are disabled */
@@ -382,12 +382,12 @@ var doubleElimination = {
     ]]
   }
 
-  $(document).ready(function() { $('div#big .demo').bracket({init: bigData}) })
+  $(function() { $('div#big .demo').bracket({init: bigData}) })
   </script>
 </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function() {
+$(function() {
     var big = $('#big div.demo')
     big.scrollLeft(big.width())
 
