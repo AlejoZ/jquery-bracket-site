@@ -117,12 +117,21 @@ To try most of the examples use these includes:
 </pre>
 
 <h3 id="dataStructure">Data structure</h3>
-The bracket information is stored into a single object. Contents of the object determine what is rendered. Play with the <a href="#save">save functionality demo</a> and check the input data for other demos.
+<p>The bracket information is stored into a single object. Contents of the object
+determine what is rendered. Play with the <a href="#save">save functionality
+demo</a> and check the input data for other demos.</p>
 <ul>
-	<li>Number of team pairs determines the size of the bracket. Bracket size is always power of two (2, 4, 8...).</li>
-	<li>Number of result lists determines the tournament type. One list indicates single elimination. Three (winners, losers and finals) indicates double elimination.</li>
-	<li>null instead of a number indicates empty result.</li>
+  <li>Number of team pairs determines the size of the bracket. Bracket size is
+  always power of two (2, 4, 8...).</li>
+  <li>Number of result lists determines the tournament type. One list indicates
+  single elimination. Three (winners, losers and finals) indicates double
+  elimination.</li>
+  <li>null instead of a number indicates empty result.</li>
 </ul>
+<p>Unfortunately there is currently no example algorithm to map specific result
+into a team pair in case you would need to store the information in different
+format. Solving team names for anything else than first round requires you to
+calculate the whole tournament tree.</p>
 <pre class="js">
 var singleElimination = {
   "teams": [              // Matchups
@@ -132,12 +141,12 @@ var singleElimination = {
   "results": [            // List of brackets (single elimination, so only one bracket)
     [                     // List of rounds in bracket
       [                   // First round in this bracket
-       [1, 2],            // Team 1 vs Team 2
-       [3, 4]             // Team 3 vs Team 4
+        [1, 2],           // Team 1 vs Team 2
+        [3, 4]            // Team 3 vs Team 4
       ],
       [                   // Second (final) round in single elimination bracket
-       [5, 6],            // Match for first place
-       [7, 8]             // Match for 3rd place
+        [5, 6],           // Match for first place
+        [7, 8]            // Match for 3rd place
       ]
     ]
   ]
