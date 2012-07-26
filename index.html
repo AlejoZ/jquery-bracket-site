@@ -54,6 +54,7 @@ it. Drop me a link and let me know if it can be shared on this project
 page.</p>
 <h2>Changes</h2>
 <ul>
+<li>2012-07-26: Add documentation regarding <a href="#dataStructure">data structure</a>.</li>
 <li>2012-07-10 (release 5): IE 8 support and remove "disabled" attributes as it
 messed IE8+ colors.</li>
 <li>2012-07-09 (release 4): Included following fixes and added bubble for 4th place.
@@ -113,6 +114,60 @@ To try most of the examples use these includes:
 &lt;script type="text/javascript" src="jquery-1.6.2.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="jquery.bracket.js"&gt;&lt;/script&gt;
 &lt;link rel="stylesheet" type="text/css" href="jquery.bracket.css" /&gt;
+</pre>
+
+<h3 id="dataStructure">Data structure</h3>
+The bracket information is stored into a single object. Contents of the object determine what is rendered. Play with the <a href="#save">save functionality demo</a> and check the input data for other demos.
+<ul>
+	<li>Number of team pairs determines the size of the bracket. Bracket size is always power of two (2, 4, 8...).</li>
+	<li>Number of result lists determines the tournament type. One list indicates single elimination. Three (winners, losers and finals) indicates double elimination.</li>
+	<li>null instead of a number indicates empty result.</li>
+</ul>
+<pre class="js">
+var singleElimination = {
+  "teams": [              // Matchups
+    ["Team 1", "Team 2"], // First match
+    ["Team 3", "Team 4"]  // Second match
+  ],
+  "results": [            // List of brackets (single elimination, so only one bracket)
+    [                     // List of rounds in bracket
+      [                   // First round in this bracket
+       [1, 2],            // Team 1 vs Team 2
+       [3, 4]             // Team 3 vs Team 4
+      ],
+      [                   // Second (final) round in single elimination bracket
+       [5, 6],            // Match for first place
+       [7, 8]             // Match for 3rd place
+      ]
+    ]
+  ]
+}
+
+var doubleElimination = {
+  "teams": [
+    ["Team 1", "Team 2"],
+    ["Team 3", "Team 4"]
+  ],
+  "results": [            // List of brackets (three since this is double elimination)
+    [                     // Winner bracket
+      [[1, 2], [3, 4]],   // First round and results
+      [[5, 6]]            // Second round
+    ],
+    [                     // Loser bracket
+      [[7, 8]],           // First round
+      [[9, 10]]           // Second round
+    ],
+    [                     // Final "bracket"
+      [                   // First round
+        [11, 12],         // Match to determine 1st and 2nd
+        [13, 14]          // Match to determine 3rd and 4th
+      ],
+      [                   // Second round
+        [15, 16]          // LB winner won first round (11-12) so need a final decisive round
+      ]
+    ]
+  ]
+}
 </pre>
 
 <div id="minimal">
