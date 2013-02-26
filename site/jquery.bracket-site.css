@@ -57,3 +57,19 @@ span.fix {
   padding: 2px;
   margin: 2px;
 }
+
+.note {
+  font-size: 14px;
+  border-radius: 5px;
+  background-color: #CFC;
+  padding: 10px;
+}
+.note span {
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: #090;
+  text-align: center;
+  color: #FFF;
+  margin-right: 5px;
+}
