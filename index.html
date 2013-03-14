@@ -19,7 +19,7 @@
 
 <script type="text/javascript">
 $(function() {
-    var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'big']
+    var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'reverseBracket', 'big']
     $.each(demos, function(i, d){
       var demo = $('div#'+d)
       $('<div class="demo"></div>').appendTo(demo)
@@ -267,6 +267,17 @@ var doubleElimination = {
 
   $(function() {
       $('div#doubleElimination .demo').bracket({
+        init: doubleEliminationData})
+    })
+  </script>
+</div>
+
+<div id="reverseBracket">
+  <h3>Reverse flow</h3>
+  <script type="text/javascript">
+  $(function() {
+      $('div#reverseBracket .demo').bracket({
+        dir: 'rl', /* left-to-right or right-to-left flow, value either "rl" or  "lr" (default) */
         init: doubleEliminationData})
     })
   </script>
