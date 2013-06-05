@@ -20,7 +20,7 @@
 
 <script type="text/javascript">
 $(function() {
-    var demos = ['save', 'minimal', 'customHandlers', 'autoComplete', 'doubleElimination', 'noConsolationRound', 'reverseBracket', 'big']
+    var demos = ['save', 'minimal', 'matches', 'customHandlers', 'autoComplete', 'doubleElimination', 'noConsolationRound', 'reverseBracket', 'big']
     $.each(demos, function(i, d){
       var demo = $('div#'+d)
       $('<div class="demo"></div>').appendTo(demo)
@@ -195,6 +195,45 @@ var doubleElimination = {
 <pre id="saveOutput">Try to first modify some scores or teams</pre>
 <h4>Data inquired at startup</h4>
 <pre id="dataOutput"></pre>
+
+<div id="matches">
+  <h3>Match information</h3>
+  <p>If you wish to make the bracket more interatctive and display match specific information, you can use the match
+    callbacks. You can bind callbacks that are triggered when user clicks or hovers on a match. Custom data
+    regarding which match was triggered will be passed as argument. The data can be input as the third value of
+    each match, first two being the result of the match. The type of the
+    value is not restricted. Hover gets a boolean as second argument indicating if mouse entered or left the match.
+    Callbacks cannot be used in conjunction with the edit feature.</p>
+  <div style="margin-bottom: 5px; font-size: 16px;"><span id="matchCallback">hover and click the matches below</span></div>
+  <script type="text/javascript">
+    var matchData = {
+      teams : [
+        ["Team 1", "Team 2"],
+        ["Team 3", "Team 4"]
+      ],
+      results : [
+        [[4,3,'Match 1'], [3,4,'Match 2']],
+        [[8,6,'Final'], [2,3,'Consolation final']]
+      ]
+    }
+
+    function onclick(data) {
+      $('#matchCallback').text("onclick(data: '" + data + "')")
+    }
+
+    function onhover(data, hover) {
+      $('#matchCallback').text("onhover(data: '" + data + "', hover: " + hover + ")")
+    }
+
+    $(function() {
+      $('#matches .demo').bracket({
+        init: matchData,
+        onMatchClick: onclick,
+        onMatchHover: onhover
+      })
+    })
+  </script>
+</div>
 
 <div id="customHandlers">
   <h3>Data customization</h3>
