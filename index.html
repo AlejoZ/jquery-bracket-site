@@ -20,7 +20,7 @@
 
 <script type="text/javascript">
 $(function() {
-    var demos = ['save', 'minimal', 'matches', 'customHandlers', 'autoComplete', 'doubleElimination', 'noConsolationRound', 'reverseBracket', 'big']
+    var demos = ['save', 'minimal', 'matches', 'customHandlers', 'autoComplete', 'doubleElimination', 'noSecondaryFinal', 'noConsolationRound', 'reverseBracket', 'big']
     $.each(demos, function(i, d){
       var demo = $('div#'+d)
       $('<div class="demo"></div>').appendTo(demo)
@@ -301,8 +301,27 @@ var doubleElimination = {
   </script>
 </div>
 
+<div id="noSecondaryFinal">
+  <h3>No secondary final</h3>
+
+  <p>In double elimination, you can disable the secondary final which would
+    generally be used if Loser Bracket winner wins the first match against
+    Winner Bracket winner.</p>
+
+  <script type="text/javascript">
+    $(function() {
+      $('div#noSecondaryFinal .demo').bracket({
+        skipSecondaryFinal: true,
+        init: doubleEliminationData})
+    })
+  </script>
+</div>
+
 <div id="noConsolationRound">
   <h3>No consolation round</h3>
+
+  <p>Skip the round to determine 3rd and 4th places.</p>
+
   <script type="text/javascript">
   $(function() {
       $('div#noConsolationRound .demo').bracket({
@@ -314,6 +333,9 @@ var doubleElimination = {
 
 <div id="reverseBracket">
   <h3>Reverse flow</h3>
+
+  <p>Render the bracket from right to left.</p>
+
   <script type="text/javascript">
   $(function() {
       $('div#reverseBracket .demo').bracket({
