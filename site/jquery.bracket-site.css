@@ -15,6 +15,16 @@ div.demo {
   overflow: auto;
 }
 
+h3 a {
+  margin: 3px;
+  padding: 3px;
+  color: blue;
+}
+
+h3 a:hover {
+  background-color: red;
+}
+
 ul#issues {
   width: 80%;
 }

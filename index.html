@@ -26,6 +26,7 @@ $(function() {
       $('<div class="demo"></div>').appendTo(demo)
       var pre = $('<pre name="code" class="js"></pre>').appendTo(demo)
       var script = demo.find('script')
+      demo.find("h3").append($('<a href="#' + d + '">¶</a>'))
       pre.text(script.html())
     })
   })
