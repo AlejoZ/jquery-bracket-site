@@ -20,7 +20,7 @@
 
 <script type="text/javascript">
 $(function() {
-    var demos = ['save', 'minimal', 'matches', 'customHandlers', 'autoComplete', 'doubleElimination', 'noSecondaryFinal', 'noConsolationRound', 'reverseBracket', 'big']
+    var demos = ['save', 'minimal', 'matches', 'customHandlers', 'autoComplete', 'doubleElimination', 'noSecondaryFinal', 'noConsolationRound', 'noGrandFinalComeback', 'reverseBracket', 'big']
     $.each(demos, function(i, d){
       var demo = $('div#'+d)
       $('<div class="demo"></div>').appendTo(demo)
@@ -332,6 +332,39 @@ var doubleElimination = {
       $('div#noConsolationRound .demo').bracket({
         skipConsolationRound: true,
         init: doubleEliminationData})
+    })
+  </script>
+</div>
+
+<div id="noGrandFinalComeback">
+  <h3>No comeback from loser bracket (added in 0.7.0)</h3>
+
+  <p>Double elimination in which you can reach 3rd at best if you drop from
+    winner bracket. Tournament finalists come directly from winner bracket.</p>
+
+  <script type="text/javascript">
+    var eightTeams = {
+      teams : [
+        ["Team 1",  "Team 2" ],
+        ["Team 3",  "Team 4" ],
+        ["Team 5",  "Team 6" ],
+        ["Team 7",  "Team 8" ]
+      ],
+      results : [[ /* WINNER BRACKET */
+        [[1,2], [3,4], [5,6], [7,8]],
+        [[9,1], [8,2]],
+        [[1,3]]
+      ], [         /* LOSER BRACKET */
+        [[5,1], [1,2], [3,2], [6,9]],
+        [[1,2], [3,1]],
+        [[4,2]]
+      ]]
+    }
+
+    $(function() {
+      $('div#noGrandFinalComeback .demo').bracket({
+        skipGrandFinalComeback: true,
+        init: eightTeams})
     })
   </script>
 </div>
