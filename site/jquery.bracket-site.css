@@ -83,3 +83,8 @@ span.fix {
   color: #FFF;
   margin-right: 5px;
 }
+
+pre {
+  background-color: #EEE;
+  padding: 5px;
+}
