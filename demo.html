@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--[if ie]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery Bracket</title>
+<meta name="description" content="jQuery plugin for visualizing and editing single and double elimination tournament brackets" />
+<script type="text/javascript" src="site/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="site/jquery-ui-1.8.16/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="site/jquery.json-2.2.min.js"></script>
+<script type="text/javascript" src="site/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
+<script type="text/javascript" src="site/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="site/syntaxhighlighter_3.0.83/scripts/shBrushXml.js"></script>
+<link rel="stylesheet" type="text/css" href="site/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
+<link rel="stylesheet" type="text/css" href="site/jquery-ui-1.8.16/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+<link rel="stylesheet" type="text/css" href="site/jquery.bracket-site.css" />
+
+<link rel="stylesheet" type="text/css" href="jquery-bracket/dist/jquery.bracket.css" />
+<script type="text/javascript" src="jquery-bracket/dist/jquery.bracket.js"></script>
+
+<script type="text/javascript">
+$(function() {
+    var demos = ['save', 'minimal', 'matches', 'customHandlers', 'autoComplete', 'doubleElimination', 'noSecondaryFinal', 'noConsolationRound', 'noGrandFinalComeback', 'reverseBracket', 'big']
+    $.each(demos, function(i, d){
+      var demo = $('div#'+d)
+      $('<div class="demo"></div>').appendTo(demo)
+    })
+  })
+</script>
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-1488867-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+</head>
+<body>
+<div id="main">
+<div id="save">
+  <h3>Save functionality (click team and score labels to edit)</h3>
+  <p>Note that you can press return when entering scores to procede to next
+  field.</p>
+  <script type="text/javascript">
+  var _saveData = {
+      teams : [
+        ["Team 1", "Team 2"], /* first matchup */
+        ["Team 3", "Team 4"]  /* second matchup */
+      ],
+      results : [[1,0], [null,null]]
+    }
+
+  var saveData = {
+      "teams": [
+          [
+              "Team 1",
+              "Team 2"
+          ],
+          [
+              'a',
+              'b'
+          ]
+      ],
+      "results": [
+          [
+              [
+                  [
+                      1,
+                      0
+                  ],
+                  [
+                      null,
+                      null
+                  ]
+              ],
+              [
+                  [
+                      null,
+                      null
+                  ],
+                  [
+                      null,
+                      null
+                  ]
+              ]
+          ]
+      ]
+  };
+
+  /* Called whenever bracket is modified
+   *
+   * data:     changed bracket object in format given to init
+   * userData: optional data given when bracket is created.
+   */
+  function saveFn(data, userData) {
+    var json = jQuery.toJSON(data)
+    $('#saveOutput').text(JSON.stringify(data, null, 2))
+    /* You probably want to do something like this
+    jQuery.ajax("rest/"+userData, {contentType: 'application/json',
+                                  dataType: 'json',
+                                  type: 'post',
+                                  data: json})
+    */
+  }
+
+  $(function() {
+      var container = $('div#save .demo')
+      container.bracket({
+        init: saveData,
+        save: saveFn,
+        userData: "http://myapi"})
+
+      /* You can also inquiry the current data */
+      var data = container.bracket('data')
+      $('#dataOutput').text(JSON.stringify(jQuery.toJSON(data), null, 2))
+    })
+  </script>
+</div>
+<h4>Save output</h4>
+<pre id="saveOutput">
+    asd
+    ads
+
+
+    Try to first modify some scores or teams</pre>
+<h4>Data inquired at startup</h4>
+<pre id="dataOutput">
+</pre>
+
+</div>
+<script type="text/javascript">
+$(function() {
+    var big = $('#big div.demo')
+    big.scrollLeft(big.width())
+
+    $('pre.html').addClass('brush: html;')
+    $('pre.js').addClass('brush: js;')
+    SyntaxHighlighter.defaults['gutter'] = false
+    SyntaxHighlighter.defaults['auto-links'] = false
+    SyntaxHighlighter.all('code')
+  })
+</script>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>
