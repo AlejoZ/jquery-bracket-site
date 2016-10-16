@@ -79,8 +79,10 @@ To try most of the examples use these includes:
 determine what is rendered. Play with the <a href="#save">save functionality
 demo</a> and check the input data for other demos.</p>
 <ul>
-  <li>Number of team pairs determines the size of the bracket. Bracket size is
-  always power of two (2, 4, 8...).</li>
+  <li>Number of team pairs determines the size of the bracket.
+    <code>null</code> team will result into <strong>BYE</strong>. Team playing
+    against <strong>BYE</strong> will get a default win with no score
+  </li>
   <li>Number of result lists determines the tournament type. One list indicates
   single elimination. Three (winners, losers and finals) indicates double
   elimination.</li>
@@ -159,17 +161,31 @@ var doubleElimination = {
 </div>
 
 <div id="save">
-  <h3>Save functionality (click team and score labels to edit)</h3>
-  <p>Note that you can press return when entering scores to procede to next
-  field.</p>
+  <h3>Save functionality and BYEs</h3>
+  <ul>
+    <li>Click team and score labels to edit</li>
+    <li>Empty team name will remove the team, resulting into <strong>BYE</strong></li>
+    <li>Use <code>null</code> when initializing team data to mark that branch as <strong>BYE</strong></li>
+    <li>All teams playing against <strong>BYE</strong> will get a default win with no score</li>
+    <li>Spot that will eventually get a team are shown as <strong>TBD</strong></li>
+    <li>You can press return when entering scores to proceed to next field</li>
+  </ul>
   <script type="text/javascript">
   var saveData = {
-      teams : [
-        ["Team 1", "Team 2"], /* first matchup */
-        ["Team 3", "Team 4"]  /* second matchup */
-      ],
-      results : [[1,0], [2,7]]
-    }
+    teams: [
+      ["Team 1", "Team 2"],
+      ["Team 3", null],
+      ["Team 4", null],
+      ["Team 5", null]
+    ],
+    results: [
+        [
+          [[1, 0], [null, null], [null, null], [null, null]],
+          [[null, null], [1, 4]],
+          [[null, null], [null, null]]
+        ]
+    ]
+  };
 
   /* Called whenever bracket is modified
    *
