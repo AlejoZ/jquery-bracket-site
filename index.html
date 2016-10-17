@@ -173,6 +173,7 @@ var doubleElimination = {
     <li>All teams playing against <strong>BYE</strong> will get a default win with no score</li>
     <li>Spot that will eventually get a team are shown as <strong>TBD</strong></li>
     <li>You can press return when entering scores to proceed to next field</li>
+    <li style="color: #C00; font-weight: bold;">NOTE: <a href="#balancing">See explanation on balancing</a> a tournament with <strong>BYE</strong>s</li>
   </ul>
   <script type="text/javascript">
   var saveData = {
@@ -225,6 +226,48 @@ var doubleElimination = {
 <h4>Data inquired at startup</h4>
 <pre id="dataOutput"></pre>
 
+<h3 id="balancing">Balancing tournaments with BYEs <a href="#balancing">¶</a></h3>
+<div class="note">Before using BYEs, please read this section to avoid unfair tournaments.</div>
+  <p>The library does not take into account the seeding of the players. As
+    different users might have different ways to integrate with the
+    library, it's up to the user to form the ordering of teams for the first
+    round. This leaves room for error if you don't &quot;dry run&quot; your
+    tournament and consider how the teams will advance when getting default
+    wins from <strong>BYE</strong>d opponents.</p>
+<h4>The problem</h4>
+  <p>Here's an example of a problem when teams are assigned in order and
+    <strong>BYE</strong>s are left last. As you can see, "Team 5" gets to
+    finals without playing a single round, getting an unfair advantage over
+    other teams that have to play two rounds to get there. Of course this can
+    also be the intended order, but if not, be aware of this issue.
+  </p>
+<div id="unbalanced-byes"></div>
+<h4>The solution</h4>
+  <p>To avoid situations similar to above, the teams need to be distributed
+    evenly for the first round. You can see an example seeiding below. In
+    principle the spots must be filled always as sparsely as possible,
+    i.e. halve the empty space on each assignment. You can see why when you
+    follow the branching of the bracket.</p>
+<div id="balanced-byes"></div>
+<script type="text/javascript">
+  var badExampleData = {"teams":[["Team 1","Team 2"],["Team 3","Team 4"],["Team 5",null],[null,null]],"results":[[[[1,0],[1,0],[null,null],[null,null]],[[1,0],[null,null]],[[1,0],[null,null]]]]};
+  var goodExampleData = {
+    teams: [
+      ["1. spot", "5. spot"],
+      ["3. spot", "7. spot"],
+      ["2. spot", "6. spot"],
+      ["4. spot", "8. spot"]
+    ],
+    results: [
+      []
+    ]
+  };
+
+  $(function() {
+    $('div#balanced-byes').bracket({init: goodExampleData})
+    $('div#unbalanced-byes').bracket({init: badExampleData})
+  })
+</script>
 <div id="matches">
   <h3>Match information</h3>
   <p>If you wish to make the bracket more interatctive and display match specific information, you can use the match
