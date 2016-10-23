@@ -15,6 +15,23 @@ div.demo {
   overflow: auto;
 }
 
+label.rangePicker {
+  display: block;
+  font-family: monospace;
+  line-height: 20px;
+  width: 300px;
+  position: relative;
+}
+label.rangePicker span {
+  display: inline-block;
+}
+label.rangePicker input {
+  vertical-align: middle;
+  position: absolute;
+  right: 0;
+  height: 20px;
+}
+
 h3 a {
   margin: 3px;
   padding: 3px;
