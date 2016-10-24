@@ -164,7 +164,13 @@ var doubleElimination = {
   </script>
 </div>
 
-
+<script type="text/javascript">
+  function resize(propName) {
+    resizeParameters[propName] = parseInt(event.target.value);
+    event.target.previousElementSibling.textContent = event.target.value;
+    updateResizeDemo();
+  }
+</script>
 <div id="resize">
   <h3>Resizing</h3>
   <p>You can adjust the sizes and margins of the bracket elements with
@@ -174,11 +180,7 @@ var doubleElimination = {
   <label class="rangePicker">matchMargin: <span>40</span>; <input oninput="resize('matchMargin')" type="range" min="0" max="100" step="1" value="40"/></label>
   <label class="rangePicker">roundMargin: <span>20</span>; <input oninput="resize('roundMargin')" type="range" min="3" max="100" step="1" value="20"/></label>
   <script type="text/javascript">
-    function resize(propName) {
-      resizeParameters[propName] = parseInt(event.target.value);
-      event.target.previousElementSibling.textContent = event.target.value;
-      createResizeDemo();
-    }
+    // These are modified by the sliders
     var resizeParameters = {
       teamWidth: 60,
       scoreWidth: 20,
@@ -186,10 +188,12 @@ var doubleElimination = {
       roundMargin: 50,
       init: minimalData
     };
-    function createResizeDemo() {
+
+    function updateResizeDemo() {
       $('#resize .demo').bracket(resizeParameters);
     }
-    $(createResizeDemo)
+
+    $(updateResizeDemo)
   </script>
 </div>
 
