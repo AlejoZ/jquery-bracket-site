@@ -207,6 +207,16 @@ var doubleElimination = {
     <li>Spot that will eventually get a team are shown as <strong>TBD</strong></li>
     <li>You can press return when entering scores to proceed to next field</li>
     <li style="color: #C00; font-weight: bold;">NOTE: <a href="#balancing">See explanation on balancing</a> a tournament with <strong>BYE</strong>s</li>
+    <li>Additional parameters. Requires <code>save</code> callback to be given.
+      <ul>
+        <li><code>disableToolbar: boolean</code> hides the toolbar that
+          allows resizing the bracket and changing its type</li>
+        <li><code>disableTeamEdit: boolean</code> disallows editing teams,
+          allows still editing scores. You must ALSO disable the toolbar (as
+          incresing bracket size would add BYE teams, thus "editing
+          teams")</li>
+      </ul>
+    </li>
   </ul>
   <script type="text/javascript">
   var saveData = {

@@ -32,6 +32,11 @@ label.rangePicker input {
   height: 20px;
 }
 
+code {
+  color: #909;
+  padding: 3px;
+}
+
 h3 a {
   margin: 3px;
   padding: 3px;
