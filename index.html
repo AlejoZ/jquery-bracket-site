@@ -352,6 +352,10 @@ var doubleElimination = {
 
 <div id="customHandlers">
   <h3>Data customization</h3>
+  <p>In this demo we customize the rendering and editing of a team. You can
+    give the team data as <code>country:name</code>, where <code>country</code>
+    is a two character country code. <em>There is no proper input validation</em>
+    as it's only for demo purposes.</p>
   <script type="text/javascript">
   /* Custom data objects passed as teams */
   var customData = {
@@ -365,10 +369,18 @@ var doubleElimination = {
   /* Edit function is called when team label is clicked */
   function edit_fn(container, data, doneCb) {
     var input = $('<input type="text">')
-    input.val(data.name)
+    input.val(data ? data.flag + ':' + data.name : '')
     container.html(input)
     input.focus()
-    input.blur(function() { doneCb({flag: data.flag, name: input.val()}) })
+    input.blur(function() {
+      var inputValue = input.val()
+      if (inputValue.length === 0) {
+        doneCb(null); // Drop the team and replace with BYE
+      } else {
+        var flagAndName = inputValue.split(':') // Expects correct input
+        doneCb({flag: flagAndName[0], name: flagAndName[1]})
+      }
+    })
   }
 
   /* Render function is called for each team label when data is changed, data
