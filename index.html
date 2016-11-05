@@ -360,10 +360,10 @@ var doubleElimination = {
   /* Custom data objects passed as teams */
   var customData = {
       teams : [
-        [{name: "Team 1", flag: 'fi'}, {name: "Team 2", flag: 'kr'}],
+        [{name: "Team 1", flag: 'fi'}, null],
         [{name: "Team 3", flag: 'se'}, {name: "Team 4", flag: 'us'}]
       ],
-      results : [4,2]
+      results : []
     }
 
   /* Edit function is called when team label is clicked */
@@ -384,11 +384,30 @@ var doubleElimination = {
   }
 
   /* Render function is called for each team label when data is changed, data
-   * contains the data object given in init and belonging to this slot. */
-  function render_fn(container, data, score) {
-    if (!data.flag || !data.name)
-      return
-    container.append('<img src="site/png/'+data.flag+'.png" /> ').append(data.name)
+   * contains the data object given in init and belonging to this slot.
+   *
+   * 'state' is one of the following strings:
+   * - empty-bye: No data or score and there won't team advancing to this place
+   * - empty-tbd: No data or score yet. A team will advance here later
+   * - entry-no-score: Data available, but no score given yet
+   * - entry-default-win: Data available, score will never be given as opponent is BYE
+   * - entry-complete: Data and score available
+   */
+  function render_fn(container, data, score, state) {
+    switch(state) {
+      case "empty-bye":
+        container.append("No team")
+        return;
+      case "empty-tbd":
+        container.append("Upcoming")
+        return;
+
+      case "entry-no-score":
+      case "entry-default-win":
+      case "entry-complete":
+        container.append('<img src="site/png/'+data.flag+'.png" /> ').append(data.name)
+        return;
+    }
   }
 
   $(function() {
@@ -515,8 +534,8 @@ var doubleElimination = {
   <script type="text/javascript">
   var autoCompleteData = {
       teams : [
-        ['fi:Player 1', ''],
-        ['', '']
+        ['fi:Team 1', 'se:Team 2'],
+        [null, null]
       ],
       results : []
     }
@@ -537,12 +556,25 @@ var doubleElimination = {
     input.focus()
   }
 
-  function acRenderFn(container, data, score) {
-    var fields = data.split(':')
-    if (fields.length != 2)
-      container.append('--')
-    else
-      container.append('<img src="site/png/'+fields[0]+'.png"> ').append(fields[1])
+  function acRenderFn(container, data, score, state) {
+    switch(state) {
+      case 'empty-bye':
+        container.append('BYE')
+        return;
+      case 'empty-tbd':
+        container.append('TBD')
+        return;
+
+      case 'entry-no-score':
+      case 'entry-default-win':
+      case 'entry-complete':
+        var fields = data.split(':')
+        if (fields.length != 2)
+          container.append('<i>INVALID</i>')
+        else
+          container.append('<img src="site/png/'+fields[0]+'.png"> ').append(fields[1])
+        return;
+    }
   }
 
   $(function() {
