@@ -20,7 +20,7 @@
 
 <script type="text/javascript">
 $(function() {
-    var demos = ['save', 'minimal', 'resize', 'matches', 'customHandlers', 'autoComplete', 'doubleElimination', 'noSecondaryFinal', 'noConsolationRound', 'noGrandFinalComeback', 'reverseBracket', 'big']
+    var demos = ['save', 'minimal', 'resize', 'matches', 'customHandlers', 'autoComplete', 'doubleElimination', 'noSecondaryFinal', 'noConsolationRound', 'noGrandFinalComeback', 'reverseBracket', 'big', 'connectorStyles']
     $.each(demos, function(i, d){
       var demo = $('div#'+d)
       $('<div class="demo"></div>').appendTo(demo)
@@ -523,6 +523,24 @@ var doubleElimination = {
   $(function() {
       $('div#reverseBracket .demo').bracket({
         dir: 'rl', /* left-to-right or right-to-left flow, value either "rl" or  "lr" (default) */
+        init: doubleEliminationData})
+    })
+  </script>
+</div>
+
+<div id="connectorStyles">
+  <h3>Connector styles</h3>
+
+  <ul>
+    <li><code>centerConnectors: boolean</code> route connectors between matches instead of seats</li>
+    <li><code>disableHighlight: boolean</code> don't highlight the team progress on mouse hover</li>
+  </ul>
+
+  <script type="text/javascript">
+    $(function() {
+      $('div#connectorStyles .demo').bracket({
+        centerConnectors: true,
+        disableHighlight: true,
         init: doubleEliminationData})
     })
   </script>
